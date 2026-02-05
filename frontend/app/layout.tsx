@@ -19,6 +19,15 @@ export const metadata: Metadata = {
   title: 'Helio Filho | Technical Dashboard Portfolio',
   description: 'Technical Lead / SAP B1 Specialist - Portfolio técnico com métricas e projetos',
   keywords: ['developer', 'SAP B1', 'backend', 'portfolio', 'technical lead'],
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
+      { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
+      { url: '/icon.ico', sizes: '64x64', type: 'image/x-icon' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/icon.ico',
+  },
 }
 
 export default function RootLayout({

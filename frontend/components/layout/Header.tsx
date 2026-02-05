@@ -142,10 +142,14 @@ export default function Header() {
         {/* Logo e Info */}
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-3">
-            {/* Logo com inicial - Design mais identitário */}
+            {/* Logo com ícone */}
             <div className="relative group">
-              <div className="w-10 h-10 bg-gradient-to-br from-accent via-blue-600 to-accent text-white flex items-center justify-center rounded-xl font-black text-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 border-2 border-white dark:border-slate-800">
-                H
+              <div className="w-14 h-14 bg-gradient-to-br from-accent via-blue-600 to-accent flex items-center justify-center rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 border-2 border-white dark:border-slate-800 overflow-hidden">
+                <img 
+                  src="/icon.ico" 
+                  alt="Helio Filho" 
+                  className="w-[95%] h-[95%] object-contain"
+                />
               </div>
               {/* Efeito de brilho ao hover */}
               <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-accent/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
