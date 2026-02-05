@@ -1,0 +1,155 @@
+# ============================================
+# .NET / Backend
+# ============================================
+## Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## Visual Studio cache/options
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Rider
+.idea/
+*.sln.iml
+
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## NuGet Packages
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+
+## Sensitive files - NÃO COMMITAR
+**/appsettings.Development.json
+**/appsettings.Production.json
+**/secrets.json
+
+# ============================================
+# Next.js / Frontend
+# ============================================
+## Dependencies
+node_modules/
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+## Testing
+/coverage
+
+## Next.js
+/.next/
+/out/
+
+## Production
+/build
+
+## Misc
+.DS_Store
+*.pem
+
+## Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+## Local env files
+.env
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+## Vercel
+.vercel
+
+## TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# ============================================
+# IDE
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ============================================
+# OS
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ============================================
+# Arquivos temporários
+# ============================================
+*.rar
+*.zip
+*.log
+*.tmp
+*.temp
+
+# ============================================
+# Gradle (se houver)
+# ============================================
+.gradle/
+gradle/
+build/
+!gradle-wrapper.jar
+
+# ============================================
+# Outros
+# ============================================
+front.rar
