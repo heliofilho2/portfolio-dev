@@ -117,24 +117,42 @@ builder.Services.AddSwaggerGen(c =>
 
 // ========== CONFIGURAÇÃO DE CORS ==========
 // POR QUÊ CORS?
-// - Frontend (Next.js) roda em localhost:3000
-// - Backend roda em localhost:5000
+// - Frontend (Next.js) roda em localhost:3000 (dev) ou Vercel (prod)
+// - Backend roda em localhost:5115 (dev) ou Railway (prod)
 // - Browsers bloqueiam requisições cross-origin por segurança
 // - CORS permite que frontend acesse backend
 //
 // EM PRODUÇÃO:
-// - Especificar domínios exatos (não AllowAnyOrigin)
-// - Usar variáveis de ambiente para allowed origins
-builder.Services.AddCors(options =>
+// - Aceita qualquer origem (para facilitar deploy)
+// - Em produção real, especificar domínios exatos via variável de ambiente
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+if (allowedOrigins == null || allowedOrigins.Length == 0)
 {
-    options.AddPolicy("AllowFrontend", policy =>
+    // Se não configurado, permite qualquer origem (OK para portfólio pessoal)
+    builder.Services.AddCors(options =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:3001")
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+        options.AddPolicy("AllowFrontend", policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
     });
-});
+}
+else
+{
+    // Se configurado via variável de ambiente, usa origens específicas
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowFrontend", policy =>
+        {
+            policy.WithOrigins(allowedOrigins)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
+    });
+}
 
 var app = builder.Build();
 
@@ -147,7 +165,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// HTTPS redirection apenas em desenvolvimento local
+// Railway gerencia HTTPS automaticamente
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 // CORS deve vir ANTES de UseAuthorization
 app.UseCors("AllowFrontend");
@@ -156,4 +179,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+// Railway injeta PORT via variável de ambiente
+// Se não estiver definida, usa porta padrão (desenvolvimento)
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5115";
+var url = $"http://0.0.0.0:{port}";
+app.Run(url);
