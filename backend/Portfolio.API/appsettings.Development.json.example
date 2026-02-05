@@ -1,0 +1,12 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug",
+      "Microsoft.AspNetCore": "Information",
+      "Microsoft.EntityFrameworkCore": "Information"
+    }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=seu-host.supabase.co;Port=5432;Database=postgres;Username=seu-usuario;Password=sua-senha;SSL Mode=Require;Trust Server Certificate=true"
+  }
+}
