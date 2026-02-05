@@ -12,13 +12,14 @@
 - **Root Directory**: `backend`
 
 #### Settings → Build
-- **Builder**: `NIXPACKS` (não Metal)
-- **Build Command**: (deixar vazio - o `railway.json` gerencia)
-- Ou manualmente: `dotnet publish Portfolio.API/Portfolio.API.csproj -c Release -o /app/publish`
+- **Builder**: `DOCKERFILE` (recomendado) ou `NIXPACKS`
+  - **DOCKERFILE**: Usa o `Dockerfile` na pasta `backend/` (mais confiável)
+  - **NIXPACKS**: Usa o `nixpacks.toml` (pode não funcionar em alguns casos)
+- **Build Command**: (deixar vazio - o Dockerfile gerencia tudo)
 
 #### Settings → Deploy
-- **Start Command**: (deixar vazio - o `railway.json` gerencia)
-- Ou manualmente: `cd /app/publish && dotnet Portfolio.API.dll --urls http://0.0.0.0:$PORT`
+- **Start Command**: (deixar vazio - o Dockerfile gerencia)
+- O Dockerfile já está configurado para usar a porta do Railway
 
 #### Settings → Variables
 Adicione a variável de ambiente:
@@ -44,10 +45,10 @@ DATABASE_CONNECTION_STRING = Host=aws-1-us-east-2.pooler.supabase.com;Port=5432;
 ## 📋 Checklist de Deploy
 
 - [ ] Root Directory configurado como `backend`
-- [ ] Builder: `NIXPACKS`
+- [ ] Builder: `DOCKERFILE` (ou NIXPACKS)
 - [ ] Variável `ConnectionStrings__DefaultConnection` adicionada
 - [ ] Public Networking habilitado
-- [ ] Arquivo `railway.json` commitado no Git
+- [ ] Arquivo `Dockerfile` commitado no Git
 - [ ] Push feito para `main` branch
 
 ---
@@ -74,29 +75,44 @@ Após o deploy:
 ## 🐛 Troubleshooting
 
 ### Erro: "dotnet: not found"
-- **Solução**: Configure Builder como `NIXPACKS` (não Metal)
-- Ou adicione `railway.json` na pasta `backend/`
+- **Solução**: Use Builder `DOCKERFILE` (não NIXPACKS ou Metal)
+- O Dockerfile garante que o .NET SDK esteja instalado
 
 ### Erro: "Connection string not found"
 - **Solução**: Verifique se a variável `ConnectionStrings__DefaultConnection` está configurada
 - Formato: `ConnectionStrings__DefaultConnection` (com dois underscores)
 
 ### Erro: "Port already in use"
-- **Solução**: O código já está configurado para usar `$PORT` do Railway
+- **Solução**: O Dockerfile já está configurado para usar `$PORT` do Railway
 - Verifique se o `Program.cs` está usando `Environment.GetEnvironmentVariable("PORT")`
 
 ### CORS ainda bloqueando
 - **Solução**: O código agora permite qualquer origem (`AllowAnyOrigin`)
 - Se quiser restringir, configure `AllowedOrigins` via variável de ambiente
 
+### Build falha no Railway
+- **Solução**: Verifique se o `Dockerfile` está na pasta `backend/`
+- Verifique se o Root Directory está configurado como `backend`
+
 ---
 
 ## 📝 Notas
 
-- O Railway detecta automaticamente .NET se o `railway.json` estiver presente
-- A porta é gerenciada automaticamente via variável `PORT`
+- **Dockerfile** é a opção mais confiável para .NET no Railway
+- O Dockerfile usa multi-stage build (otimizado)
+- A porta é gerenciada automaticamente via variável `PORT` do Railway
 - HTTPS é gerenciado pelo Railway (não precisa configurar)
-- O arquivo `railway.json` está na pasta `backend/` e será detectado automaticamente
+- O arquivo `Dockerfile` está na pasta `backend/` e será detectado automaticamente
+
+---
+
+## 🎯 Resumo Rápido
+
+1. **Root Directory**: `backend`
+2. **Builder**: `DOCKERFILE`
+3. **Variável**: `ConnectionStrings__DefaultConnection` = sua connection string
+4. **Public Networking**: ✅ Habilitado
+5. **Commit e Push**: Faça commit do `Dockerfile` e faça push
 
 ---
 
