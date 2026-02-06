@@ -94,7 +94,10 @@ async function apiRequest<T>(
   endpoint: string,
   options?: RequestInit
 ): Promise<T> {
-  const url = `${API_BASE_URL}${endpoint}`;
+  // Remove barras duplas: se API_BASE_URL termina com / e endpoint começa com /, remove uma
+  const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+  const endpointPath = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = `${baseUrl}${endpointPath}`;
   
   // Log detalhado para debug (apenas em desenvolvimento)
   if (typeof window !== 'undefined') {
