@@ -24,11 +24,51 @@ var builder = WebApplication.CreateBuilder(args);
 //    Formato: ConnectionStrings__DefaultConnection (padrão .NET) ou DATABASE_CONNECTION_STRING
 // 2. appsettings.Development.json (sobrescreve appsettings.json em dev)
 // 3. appsettings.json (para desenvolvimento local)
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+var rawConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING")
     ?? throw new InvalidOperationException(
         "Connection string 'DefaultConnection' not found. " +
         "Configure em appsettings.json ou variável de ambiente DATABASE_CONNECTION_STRING ou ConnectionStrings__DefaultConnection.");
+
+// Converte formato URI (postgresql://...) para formato Parameters (key=value) se necessário
+// Npgsql funciona melhor com formato Parameters
+string connectionString;
+if (rawConnectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) ||
+    rawConnectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
+{
+    // Parse URI format para Parameters format
+    try
+    {
+        var uri = new Uri(rawConnectionString);
+        var builder = new System.Text.StringBuilder();
+        builder.Append($"Host={uri.Host};");
+        if (uri.Port > 0)
+            builder.Append($"Port={uri.Port};");
+        builder.Append($"Database={uri.LocalPath.TrimStart('/')};");
+        if (!string.IsNullOrEmpty(uri.UserInfo))
+        {
+            var userInfo = uri.UserInfo.Split(':');
+            if (userInfo.Length >= 1)
+                builder.Append($"Username={Uri.UnescapeDataString(userInfo[0])};");
+            if (userInfo.Length >= 2)
+                builder.Append($"Password={Uri.UnescapeDataString(userInfo[1])};");
+        }
+        builder.Append("SSL Mode=Require;Trust Server Certificate=true;");
+        connectionString = builder.ToString();
+        Console.WriteLine("[DEBUG] Connection String convertida de URI para Parameters format");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[DEBUG] Erro ao converter URI: {ex.Message}");
+        // Se falhar, usa a string original
+        connectionString = rawConnectionString;
+    }
+}
+else
+{
+    // Já está no formato Parameters, usa direto
+    connectionString = rawConnectionString;
+}
 
 // Log para debug (mostra apenas início da connection string por segurança)
 Console.WriteLine("[DEBUG] ========== CONNECTION STRING DEBUG ==========");
@@ -37,7 +77,7 @@ if (!string.IsNullOrEmpty(connectionString))
     var preview = connectionString.Length > 50 
         ? connectionString.Substring(0, 50) + "..." 
         : connectionString;
-    Console.WriteLine($"[DEBUG] Connection String lida: {preview}");
+    Console.WriteLine($"[DEBUG] Connection String final: {preview}");
     Console.WriteLine($"[DEBUG] Connection String começa com: {connectionString.Substring(0, Math.Min(20, connectionString.Length))}");
     Console.WriteLine($"[DEBUG] Connection String contém 'localhost': {connectionString.Contains("localhost")}");
     Console.WriteLine($"[DEBUG] Connection String contém 'pooler.supabase.com': {connectionString.Contains("pooler.supabase.com")}");
@@ -45,21 +85,6 @@ if (!string.IsNullOrEmpty(connectionString))
 else
 {
     Console.WriteLine("[DEBUG] Connection String está NULL ou vazia!");
-}
-
-// Debug: Verificar variáveis de ambiente
-Console.WriteLine("[DEBUG] ========== ENVIRONMENT VARIABLES DEBUG ==========");
-var envDb = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
-var envConnStr = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
-Console.WriteLine($"[DEBUG] DATABASE_CONNECTION_STRING existe: {!string.IsNullOrEmpty(envDb)}");
-Console.WriteLine($"[DEBUG] ConnectionStrings__DefaultConnection existe: {!string.IsNullOrEmpty(envConnStr)}");
-if (!string.IsNullOrEmpty(envDb))
-{
-    Console.WriteLine($"[DEBUG] DATABASE_CONNECTION_STRING valor: {envDb.Substring(0, Math.Min(50, envDb.Length))}...");
-}
-if (!string.IsNullOrEmpty(envConnStr))
-{
-    Console.WriteLine($"[DEBUG] ConnectionStrings__DefaultConnection valor: {envConnStr.Substring(0, Math.Min(50, envConnStr.Length))}...");
 }
 Console.WriteLine("[DEBUG] ================================================");
 
