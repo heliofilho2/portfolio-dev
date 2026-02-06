@@ -11,6 +11,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { projectsApi, type ProjectDto } from '@/lib/api'
 
 export default function ProjectsSection() {
@@ -81,7 +82,11 @@ export default function ProjectsSection() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => (
-          <div key={project.id} className="metric-card group flex flex-col h-full">
+          <Link
+            key={project.id}
+            href={`/projects/${project.id}`}
+            className="metric-card group flex flex-col h-full hover:shadow-xl transition-all duration-300"
+          >
             {/* Cabeçalho do Card */}
             <div className="flex justify-between items-start mb-4">
               <div>
@@ -182,7 +187,7 @@ export default function ProjectsSection() {
                 ))}
               </div>
             )}
-          </div>
+          </Link>
         ))}
         </div>
       )}

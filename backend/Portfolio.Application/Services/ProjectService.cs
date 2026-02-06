@@ -80,6 +80,12 @@ public class ProjectService : IProjectService
             Icon = dto.Icon,
             DisplayOrder = dto.DisplayOrder,
             IsActive = dto.IsActive,
+            // Campos de Case Study
+            BusinessProblem = dto.BusinessProblem,
+            TechnicalSolution = dto.TechnicalSolution,
+            TechnicalDecisions = dto.TechnicalDecisions,
+            TradeOffs = dto.TradeOffs,
+            ArchitectureNotes = dto.ArchitectureNotes,
             // CreatedAt é preenchido automaticamente por BaseEntity
         };
 
@@ -126,6 +132,13 @@ public class ProjectService : IProjectService
         if (dto.Icon != null) project.Icon = dto.Icon;
         if (dto.DisplayOrder.HasValue) project.DisplayOrder = dto.DisplayOrder.Value;
         if (dto.IsActive.HasValue) project.IsActive = dto.IsActive.Value;
+        
+        // Campos de Case Study
+        if (dto.BusinessProblem != null) project.BusinessProblem = dto.BusinessProblem;
+        if (dto.TechnicalSolution != null) project.TechnicalSolution = dto.TechnicalSolution;
+        if (dto.TechnicalDecisions != null) project.TechnicalDecisions = dto.TechnicalDecisions;
+        if (dto.TradeOffs != null) project.TradeOffs = dto.TradeOffs;
+        if (dto.ArchitectureNotes != null) project.ArchitectureNotes = dto.ArchitectureNotes;
 
         // Atualiza UpdatedAt
         project.UpdatedAt = DateTime.UtcNow;
@@ -178,6 +191,12 @@ public class ProjectService : IProjectService
             Metric2Value = project.Metric2Value,
             Icon = project.Icon,
             DisplayOrder = project.DisplayOrder,
+            // Campos de Case Study
+            BusinessProblem = project.BusinessProblem,
+            TechnicalSolution = project.TechnicalSolution,
+            TechnicalDecisions = project.TechnicalDecisions,
+            TradeOffs = project.TradeOffs,
+            ArchitectureNotes = project.ArchitectureNotes,
         };
     }
 }

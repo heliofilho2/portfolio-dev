@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import SkillsMatrix from './SkillsMatrix'
-import { profileApi, type ProfileDto } from '@/lib/api'
+import { profileApi, resumeApi, type ProfileDto } from '@/lib/api'
 
 export default function HeroSection() {
   const [profile, setProfile] = useState<ProfileDto | null>(null)
@@ -100,20 +100,70 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <div className="mt-6 flex gap-2">
-          <a
-            href="#contact"
-            className="flex-1 bg-accent hover:bg-blue-600 text-white text-center py-2.5 rounded-lg text-xs font-bold transition-all uppercase tracking-widest"
-          >
-            Execute Contact
-          </a>
-          {/* CORREÇÃO: Borda no dark mode */}
-          <a
-            href="#projects"
-            className="flex-1 border border-slate-200 dark:border-slate-700 text-center py-2.5 rounded-lg text-xs font-bold transition-all uppercase tracking-widest"
-          >
-            Stack Audit
-          </a>
+        <div className="mt-6 space-y-2">
+          <div className="flex gap-2">
+            <a
+              href="#contact"
+              className="flex-1 bg-accent hover:bg-blue-600 text-white text-center py-2.5 rounded-lg text-xs font-bold transition-all uppercase tracking-widest"
+            >
+              Execute Contact
+            </a>
+            {/* CORREÇÃO: Borda no dark mode */}
+            <a
+              href="#projects"
+              className="flex-1 border border-slate-200 dark:border-slate-700 text-center py-2.5 rounded-lg text-xs font-bold transition-all uppercase tracking-widest"
+            >
+              Stack Audit
+            </a>
+          </div>
+          <div className="flex gap-2">
+            <a
+              href={resumeApi.downloadEn()}
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 border border-slate-200 dark:border-slate-700 hover:border-accent dark:hover:border-accent text-center py-2.5 rounded-lg text-xs font-bold transition-all uppercase tracking-widest flex items-center justify-center gap-1.5"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
+              </svg>
+              Resume (EN)
+            </a>
+            <a
+              href={resumeApi.downloadPt()}
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 border border-slate-200 dark:border-slate-700 hover:border-accent dark:hover:border-accent text-center py-2.5 rounded-lg text-xs font-bold transition-all uppercase tracking-widest flex items-center justify-center gap-1.5"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
+              </svg>
+              CV (PT-BR)
+            </a>
+          </div>
         </div>
       </div>
 

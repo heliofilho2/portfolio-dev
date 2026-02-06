@@ -29,6 +29,13 @@ public class ProjectDto
     public string? Icon { get; set; }
     public int DisplayOrder { get; set; }
     
+    // Campos de Case Study
+    public string? BusinessProblem { get; set; }
+    public string? TechnicalSolution { get; set; } // JSON array como string
+    public string? TechnicalDecisions { get; set; } // JSON array como string
+    public string? TradeOffs { get; set; } // JSON array como string
+    public string? ArchitectureNotes { get; set; }
+    
     // Note: NÃO expomos IsDeleted, CreatedAt, UpdatedAt
     // Esses são detalhes internos que a API não precisa saber
 }
@@ -60,6 +67,13 @@ public class ProjectCreateDto
     public int DisplayOrder { get; set; } = 0;
     public bool IsActive { get; set; } = true;
     
+    // Campos de Case Study
+    public string? BusinessProblem { get; set; }
+    public string? TechnicalSolution { get; set; }
+    public string? TechnicalDecisions { get; set; }
+    public string? TradeOffs { get; set; }
+    public string? ArchitectureNotes { get; set; }
+    
     // Note: Id, CreatedAt, UpdatedAt, IsDeleted não estão aqui
     // Esses são gerados/gerenciados pelo sistema
 }
@@ -90,6 +104,13 @@ public class ProjectUpdateDto
     public string? Icon { get; set; }
     public int? DisplayOrder { get; set; }
     public bool? IsActive { get; set; }
+    
+    // Campos de Case Study
+    public string? BusinessProblem { get; set; }
+    public string? TechnicalSolution { get; set; }
+    public string? TechnicalDecisions { get; set; }
+    public string? TradeOffs { get; set; }
+    public string? ArchitectureNotes { get; set; }
     
     // Note: Todos opcionais (nullable) para permitir partial update
 }

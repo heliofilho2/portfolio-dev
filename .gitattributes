@@ -1,0 +1,60 @@
+# ============================================
+# .gitattributes - Configuração de Linguagens para GitHub
+# ============================================
+# 
+# Este arquivo ajuda o GitHub a detectar corretamente as linguagens do projeto.
+# Sem isso, o GitHub pode mostrar apenas a linguagem dominante (ex: apenas C#).
+#
+# Como funciona:
+# - GitHub usa o Linguist para detectar linguagens
+# - .gitattributes força a detecção correta de cada tipo de arquivo
+# - Isso faz com que todas as linguagens apareçam no gráfico do repositório
+# ============================================
+
+# Backend - C#
+*.cs linguist-language=C#
+
+# Frontend - TypeScript/JavaScript
+*.ts linguist-language=TypeScript
+*.tsx linguist-language=TypeScript
+*.js linguist-language=JavaScript
+*.jsx linguist-language=JavaScript
+
+# Configuração
+*.json linguist-language=JSON
+*.jsonc linguist-language=JSON
+
+# SQL
+*.sql linguist-language=SQL
+
+# Markdown
+*.md linguist-language=Markdown
+
+# Docker
+Dockerfile linguist-language=Dockerfile
+*.dockerfile linguist-language=Dockerfile
+
+# Shell
+*.sh linguist-language=Shell
+*.bash linguist-language=Shell
+
+# YAML/TOML
+*.yml linguist-language=YAML
+*.yaml linguist-language=YAML
+*.toml linguist-language=TOML
+
+# CSS
+*.css linguist-language=CSS
+
+# HTML
+*.html linguist-language=HTML
+
+# XML
+*.xml linguist-language=XML
+*.csproj linguist-language=XML
+*.sln linguist-language=XML
+
+# Outros
+*.txt linguist-language=Text
+*.gitignore linguist-language=Git
+*.gitattributes linguist-language=Git

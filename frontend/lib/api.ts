@@ -42,6 +42,12 @@ export interface ProjectDto {
   metric2Value?: string;
   icon?: string;
   displayOrder: number;
+  // Campos de Case Study
+  businessProblem?: string;
+  technicalSolution?: string; // JSON array como string
+  technicalDecisions?: string; // JSON array como string
+  tradeOffs?: string; // JSON array como string
+  architectureNotes?: string;
 }
 
 export interface SkillDto {
@@ -194,4 +200,24 @@ export const experiencesApi = {
  */
 export const profileApi = {
   get: () => apiRequest<ProfileDto>('/profile'),
+};
+
+/**
+ * API de Resume/CV
+ */
+export const resumeApi = {
+  /**
+   * Retorna URL para download do Resume (EN)
+   */
+  downloadEn: (): string => {
+    const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+    return `${baseUrl}/resume/en`;
+  },
+  /**
+   * Retorna URL para download do CV (PT-BR)
+   */
+  downloadPt: (): string => {
+    const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+    return `${baseUrl}/resume/pt`;
+  },
 };

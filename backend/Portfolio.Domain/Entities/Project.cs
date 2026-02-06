@@ -100,4 +100,40 @@ public class Project : BaseEntity
     /// Se o projeto está ativo/visível
     /// </summary>
     public bool IsActive { get; set; } = true;
+
+    // ========== CAMPOS PARA CASE STUDY ==========
+    // Campos adicionados para estruturar projetos como case studies técnicos
+
+    /// <summary>
+    /// Problema de negócio que o projeto resolveu.
+    /// Contexto real, impacto do problema, por que era crítico.
+    /// </summary>
+    public string? BusinessProblem { get; set; }
+
+    /// <summary>
+    /// Solução técnica implementada.
+    /// Armazenado como JSON array de strings para permitir listas estruturadas.
+    /// Exemplo: ["Arquitetura escolhida", "Tecnologias usadas", "Estratégia aplicada"]
+    /// </summary>
+    public string? TechnicalSolution { get; set; }
+
+    /// <summary>
+    /// Decisões técnicas tomadas.
+    /// Armazenado como JSON array de objetos com "question" e "answer".
+    /// Exemplo: [{"question": "Why .NET Worker Service instead of Hangfire?", "answer": "Simpler architecture, lower operational overhead"}]
+    /// </summary>
+    public string? TechnicalDecisions { get; set; }
+
+    /// <summary>
+    /// Trade-offs considerados.
+    /// Armazenado como JSON array de objetos com "decision" e "tradeoff".
+    /// Exemplo: [{"decision": "Manual retry logic", "tradeoff": "More code but better control"}]
+    /// </summary>
+    public string? TradeOffs { get; set; }
+
+    /// <summary>
+    /// Notas sobre arquitetura para o snapshot visual.
+    /// Formato simples: "ERP → Worker → Retry Engine → Alert Service → Webex"
+    /// </summary>
+    public string? ArchitectureNotes { get; set; }
 }

@@ -150,6 +150,11 @@ build/
 !gradle-wrapper.jar
 
 # ============================================
+# Arquivos de Currículo (PDFs)
+# ============================================
+backend/Portfolio.API/StaticFiles/Resumes/*.pdf
+
+# ============================================
 # Outros
 # ============================================
 front.rar
