@@ -3,6 +3,7 @@ using Portfolio.Application.Interfaces;
 using Portfolio.Application.Services;
 using Portfolio.Infrastructure.Data;
 using Portfolio.Infrastructure.Repositories;
+using Portfolio.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -217,9 +218,12 @@ var app = builder.Build();
 // ========== CONFIGURAÇÃO DO PIPELINE HTTP ==========
 
 // Configure the HTTP request pipeline.
-// Swagger habilitado em produção para facilitar testes (portfólio pessoal)
-app.UseSwagger();
-app.UseSwaggerUI();
+// Swagger habilitado APENAS em desenvolvimento (segurança)
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 // HTTPS redirection apenas em desenvolvimento local
 // Railway gerencia HTTPS automaticamente
@@ -230,6 +234,10 @@ if (app.Environment.IsDevelopment())
 
 // CORS deve vir ANTES de UseAuthorization
 app.UseCors("AllowFrontend");
+
+// API Key Middleware - protege endpoints de escrita (POST/PUT/DELETE)
+// Deve vir ANTES de UseAuthorization para interceptar requisições
+app.UseMiddleware<ApiKeyMiddleware>();
 
 app.UseAuthorization();
 

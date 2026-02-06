@@ -1,5 +1,74 @@
 # 🚀 Guia de Deploy
 
+## 🔒 Segurança da API
+
+A API está protegida com **API Key** para endpoints de escrita (POST, PUT, DELETE). Endpoints de leitura (GET) continuam públicos para o frontend funcionar.
+
+### Configuração da API Key
+
+**1. Railway (Produção):**
+- Vá em **Variables** do seu serviço
+- Adicione: `API_KEY` = `seu-token-super-secreto-aqui`
+- Use um token forte (ex: gerado com `openssl rand -hex 32`)
+
+**2. Desenvolvimento Local:**
+- Crie arquivo `backend/Portfolio.API/appsettings.Development.json`:
+```json
+{
+  "API_KEY": "dev-key-local-only"
+}
+```
+- Ou configure variável de ambiente: `$env:API_KEY="dev-key-local-only"` (PowerShell)
+
+### Como Usar a API Key
+
+**No Swagger (desenvolvimento local):**
+1. Abra: `http://localhost:5115/swagger`
+2. Clique no botão **Authorize** (🔒 no topo direito)
+3. No campo **Value**, cole sua API Key: `i_ss(1hR9\ot9}=5`c%D'0)6W6)?Y>viOjwpo>*b`
+4. Clique em **Authorize**
+5. Agora todos os endpoints POST/PUT/DELETE funcionarão
+
+**No Postman/Thunder Client (local ou produção):**
+1. Crie uma nova requisição (POST, PUT ou DELETE)
+2. Vá na aba **Headers**
+3. Adicione:
+   - **Key**: `X-API-Key`
+   - **Value**: `i_ss(1hR9\ot9}=5`c%D'0)6W6)?Y>viOjwpo>*b`
+4. Faça a requisição normalmente
+
+**Em Produção (Railway):**
+1. Configure a mesma API Key no Railway (Settings → Variables → `API_KEY`)
+2. Use o mesmo header `X-API-Key` em todas as requisições POST/PUT/DELETE
+3. Exemplo com curl:
+```bash
+curl -X POST https://sua-url-railway.up.railway.app/api/projects \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: i_ss(1hR9\ot9}=5`c%D'0)6W6)?Y>viOjwpo>*b" \
+  -d '{"title": "Novo Projeto", ...}'
+```
+
+**Endpoints Protegidos:**
+- `POST /api/projects` - Criar projeto
+- `PUT /api/projects/{id}` - Atualizar projeto
+- `DELETE /api/projects/{id}` - Deletar projeto
+- `POST /api/resume/en` - Upload resume EN
+- `POST /api/resume/pt` - Upload resume PT
+- Todos os outros POST/PUT/DELETE
+
+**Endpoints Públicos (não precisam de API Key):**
+- `GET /api/projects` - Listar projetos
+- `GET /api/projects/{id}` - Buscar projeto
+- `GET /api/profile` - Buscar perfil
+- `GET /api/skills` - Listar skills
+- `GET /api/experiences` - Listar experiências
+- `GET /api/resume/en` - Download resume EN
+- `GET /api/resume/pt` - Download resume PT
+
+---
+
+# 🚀 Guia de Deploy
+
 ## 📋 Pré-requisitos
 
 - Conta no [GitHub](https://github.com)
@@ -50,10 +119,13 @@
    - **Dockerfile Path**: `Dockerfile`
 
 3. Vá em **Settings** → **Variables**
-   - Adicione:
+   - Adicione variáveis:
      - **Name**: `DATABASE_CONNECTION_STRING`
-     - **Value**: Cole a connection string do Supabase (formato URI)
-     - Substitua `[YOUR-PASSWORD]` pela senha real
+       - **Value**: Cole a connection string do Supabase (formato URI)
+       - Substitua `[YOUR-PASSWORD]` pela senha real
+     - **Name**: `API_KEY`
+       - **Value**: Gere um token seguro (ex: use gerador online ou `openssl rand -hex 32`)
+       - ⚠️ **IMPORTANTE**: Guarde este token! Você precisará dele para fazer POST/PUT/DELETE
 
 4. Vá em **Settings** → **Networking**
    - Clique em **Generate Domain** (se não tiver)
@@ -122,11 +194,13 @@ Abra a URL do Vercel. O site deve carregar os dados do backend.
 ## ✅ 4. Verificação Final
 
 ### Backend
-- [ ] Swagger abre: `https://sua-url-railway.up.railway.app/swagger`
-- [ ] Endpoint `/api/profile` retorna JSON
-- [ ] Endpoint `/api/projects` retorna array
-- [ ] Endpoint `/api/skills` retorna array
-- [ ] Endpoint `/api/experiences` retorna array
+- [ ] Swagger **NÃO** abre em produção (segurança - apenas em dev)
+- [ ] Endpoint `/api/profile` retorna JSON (GET público)
+- [ ] Endpoint `/api/projects` retorna array (GET público)
+- [ ] Endpoint `/api/skills` retorna array (GET público)
+- [ ] Endpoint `/api/experiences` retorna array (GET público)
+- [ ] POST/PUT/DELETE retornam 401 sem API Key (proteção funcionando)
+- [ ] POST/PUT/DELETE funcionam com header `X-API-Key` correto
 
 ### Frontend
 - [ ] Site carrega sem erros

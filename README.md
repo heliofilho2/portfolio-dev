@@ -383,6 +383,44 @@ Objetos para transferência de dados entre camadas:
 
 ## 🔐 Variáveis de Ambiente
 
+### 🔒 Segurança da API
+
+A API está protegida com **API Key** para endpoints de escrita (POST, PUT, DELETE). Endpoints de leitura (GET) continuam públicos.
+
+**Configuração:**
+- **Variável**: `API_KEY`
+- **Onde configurar**: Railway (produção) ou `appsettings.Development.json` (local)
+- **Valor atual**: `i_ss(1hR9\ot9}=5`c%D'0)6W6)?Y>viOjwpo>*b`
+
+**Como usar:**
+- **Swagger (dev)**: Clique em **Authorize** (🔒) e adicione `X-API-Key` com o valor acima
+- **Postman/Thunder Client**: Adicione header `X-API-Key: i_ss(1hR9\ot9}=5`c%D'0)6W6)?Y>viOjwpo>*b`
+- **Produção**: Use o mesmo header `X-API-Key` em todas as requisições POST/PUT/DELETE
+
+**Gerar token seguro:**
+```bash
+# Linux/Mac
+openssl rand -hex 32
+
+# Windows PowerShell
+-join ((48..57) + (65..90) + (97..122) | Get-Random -Count 32 | ForEach-Object {[char]$_})
+```
+
+**Endpoints protegidos:**
+- `POST /api/projects` - Criar projeto
+- `PUT /api/projects/{id}` - Atualizar projeto
+- `DELETE /api/projects/{id}` - Deletar projeto
+- `POST /api/resume/en` - Upload resume EN
+- `POST /api/resume/pt` - Upload resume PT
+- Todos os outros POST/PUT/DELETE
+
+**Endpoints públicos (não precisam de API Key):**
+- Todos os `GET` endpoints (frontend funciona normalmente)
+
+---
+
+## 🔐 Variáveis de Ambiente
+
 ### Frontend (Vercel)
 
 | Variável | Valor | Descrição |
@@ -394,6 +432,7 @@ Objetos para transferência de dados entre camadas:
 | Variável | Valor | Descrição |
 |----------|-------|-----------|
 | `DATABASE_CONNECTION_STRING` | `postgresql://user:pass@host:5432/db` | Connection string do Supabase (formato URI) |
+| `API_KEY` | `seu-token-secreto-aqui` | Token para proteger endpoints de escrita (POST/PUT/DELETE) |
 | `PORT` | `8080` | Porta do Railway (injetada automaticamente) |
 
 ## 🚢 Deploy
