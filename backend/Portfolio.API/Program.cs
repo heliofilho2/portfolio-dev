@@ -21,16 +21,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Lê connection string
 // ORDEM DE PRIORIDADE:
 // 1. Variável de ambiente (mais segura, para produção)
-//    Formato: ConnectionStrings__DefaultConnection ou DATABASE_CONNECTION_STRING
+//    Formato: ConnectionStrings__DefaultConnection (padrão .NET) ou DATABASE_CONNECTION_STRING
 // 2. appsettings.Development.json (sobrescreve appsettings.json em dev)
 // 3. appsettings.json (para desenvolvimento local)
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING")
-    ?? builder.Configuration.GetConnectionString("DefaultConnection")
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING")
     ?? throw new InvalidOperationException(
         "Connection string 'DefaultConnection' not found. " +
-        "Configure em appsettings.json ou variável de ambiente DATABASE_CONNECTION_STRING.");
+        "Configure em appsettings.json ou variável de ambiente DATABASE_CONNECTION_STRING ou ConnectionStrings__DefaultConnection.");
 
 // Log para debug (mostra apenas início da connection string por segurança)
+Console.WriteLine("[DEBUG] ========== CONNECTION STRING DEBUG ==========");
 if (!string.IsNullOrEmpty(connectionString))
 {
     var preview = connectionString.Length > 50 
@@ -38,11 +39,29 @@ if (!string.IsNullOrEmpty(connectionString))
         : connectionString;
     Console.WriteLine($"[DEBUG] Connection String lida: {preview}");
     Console.WriteLine($"[DEBUG] Connection String começa com: {connectionString.Substring(0, Math.Min(20, connectionString.Length))}");
+    Console.WriteLine($"[DEBUG] Connection String contém 'localhost': {connectionString.Contains("localhost")}");
+    Console.WriteLine($"[DEBUG] Connection String contém 'pooler.supabase.com': {connectionString.Contains("pooler.supabase.com")}");
 }
 else
 {
     Console.WriteLine("[DEBUG] Connection String está NULL ou vazia!");
 }
+
+// Debug: Verificar variáveis de ambiente
+Console.WriteLine("[DEBUG] ========== ENVIRONMENT VARIABLES DEBUG ==========");
+var envDb = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+var envConnStr = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
+Console.WriteLine($"[DEBUG] DATABASE_CONNECTION_STRING existe: {!string.IsNullOrEmpty(envDb)}");
+Console.WriteLine($"[DEBUG] ConnectionStrings__DefaultConnection existe: {!string.IsNullOrEmpty(envConnStr)}");
+if (!string.IsNullOrEmpty(envDb))
+{
+    Console.WriteLine($"[DEBUG] DATABASE_CONNECTION_STRING valor: {envDb.Substring(0, Math.Min(50, envDb.Length))}...");
+}
+if (!string.IsNullOrEmpty(envConnStr))
+{
+    Console.WriteLine($"[DEBUG] ConnectionStrings__DefaultConnection valor: {envConnStr.Substring(0, Math.Min(50, envConnStr.Length))}...");
+}
+Console.WriteLine("[DEBUG] ================================================");
 
 // Registra DbContext no DI Container
 // POR QUÊ AddDbContext?
