@@ -40,21 +40,21 @@ if (rawConnectionString.StartsWith("postgresql://", StringComparison.OrdinalIgno
     try
     {
         var uri = new Uri(rawConnectionString);
-        var builder = new System.Text.StringBuilder();
-        builder.Append($"Host={uri.Host};");
+        var connectionStringBuilder = new System.Text.StringBuilder();
+        connectionStringBuilder.Append($"Host={uri.Host};");
         if (uri.Port > 0)
-            builder.Append($"Port={uri.Port};");
-        builder.Append($"Database={uri.LocalPath.TrimStart('/')};");
+            connectionStringBuilder.Append($"Port={uri.Port};");
+        connectionStringBuilder.Append($"Database={uri.LocalPath.TrimStart('/')};");
         if (!string.IsNullOrEmpty(uri.UserInfo))
         {
             var userInfo = uri.UserInfo.Split(':');
             if (userInfo.Length >= 1)
-                builder.Append($"Username={Uri.UnescapeDataString(userInfo[0])};");
+                connectionStringBuilder.Append($"Username={Uri.UnescapeDataString(userInfo[0])};");
             if (userInfo.Length >= 2)
-                builder.Append($"Password={Uri.UnescapeDataString(userInfo[1])};");
+                connectionStringBuilder.Append($"Password={Uri.UnescapeDataString(userInfo[1])};");
         }
-        builder.Append("SSL Mode=Require;Trust Server Certificate=true;");
-        connectionString = builder.ToString();
+        connectionStringBuilder.Append("SSL Mode=Require;Trust Server Certificate=true;");
+        connectionString = connectionStringBuilder.ToString();
         Console.WriteLine("[DEBUG] Connection String convertida de URI para Parameters format");
     }
     catch (Exception ex)
