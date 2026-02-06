@@ -96,37 +96,68 @@ async function apiRequest<T>(
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
   
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
+  // Log detalhado para debug (apenas em desenvolvimento)
+  if (typeof window !== 'undefined') {
+    console.log(`[API] Fazendo requisição para: ${url}`);
+    console.log(`[API] API_BASE_URL configurada: ${API_BASE_URL}`);
+  }
+  
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers,
+      },
+    });
 
-  if (!response.ok) {
-    // Para outros erros, loga mas não quebra a aplicação
-    console.error(`API Error: ${response.status} ${response.statusText} for ${endpoint}`);
-    
-    // Se for 404 ou 500, retorna valor padrão baseado no tipo esperado
-    if (response.status === 404 || response.status === 500) {
-      // Se o endpoint sugere que retorna array (plural), retorna array vazio
-      if (endpoint.includes('/projects') || endpoint.includes('/skills') || endpoint.includes('/experiences')) {
-        return [] as T;
+    if (!response.ok) {
+      // Log detalhado do erro
+      const errorText = await response.text().catch(() => 'Não foi possível ler o erro');
+      console.error(`[API] Erro ${response.status} ${response.statusText} para ${endpoint}`);
+      console.error(`[API] URL completa: ${url}`);
+      console.error(`[API] Resposta do servidor: ${errorText}`);
+      
+      // Se for 404 ou 500, retorna valor padrão baseado no tipo esperado
+      if (response.status === 404 || response.status === 500) {
+        // Se o endpoint sugere que retorna array (plural), retorna array vazio
+        if (endpoint.includes('/projects') || endpoint.includes('/skills') || endpoint.includes('/experiences')) {
+          console.warn(`[API] Retornando array vazio para ${endpoint}`);
+          return [] as T;
+        }
+        // Para outros (como /profile), retorna null
+        console.warn(`[API] Retornando null para ${endpoint}`);
+        return null as T;
       }
-      // Para outros (como /profile), retorna null
-      return null as T;
+      
+      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+
+    // Se resposta vazia (204 No Content), retorna void
+    if (response.status === 204) {
+      return undefined as T;
+    }
+
+    const data = await response.json();
+    console.log(`[API] Sucesso ao buscar ${endpoint}:`, data);
+    return data;
+  } catch (error) {
+    // Erro de rede (CORS, conexão, etc.)
+    console.error(`[API] Erro de rede ao acessar ${url}:`, error);
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      console.error(`[API] Possíveis causas:`);
+      console.error(`  - CORS não configurado no backend`);
+      console.error(`  - URL do backend incorreta: ${API_BASE_URL}`);
+      console.error(`  - Backend não está rodando`);
+      console.error(`  - Variável NEXT_PUBLIC_API_URL não configurada no Vercel`);
     }
     
-    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    // Retorna valor padrão em caso de erro de rede
+    if (endpoint.includes('/projects') || endpoint.includes('/skills') || endpoint.includes('/experiences')) {
+      return [] as T;
+    }
+    return null as T;
   }
-
-  // Se resposta vazia (204 No Content), retorna void
-  if (response.status === 204) {
-    return undefined as T;
-  }
-
-  return response.json();
 }
 
 /**

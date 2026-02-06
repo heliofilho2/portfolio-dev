@@ -12,10 +12,10 @@
 - **Root Directory**: `backend`
 
 #### Settings → Build
-- **Builder**: `DOCKERFILE` (recomendado) ou `NIXPACKS`
-  - **DOCKERFILE**: Usa o `Dockerfile` na pasta `backend/` (mais confiável)
-  - **NIXPACKS**: Usa o `nixpacks.toml` (pode não funcionar em alguns casos)
+- **Builder**: `DOCKERFILE` ⚠️ **OBRIGATÓRIO: Use DOCKERFILE**
+- **Dockerfile Path**: `Dockerfile` (ou deixar vazio se Root Directory = backend)
 - **Build Command**: (deixar vazio - o Dockerfile gerencia tudo)
+- **Importante**: Se ainda usar Railpack, delete o serviço e recrie, ou force o uso do Dockerfile
 
 #### Settings → Deploy
 - **Start Command**: (deixar vazio - o Dockerfile gerencia)
