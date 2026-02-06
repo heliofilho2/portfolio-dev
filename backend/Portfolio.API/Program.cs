@@ -60,7 +60,7 @@ if (rawConnectionString.StartsWith("postgresql://", StringComparison.OrdinalIgno
     catch (Exception ex)
     {
         Console.WriteLine($"[DEBUG] Erro ao converter URI: {ex.Message}");
-        // Se falhar, usa a string original
+        // Seasasfalhar, usa a string original
         connectionString = rawConnectionString;
     }
 }
