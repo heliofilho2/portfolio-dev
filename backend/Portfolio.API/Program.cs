@@ -24,11 +24,25 @@ var builder = WebApplication.CreateBuilder(args);
 //    Formato: ConnectionStrings__DefaultConnection ou DATABASE_CONNECTION_STRING
 // 2. appsettings.Development.json (sobrescreve appsettings.json em dev)
 // 3. appsettings.json (para desenvolvimento local)
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING")
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING")
+    ?? builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException(
         "Connection string 'DefaultConnection' not found. " +
         "Configure em appsettings.json ou variável de ambiente DATABASE_CONNECTION_STRING.");
+
+// Log para debug (mostra apenas início da connection string por segurança)
+if (!string.IsNullOrEmpty(connectionString))
+{
+    var preview = connectionString.Length > 50 
+        ? connectionString.Substring(0, 50) + "..." 
+        : connectionString;
+    Console.WriteLine($"[DEBUG] Connection String lida: {preview}");
+    Console.WriteLine($"[DEBUG] Connection String começa com: {connectionString.Substring(0, Math.Min(20, connectionString.Length))}");
+}
+else
+{
+    Console.WriteLine("[DEBUG] Connection String está NULL ou vazia!");
+}
 
 // Registra DbContext no DI Container
 // POR QUÊ AddDbContext?
