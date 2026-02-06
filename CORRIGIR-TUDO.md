@@ -33,14 +33,20 @@ A variável `NEXT_PUBLIC_API_URL` está configurada, mas o frontend ainda tenta 
    DATABASE_CONNECTION_STRING
    ```
 
-   **Value:**
+   **Value (Formato URI - Recomendado):**
    ```
-   Host=aws-1-us-east-2.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.qnjrobyvhaoxcqhinsov;Password=heliofilhodev;SSL Mode=Require;Trust Server Certificate=true
+   postgresql://postgres.qnjrobyvhaoxcqhinsov:SUA_SENHA@aws-1-us-east-2.pooler.supabase.com:5432/postgres
+   ```
+
+   **OU (Formato Parameters - Alternativo):**
+   ```
+   Host=aws-1-us-east-2.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.qnjrobyvhaoxcqhinsov;Password=SUA_SENHA;SSL Mode=Require;Trust Server Certificate=true
    ```
 
    ⚠️ **IMPORTANTE**: 
-   - Deve começar com `Host=` (sem `x` antes!)
-   - Se sua senha for diferente, substitua `heliofilhodev`
+   - Substitua `SUA_SENHA` pela senha real do Supabase
+   - O formato URI é mais simples (copie direto do Supabase)
+   - Se usar formato Parameters, deve começar com `Host=` (sem `x` antes!)
 
 4. Clique em **Add**
 

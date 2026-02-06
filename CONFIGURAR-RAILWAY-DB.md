@@ -38,15 +38,21 @@ Format of the initialization string does not conform to specification starting a
    DATABASE_CONNECTION_STRING
    ```
 
-   **Value:**
+   **Value (Formato URI - Recomendado):**
    ```
-   Host=aws-1-us-east-2.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.qnjrobyvhaoxcqhinsov;Password=heliofilhodev;SSL Mode=Require;Trust Server Certificate=true
+   postgresql://postgres.qnjrobyvhaoxcqhinsov:SUA_SENHA@aws-1-us-east-2.pooler.supabase.com:5432/postgres
+   ```
+
+   **OU (Formato Parameters - Alternativo):**
+   ```
+   Host=aws-1-us-east-2.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.qnjrobyvhaoxcqhinsov;Password=SUA_SENHA;SSL Mode=Require;Trust Server Certificate=true
    ```
 
    ⚠️ **IMPORTANTE**: 
    - Use a connection string do **Supabase Session Pooler** (com `.pooler.supabase.com`)
-   - A senha deve ser a mesma que você configurou no Supabase
-   - Se sua senha for diferente, substitua `heliofilhodev` pela sua senha real
+   - Substitua `SUA_SENHA` pela senha real do seu Supabase
+   - O formato URI é mais simples (copie direto do Supabase)
+   - O formato Parameters é mais explícito (pode adicionar opções extras)
 
 3. Clique em **Add** (ou **Save**)
 
@@ -54,18 +60,19 @@ Format of the initialization string does not conform to specification starting a
 
 ### Passo 4: Verificar Formato da Connection String
 
-A connection string deve estar no formato:
+O Npgsql aceita **AMBOS** os formatos:
 
+**Formato URI (Recomendado - mais simples):**
 ```
-Host=HOSTNAME;Port=5432;Database=postgres;Username=USERNAME;Password=PASSWORD;SSL Mode=Require;Trust Server Certificate=true
-```
-
-**Exemplo completo:**
-```
-Host=aws-1-us-east-2.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.qnjrobyvhaoxcqhinsov;Password=heliofilhodev;SSL Mode=Require;Trust Server Certificate=true
+postgresql://postgres.qnjrobyvhaoxcqhinsov:SUA_SENHA@aws-1-us-east-2.pooler.supabase.com:5432/postgres
 ```
 
-**⚠️ NÃO use o formato URI (`postgresql://...`) aqui!** Use o formato Parameters.
+**Formato Parameters (Alternativo - mais explícito):**
+```
+Host=aws-1-us-east-2.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.qnjrobyvhaoxcqhinsov;Password=SUA_SENHA;SSL Mode=Require;Trust Server Certificate=true
+```
+
+**💡 Dica:** Use o formato URI! É mais fácil - copie direto do Supabase e só substitua `[YOUR-PASSWORD]` pela sua senha.
 
 ---
 
@@ -133,11 +140,17 @@ https://portfolio-dev-production-d03e.up.railway.app/api/profile
 2. Selecione seu projeto
 3. Vá em **Settings** → **Database**
 4. Role até **Connection string**
-5. Escolha **Session mode** (não Direct connection)
-6. Escolha **URI** ou **Parameters**
+5. Escolha **Session pooler** (não Direct connection)
+6. Escolha **URI** (recomendado - mais simples)
 7. Copie a connection string
+8. Substitua `[YOUR-PASSWORD]` pela sua senha real
 
-**Formato Parameters (recomendado):**
+**Formato URI (recomendado):**
+```
+postgresql://postgres.qnjrobyvhaoxcqhinsov:SUA_SENHA@aws-1-us-east-2.pooler.supabase.com:5432/postgres
+```
+
+**Formato Parameters (alternativo):**
 ```
 Host=aws-1-us-east-2.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.qnjrobyvhaoxcqhinsov;Password=SUA_SENHA;SSL Mode=Require;Trust Server Certificate=true
 ```
