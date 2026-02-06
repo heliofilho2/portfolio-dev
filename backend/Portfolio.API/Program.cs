@@ -159,11 +159,9 @@ var app = builder.Build();
 // ========== CONFIGURAÇÃO DO PIPELINE HTTP ==========
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Swagger habilitado em produção para facilitar testes (portfólio pessoal)
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // HTTPS redirection apenas em desenvolvimento local
 // Railway gerencia HTTPS automaticamente
