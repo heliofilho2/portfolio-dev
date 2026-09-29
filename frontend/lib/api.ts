@@ -34,7 +34,7 @@ export interface ProjectDto {
   description: string;
   tags: string;
   imageUrl?: string;
-  githubUrl?: string;
+  gitHubUrl?: string;
   demoUrl?: string;
   metric1Name?: string;
   metric1Value?: string;
@@ -107,6 +107,7 @@ async function apiRequest<T>(
 
   try {
     const response = await fetch(url, {
+      next: { revalidate: 300 },
       ...options,
       headers: {
         'Content-Type': 'application/json',
@@ -177,24 +178,4 @@ export const experiencesApi = {
  */
 export const profileApi = {
   get: () => apiRequest<ProfileDto>('/profile'),
-};
-
-/**
- * API de Resume/CV
- */
-export const resumeApi = {
-  /**
-   * Retorna URL para download do Resume (EN)
-   */
-  downloadEn: (): string => {
-    const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
-    return `${baseUrl}/resume/en`;
-  },
-  /**
-   * Retorna URL para download do CV (PT-BR)
-   */
-  downloadPt: (): string => {
-    const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
-    return `${baseUrl}/resume/pt`;
-  },
 };

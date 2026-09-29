@@ -1,0 +1,92 @@
+using Anthropic;
+using Collector;
+using Npgsql;
+
+// Execução única (Railway Cron): coleta RSS → descarta o que já está no banco → classifica com Claude → grava → recalcula "em alta".
+// `dotnet run -- --dry-run` só lê os feeds e mostra o que seria processado (sem Claude e sem banco).
+
+var dryRun = args.Contains("--dry-run");
+var lookback = TimeSpan.FromHours(double.Parse(Environment.GetEnvironmentVariable("LOOKBACK_HOURS") ?? "48"));
+var model = Environment.GetEnvironmentVariable("CLAUDE_MODEL") ?? "claude-opus-5";
+using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(20));
+var ct = cts.Token;
+
+using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
+http.DefaultRequestHeaders.UserAgent.ParseAdd("SinalCollector/1.0 (+https://jornal.heliofilho.dev)");
+var fetcher = new FeedFetcher(http);
+var since = DateTimeOffset.UtcNow - lookback;
+
+// 1. Coleta (uma fonte fora do ar não derruba as outras)
+var fetched = await Task.WhenAll(NewsSources.All.Select(async source =>
+{
+    try
+    {
+        var items = await fetcher.FetchAsync(source, since, ct);
+        Console.WriteLine($"[feed] {source.Name}: {items.Count}");
+        return items;
+    }
+    catch (Exception ex) when (ex is not OperationCanceledException)
+    {
+        Console.Error.WriteLine($"[feed] {source.Name}: FALHOU — {ex.Message}");
+        return [];
+    }
+}));
+
+var raw = fetched.SelectMany(i => i).DistinctBy(i => i.Url).ToList();
+Console.WriteLine($"[feed] total: {raw.Count} itens nas últimas {lookback.TotalHours}h");
+
+if (dryRun)
+{
+    foreach (var item in raw.OrderByDescending(i => i.PublishedAt).Take(15))
+        Console.WriteLine($"  {item.PublishedAt:dd/MM HH:mm} [{item.SourceName}] {item.Title}");
+
+    // Prévia do "em alta" só com os títulos originais (no pipeline real entra também o título traduzido)
+    var preview = raw.Select((item, i) => new TrendingDetector.Item(i, item.SourceName, item.Title)).ToList();
+    var hot = TrendingDetector.Detect(preview).ToHashSet();
+    Console.WriteLine($"[em alta] {hot.Count} itens:");
+    foreach (var item in preview.Where(p => hot.Contains(p.Id)))
+        Console.WriteLine($"  [{item.Source}] {item.Text}");
+    return;
+}
+
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+    ?? throw new InvalidOperationException("Defina DATABASE_URL (connection string do Supabase do SINAL).");
+await using var db = NpgsqlDataSource.Create(NewsRepository.ToNpgsqlConnectionString(connectionString));
+var repo = new NewsRepository(db);
+
+// 2. Só classifica o que ainda não está no banco
+var existing = await repo.GetExistingUrlsAsync(raw.Select(i => i.Url).ToList(), ct);
+var fresh = raw.Where(i => !existing.Contains(i.Url)).ToList();
+Console.WriteLine($"[dedupe] {fresh.Count} novos, {existing.Count} já no banco");
+
+// 3. Classificação (ANTHROPIC_API_KEY via ambiente) com concorrência limitada
+var classifier = new NewsClassifier(new AnthropicClient(), model);
+using var gate = new SemaphoreSlim(4);
+var saved = 0;
+
+await Task.WhenAll(fresh.Select(async item =>
+{
+    await gate.WaitAsync(ct);
+    try
+    {
+        var classification = await classifier.ClassifyAsync(item, ct);
+        if (classification is null) return;
+        await repo.InsertAsync(item, classification, ct);
+        Interlocked.Increment(ref saved);
+    }
+    catch (Exception ex) when (ex is not OperationCanceledException)
+    {
+        // Item que falhou não é gravado e volta a ser tentado na próxima execução
+        Console.Error.WriteLine($"[classificador] '{item.Title}' falhou: {ex.Message}");
+    }
+    finally
+    {
+        gate.Release();
+    }
+}));
+
+// 4. "Em alta" considera a janela inteira, não só esta execução
+var trending = await repo.RecomputeTrendingAsync(TimeSpan.FromHours(36), ct);
+
+Console.WriteLine($"[fim] {saved}/{fresh.Count} gravados, {trending} em alta. " +
+    $"Tokens: {classifier.InputTokens} entrada ({classifier.CacheReadTokens} do cache), {classifier.OutputTokens} saída. Modelo: {model}");

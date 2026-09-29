@@ -1,0 +1,6 @@
+collector/bin/
+collector/obj/
+.env*
+!.env.example
+.vs/
+.vscode/

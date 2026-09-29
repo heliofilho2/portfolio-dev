@@ -1,48 +1,76 @@
 @import "tailwindcss";
 
-/* IMPORTANTE: Configuração para Dark Mode Manual no Tailwind v4
-  Isso diz ao Tailwind para ativar variantes 'dark:' quando a classe .dark 
-  estiver presente em um elemento pai (geralmente <html>).
-*/
 @variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* Cores */
-  --color-primary: #0F172A;
-  --color-accent: #3B82F6;
-  --color-background-light: #F8FAFC;
-  --color-background-dark: #020617;
-  
-  /* Conecta as variáveis do Next.js (definidas no layout) ao Tailwind */
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
-  
-  --radius: 0.5rem;
+  /* Identidade compartilhada com o Jornal Tech/IA: papel, tinta, teal e rust */
+  --color-background-light: #F6F3EC;
+  --color-background-dark: #161512;
+  --color-surface-light: #FBF9F4;
+  --color-surface-dark: #1F1E1A;
+  --color-ink: #1B1B18;
+  --color-line: #E2DCCE;
+  --color-accent: #1F5F5B;
+  --color-accent-soft: #DCE8E5;
+  --color-rust: #B5482E;
+
+  --font-serif: var(--font-source-serif), ui-serif, Georgia, serif;
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
+
+  --radius: 0.75rem;
 }
 
 @layer base {
-  /* Define defaults para o esquema de cores do navegador */
   html {
     color-scheme: light;
   }
-  
+
   html.dark {
     color-scheme: dark;
+    --color-ink: #EDE8DC;
+    --color-line: #34322C;
+    --color-accent: #6FB3AC;
+    --color-accent-soft: #1D3432;
+    --color-rust: #D26B4F;
   }
-  
+
   body {
     font-family: var(--font-sans);
     @apply antialiased;
   }
-  
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+  }
+
   .mono-text {
     font-family: var(--font-mono);
   }
-  
+
+  ::selection {
+    @apply bg-accent text-white;
+  }
 }
 
 @layer components {
+  .card,
   .metric-card {
-    @apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm transition-all hover:border-accent/50;
+    @apply bg-surface-light dark:bg-surface-dark border border-line rounded-2xl transition-colors;
+  }
+
+  /* Usado pela página de manutenção */
+  .metric-card {
+    @apply p-4;
+  }
+
+  .card-link {
+    @apply hover:border-accent;
+  }
+
+  .section-title {
+    @apply font-mono text-xs uppercase tracking-[0.2em] text-stone-500 dark:text-stone-400 mb-5;
   }
 }

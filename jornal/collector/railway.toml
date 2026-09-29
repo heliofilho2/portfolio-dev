@@ -1,0 +1,8 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+# A cada 2 horas (UTC). O processo roda uma vez e encerra.
+cronSchedule = "0 */2 * * *"
+restartPolicyType = "NEVER"

@@ -1,28 +1,45 @@
 import type { Metadata } from 'next'
-import { Inter, JetBrains_Mono } from 'next/font/google'
+import { IBM_Plex_Mono, IBM_Plex_Sans, Source_Serif_4 } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({ 
+const sourceSerif = Source_Serif_4({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-source-serif',
+  weight: ['400', '600', '700'],
   display: 'swap',
 })
 
-const jetbrainsMono = JetBrains_Mono({ 
+const plexSans = IBM_Plex_Sans({
   subsets: ['latin'],
-  variable: '--font-mono',
-  weight: ['400', '700'],
+  variable: '--font-plex-sans',
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+})
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  variable: '--font-plex-mono',
+  weight: ['400', '500'],
   display: 'swap',
 })
 
 export const metadata: Metadata = {
-  title: 'Helio Filho | Technical Dashboard Portfolio',
-  description: 'Technical Lead / SAP B1 Specialist - Portfolio técnico com métricas e projetos',
-  keywords: ['developer', 'SAP B1', 'backend', 'portfolio', 'technical lead'],
+  metadataBase: new URL('https://heliofilho.dev'),
+  title: 'Helio Filho | Desenvolvedor .NET, SAP B1 e criador de conteúdo',
+  description:
+    'Desenvolvedor .NET especializado em SAP Business One e integrações. Produtos, projetos, newsletter e conteúdo sobre tecnologia e IA.',
+  keywords: ['desenvolvedor', '.NET', 'SAP B1', 'backend', 'portfólio', 'Planilio', 'IA'],
+  openGraph: {
+    title: 'Helio Filho',
+    description: 'Desenvolvedor .NET, SAP Business One e criador de conteúdo sobre tecnologia e IA.',
+    url: 'https://heliofilho.dev',
+    locale: 'pt_BR',
+    type: 'website',
+    images: ['/avatar.jpg'],
+  },
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
-      { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
       { url: '/icon.ico', sizes: '64x64', type: 'image/x-icon' },
     ],
     shortcut: '/favicon.ico',
@@ -30,23 +47,17 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+// Claro é o padrão; o escuro só entra se o visitante escolheu no toggle. Roda antes da pintura.
+const themeScript = `(function(){try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark')}}catch(e){}})();`
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    /* suppressHydrationWarning é vital para evitar erros de mismatch de tema no reload */
     <html lang="pt-BR" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body
-        className={`
-          ${inter.variable} ${jetbrainsMono.variable} 
-          font-sans 
-          /* CORREÇÃO: Adicionadas classes dark: para o fundo e texto base */
-          bg-background-light dark:bg-background-dark 
-          text-slate-900 dark:text-slate-100 
-          transition-colors duration-300
-        `}
+        className={`${sourceSerif.variable} ${plexSans.variable} ${plexMono.variable} font-sans bg-background-light dark:bg-background-dark text-ink transition-colors duration-300`}
       >
         {children}
       </body>

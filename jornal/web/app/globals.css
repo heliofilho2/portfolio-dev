@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #F6F3EC;
+  --color-paper-2: #F1EFE6;
+  --color-card: #FFFFFF;
+  --color-ink: #1B1B18;
+  --color-ink-2: #33322D;
+  --color-muted: #55534C;
+  --color-faint: #8B8878;
+  --color-rule: #D9D4C7;
+  --color-card-line: #E7E2D3;
+  --color-teal: #1F5F5B;
+  --color-teal-dark: #163F3D;
+  --color-rust: #B5482E;
+
+  --font-serif: var(--font-source-serif), Georgia, serif;
+  --font-sans: var(--font-plex-sans), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+  }
+
+  a {
+    @apply text-teal hover:text-teal-dark;
+  }
+
+  ::selection {
+    @apply bg-teal text-paper;
+  }
+}
+
+@layer components {
+  .label {
+    @apply font-mono text-xs uppercase tracking-[0.06em] text-faint;
+  }
+}

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-// Ativo por padrão. Para desligar, definir MAINTENANCE_MODE=false na Vercel.
-const MAINTENANCE_MODE = process.env.MAINTENANCE_MODE !== 'false'
+// Desligado por padrão. Para ligar, definir MAINTENANCE_MODE=true na Vercel e fazer redeploy.
+const MAINTENANCE_MODE = process.env.MAINTENANCE_MODE === 'true'
 
 export function proxy(request: NextRequest) {
   if (!MAINTENANCE_MODE) return NextResponse.next()
