@@ -83,20 +83,6 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const githubUrl = (project as any).gitHubUrl || (project as any).githubUrl || project.githubUrl;
   const demoUrl = (project as any).demoUrl || project.demoUrl;
 
-  // Debug: verificar campos (remover depois)
-  if (process.env.NODE_ENV === 'development') {
-    console.log('Project data:', {
-      id: project.id,
-      title: project.title,
-      githubUrl: githubUrl,
-      githubUrlType: typeof githubUrl,
-      githubUrlTruthy: !!githubUrl,
-      hasGithubUrl: githubUrl != null && githubUrl !== '',
-      allKeys: Object.keys(project),
-      projectRaw: project,
-    });
-  }
-
   return (
     <>
       <Header />

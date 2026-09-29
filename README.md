@@ -390,11 +390,11 @@ A API está protegida com **API Key** para endpoints de escrita (POST, PUT, DELE
 **Configuração:**
 - **Variável**: `API_KEY`
 - **Onde configurar**: Railway (produção) ou `appsettings.Development.json` (local)
-- **Valor atual**: `i_ss(1hR9\ot9}=5`c%D'0)6W6)?Y>viOjwpo>*b`
+- **Valor**: nunca versionar — fica só na env var do Railway / `appsettings.Development.json` (gitignored)
 
 **Como usar:**
-- **Swagger (dev)**: Clique em **Authorize** (🔒) e adicione `X-API-Key` com o valor acima
-- **Postman/Thunder Client**: Adicione header `X-API-Key: i_ss(1hR9\ot9}=5`c%D'0)6W6)?Y>viOjwpo>*b`
+- **Swagger (dev)**: Clique em **Authorize** (🔒) e adicione `X-API-Key` com a sua chave
+- **Postman/Thunder Client**: Adicione header `X-API-Key: <sua-api-key>`
 - **Produção**: Use o mesmo header `X-API-Key` em todas as requisições POST/PUT/DELETE
 
 **Gerar token seguro:**

@@ -12,12 +12,6 @@ export default function AboutPage() {
     async function fetchProfile() {
       try {
         const data = await profileApi.get()
-        if (data) {
-          console.log('Profile data completo:', JSON.stringify(data, null, 2)) // Debug completo
-          console.log('AboutText value:', data.aboutText) // Debug específico
-          console.log('AboutText type:', typeof data.aboutText) // Debug tipo
-          console.log('AboutText length:', data.aboutText?.length) // Debug tamanho
-        }
         setProfile(data)
       } catch (err) {
         console.error('Error fetching profile:', err)

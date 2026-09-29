@@ -40,23 +40,9 @@ public class ApiKeyMiddleware
             return;
         }
 
-        // Log para debug - verificar se middleware está sendo executado
-        _logger.LogInformation("ApiKeyMiddleware executando para {Method} {Path}", 
-            context.Request.Method, 
-            context.Request.Path);
+        // Prioridade: variável de ambiente > appsettings.json
+        var apiKey = Environment.GetEnvironmentVariable("API_KEY") ?? _configuration["API_KEY"];
 
-        // Lê API Key ANTES de verificar header (prioridade: variável de ambiente > appsettings.json)
-        var envApiKey = Environment.GetEnvironmentVariable("API_KEY");
-        var configApiKey = _configuration["API_KEY"];
-        var apiKey = envApiKey ?? configApiKey;
-        
-        // Debug: log para verificar se está lendo a API Key
-        _logger.LogInformation("API Key check - Env: {HasEnv}, Config: {HasConfig}, Final: {HasFinal}, ConfigValue: {ConfigValue}", 
-            !string.IsNullOrEmpty(envApiKey), 
-            !string.IsNullOrEmpty(configApiKey),
-            !string.IsNullOrEmpty(apiKey),
-            configApiKey ?? "null");
-        
         // Se não tiver API Key configurada, permite passar em Development (para facilitar testes)
         if (string.IsNullOrEmpty(apiKey))
         {
@@ -94,8 +80,6 @@ public class ApiKeyMiddleware
             });
             return;
         }
-        
-        _logger.LogDebug("API Key found. Validating request.");
 
         // Valida API Key
         if (!apiKey.Equals(extractedApiKey.ToString(), StringComparison.Ordinal))

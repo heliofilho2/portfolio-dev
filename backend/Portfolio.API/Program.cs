@@ -56,12 +56,10 @@ if (rawConnectionString.StartsWith("postgresql://", StringComparison.OrdinalIgno
         }
         connectionStringBuilder.Append("SSL Mode=Require;Trust Server Certificate=true;");
         connectionString = connectionStringBuilder.ToString();
-        Console.WriteLine("[DEBUG] Connection String convertida de URI para Parameters format");
     }
-    catch (Exception ex)
+    catch (UriFormatException)
     {
-        Console.WriteLine($"[DEBUG] Erro ao converter URI: {ex.Message}");
-        // Seasasfalhar, usa a string original
+        // Se falhar, usa a string original
         connectionString = rawConnectionString;
     }
 }
@@ -70,24 +68,6 @@ else
     // Já está no formato Parameters, usa direto
     connectionString = rawConnectionString;
 }
-
-// Log para debug (mostra apenas início da connection string por segurança)
-Console.WriteLine("[DEBUG] ========== CONNECTION STRING DEBUG ==========");
-if (!string.IsNullOrEmpty(connectionString))
-{
-    var preview = connectionString.Length > 50 
-        ? connectionString.Substring(0, 50) + "..." 
-        : connectionString;
-    Console.WriteLine($"[DEBUG] Connection String final: {preview}");
-    Console.WriteLine($"[DEBUG] Connection String começa com: {connectionString.Substring(0, Math.Min(20, connectionString.Length))}");
-    Console.WriteLine($"[DEBUG] Connection String contém 'localhost': {connectionString.Contains("localhost")}");
-    Console.WriteLine($"[DEBUG] Connection String contém 'pooler.supabase.com': {connectionString.Contains("pooler.supabase.com")}");
-}
-else
-{
-    Console.WriteLine("[DEBUG] Connection String está NULL ou vazia!");
-}
-Console.WriteLine("[DEBUG] ================================================");
 
 // Registra DbContext no DI Container
 // POR QUÊ AddDbContext?

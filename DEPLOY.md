@@ -25,7 +25,7 @@ A API está protegida com **API Key** para endpoints de escrita (POST, PUT, DELE
 **No Swagger (desenvolvimento local):**
 1. Abra: `http://localhost:5115/swagger`
 2. Clique no botão **Authorize** (🔒 no topo direito)
-3. No campo **Value**, cole sua API Key: `i_ss(1hR9\ot9}=5`c%D'0)6W6)?Y>viOjwpo>*b`
+3. No campo **Value**, cole sua API Key (`<sua-api-key>`)
 4. Clique em **Authorize**
 5. Agora todos os endpoints POST/PUT/DELETE funcionarão
 
@@ -34,7 +34,7 @@ A API está protegida com **API Key** para endpoints de escrita (POST, PUT, DELE
 2. Vá na aba **Headers**
 3. Adicione:
    - **Key**: `X-API-Key`
-   - **Value**: `i_ss(1hR9\ot9}=5`c%D'0)6W6)?Y>viOjwpo>*b`
+   - **Value**: `<sua-api-key>`
 4. Faça a requisição normalmente
 
 **Em Produção (Railway):**
@@ -44,7 +44,7 @@ A API está protegida com **API Key** para endpoints de escrita (POST, PUT, DELE
 ```bash
 curl -X POST https://sua-url-railway.up.railway.app/api/projects \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: i_ss(1hR9\ot9}=5`c%D'0)6W6)?Y>viOjwpo>*b" \
+  -H "X-API-Key: <sua-api-key>" \
   -d '{"title": "Novo Projeto", ...}'
 ```
 

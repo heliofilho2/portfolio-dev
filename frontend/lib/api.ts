@@ -104,13 +104,7 @@ async function apiRequest<T>(
   const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
   const endpointPath = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   const url = `${baseUrl}${endpointPath}`;
-  
-  // Log detalhado para debug (apenas em desenvolvimento)
-  if (typeof window !== 'undefined') {
-    console.log(`[API] Fazendo requisição para: ${url}`);
-    console.log(`[API] API_BASE_URL configurada: ${API_BASE_URL}`);
-  }
-  
+
   try {
     const response = await fetch(url, {
       ...options,
@@ -121,21 +115,13 @@ async function apiRequest<T>(
     });
 
     if (!response.ok) {
-      // Log detalhado do erro
-      const errorText = await response.text().catch(() => 'Não foi possível ler o erro');
-      console.error(`[API] Erro ${response.status} ${response.statusText} para ${endpoint}`);
-      console.error(`[API] URL completa: ${url}`);
-      console.error(`[API] Resposta do servidor: ${errorText}`);
-      
+      console.error(`[API] ${response.status} ${response.statusText} em ${endpoint}`);
+
       // Se for 404 ou 500, retorna valor padrão baseado no tipo esperado
       if (response.status === 404 || response.status === 500) {
-        // Se o endpoint sugere que retorna array (plural), retorna array vazio
         if (endpoint.includes('/projects') || endpoint.includes('/skills') || endpoint.includes('/experiences')) {
-          console.warn(`[API] Retornando array vazio para ${endpoint}`);
           return [] as T;
         }
-        // Para outros (como /profile), retorna null
-        console.warn(`[API] Retornando null para ${endpoint}`);
         return null as T;
       }
       
@@ -147,20 +133,11 @@ async function apiRequest<T>(
       return undefined as T;
     }
 
-    const data = await response.json();
-    console.log(`[API] Sucesso ao buscar ${endpoint}:`, data);
-    return data;
+    return await response.json();
   } catch (error) {
-    // Erro de rede (CORS, conexão, etc.)
-    console.error(`[API] Erro de rede ao acessar ${url}:`, error);
-    if (error instanceof TypeError && error.message.includes('fetch')) {
-      console.error(`[API] Possíveis causas:`);
-      console.error(`  - CORS não configurado no backend`);
-      console.error(`  - URL do backend incorreta: ${API_BASE_URL}`);
-      console.error(`  - Backend não está rodando`);
-      console.error(`  - Variável NEXT_PUBLIC_API_URL não configurada no Vercel`);
-    }
-    
+    // Erro de rede (CORS, backend fora do ar, URL errada)
+    console.error(`[API] Falha de rede em ${endpoint}:`, error);
+
     // Retorna valor padrão em caso de erro de rede
     if (endpoint.includes('/projects') || endpoint.includes('/skills') || endpoint.includes('/experiences')) {
       return [] as T;
