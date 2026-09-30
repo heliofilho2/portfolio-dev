@@ -109,7 +109,15 @@ catch (Exception ex) when (ex is not OperationCanceledException)
 // Extração falha é normal (paywall, bloqueio) — nesse caso fica só o resumo curto, sem forçar texto raso.
 var writer = new NewsWriter(new AnthropicClient(), writerModel);
 var extractor = new ArticleExtractor(http);
-var candidates = await repo.GetNeedsBodyAsync(lookback, ct);
+List<NewsRepository.BodyCandidate> candidates = [];
+try
+{
+    candidates = await repo.GetNeedsBodyAsync(lookback, ct);
+}
+catch (Exception ex) when (ex is not OperationCanceledException)
+{
+    Console.Error.WriteLine($"[matéria] busca de candidatas falhou: {ex.Message}");
+}
 using var writeGate = new SemaphoreSlim(3);
 var written = 0;
 
