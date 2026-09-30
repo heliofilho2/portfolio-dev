@@ -93,8 +93,17 @@ await Task.WhenAll(fresh.Select(async item =>
     }
 }));
 
-// 4. "Em alta" considera a janela inteira, não só esta execução
-var trending = await repo.RecomputeTrendingAsync(TimeSpan.FromHours(36), ct);
+// 4. "Em alta" considera a janela inteira, não só esta execução. Falha aqui não pode derrubar
+// o processo (senão Railway reinicia o container em loop) — só o recálculo fica pra próxima.
+var trending = 0;
+try
+{
+    trending = await repo.RecomputeTrendingAsync(TimeSpan.FromHours(36), ct);
+}
+catch (Exception ex) when (ex is not OperationCanceledException)
+{
+    Console.Error.WriteLine($"[em alta] falhou: {ex.Message}");
+}
 
 // 5. Matéria completa: prioridade alta ou em alta, sempre a partir do texto real da fonte.
 // Extração falha é normal (paywall, bloqueio) — nesse caso fica só o resumo curto, sem forçar texto raso.

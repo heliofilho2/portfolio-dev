@@ -63,7 +63,6 @@ public class NewsClassifier(AnthropicClient client, string model)
             },
             OutputConfig = new BetaOutputConfig
             {
-                Effort = Effort.Low,
                 Format = new BetaJsonOutputFormat { Schema = Schema },
             },
             Messages =
