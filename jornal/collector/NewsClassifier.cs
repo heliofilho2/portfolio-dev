@@ -57,8 +57,6 @@ public class NewsClassifier(AnthropicClient client, string model)
         {
             Model = model,
             MaxTokens = 4096,
-            Betas = ["server-side-fallback-2026-06-01"],
-            Fallbacks = new List<BetaFallbackParam> { new() { Model = "claude-opus-4-8" } },
             System = new List<BetaTextBlockParam>
             {
                 new() { Text = SystemPrompt, CacheControl = new BetaCacheControlEphemeral() },
