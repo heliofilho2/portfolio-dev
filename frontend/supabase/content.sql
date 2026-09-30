@@ -1,4 +1,4 @@
--- Conteúdo do heliofilho.dev: cofre, projetos e diário dos projetos.
+-- Conteúdo do heliofilho.dev: cofre, projetos, diário, blog, configurações e mídia.
 -- Gerado por scripts/content-sql.mjs. Rodar no SQL Editor do Supabase (projeto do portfólio).
 
 create table if not exists cofre_items (
@@ -48,9 +48,35 @@ create table if not exists project_updates (
   published_at timestamptz not null default now()
 );
 
+create table if not exists posts (
+  slug text primary key check (slug ~ '^[a-z0-9-]+$'),
+  title text not null,
+  summary text not null default '',
+  cover_url text,
+  body_md text not null default '',
+  tags text[] not null default '{}',
+  published boolean not null default false,
+  published_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- Textos, fotos e listas da home e do Sobre (/admin/site). Uma linha só, id 'main'.
+create table if not exists site_settings (
+  id text primary key default 'main',
+  data jsonb not null default '{}',
+  updated_at timestamptz not null default now()
+);
+
+-- Capa opcional (rodar de novo em banco antigo não quebra).
+alter table cofre_items add column if not exists cover_url text;
+alter table site_projects add column if not exists cover_url text;
+
+-- Leitura pública só do que está publicado. Escrita só pelo /admin, com a service role (ignora RLS).
 alter table cofre_items enable row level security;
 alter table site_projects enable row level security;
 alter table project_updates enable row level security;
+alter table posts enable row level security;
+alter table site_settings enable row level security;
 
 drop policy if exists "cofre publico" on cofre_items;
 create policy "cofre publico" on cofre_items for select using (published);
@@ -58,6 +84,16 @@ drop policy if exists "projetos publicos" on site_projects;
 create policy "projetos publicos" on site_projects for select using (published);
 drop policy if exists "diario publico" on project_updates;
 create policy "diario publico" on project_updates for select using (true);
+drop policy if exists "posts publicos" on posts;
+create policy "posts publicos" on posts for select using (published);
+drop policy if exists "config publica" on site_settings;
+create policy "config publica" on site_settings for select using (true);
+
+-- Fotos e vídeos do /admin: bucket público (leitura por link), até 50MB por arquivo.
+-- O envio usa URL assinada gerada no servidor, então não precisa de política de insert.
+insert into storage.buckets (id, name, public, file_size_limit)
+values ('media', 'media', true, 52428800)
+on conflict (id) do update set public = true, file_size_limit = excluded.file_size_limit;
 
 insert into cofre_items (slug, category, topic, title, summary, body_md, tone, video_url, keyword, materials, chapters, published_at)
 values ('repositorios-secretos', 'Vídeos', null, 'Central de Repositórios Secretos', 'Alguns dos projetos mais curiosos que encontrei no GitHub.', 'Tecnologia, IA, internet e as coisas mais estranhas que encontro pelo caminho.

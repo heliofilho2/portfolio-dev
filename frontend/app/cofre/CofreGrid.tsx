@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import CofreCard from '@/components/CofreCard'
-import { cofreCategories, type CofreItem } from '@/lib/content'
+import { cofreCategories, type CofreItem } from '@/lib/contentModel'
 
 const ALL = 'Tudo'
 

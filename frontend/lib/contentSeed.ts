@@ -1,4 +1,4 @@
-import type { CofreItem, Project, ProjectUpdate, Tone } from './content'
+import type { CofreItem, Project, ProjectUpdate, Tone } from './contentModel'
 
 // Conteúdo inicial, migrado do Cofre no Notion (set/2026). Serve pra duas coisas:
 // 1. dado local no `npm run dev` sem Supabase;

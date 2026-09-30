@@ -10,7 +10,7 @@ correspondente aqui dentro.
 jornal/
   collector/   .NET 8 — lê RSS, classifica com Claude, grava no Supabase (Railway Cron, a cada 2h)
   web/         Next.js 16 — o jornal (Vercel, subdomínio jornal.heliofilho.dev), ISR de 10 min
-  supabase/    schema.sql das tabelas do jornal (news_items, subscribers)
+  supabase/    schema.sql da tabela do jornal (news_items)
 ```
 
 ## Como funciona
@@ -65,4 +65,4 @@ O coletor só classifica o que é novo — tipicamente 50 a 150 notícias por di
 
 - Roteiro de vídeo a partir das notícias de prioridade alta
 - Extras de jornal: sudoku diário, quiz de 5 perguntas, charge com personagem fixo
-- Envio do resumo por e-mail para a tabela `subscribers`
+- Resumo semanal do jornal na newsletter do Substack

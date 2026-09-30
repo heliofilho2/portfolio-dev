@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import ProjectRow from '@/components/ProjectRow'
-import type { Project } from '@/lib/content'
+import type { Project } from '@/lib/contentModel'
 
 const ALL = 'Tudo'
 

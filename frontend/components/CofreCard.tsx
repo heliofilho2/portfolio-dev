@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { initialOf, isNew, toneBg, type CofreItem } from '@/lib/content'
+import { initialOf, isNew, toneBg, type CofreItem } from '@/lib/contentModel'
 
 const fold = { background: 'linear-gradient(225deg,#F6F3EC 0 50%,#E9E2D4 50%)', boxShadow: '-1px 1px 2px rgba(30,28,25,.08)' }
 const cardBase =

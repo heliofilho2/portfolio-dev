@@ -6,7 +6,9 @@ import Footer from '@/components/layout/Footer'
 import PageReveal from '@/components/PageReveal'
 import Markdown from '@/components/Markdown'
 import NewsletterForm from '@/components/NewsletterForm'
-import { getCofreItem, getCofreItems, initialOf, toneBg, type CofreItem } from '@/lib/content'
+import MediaBlock, { embedOf } from '@/components/MediaBlock'
+import MediaImg from '@/components/MediaImg'
+import { fmtDate, getCofreItem, getCofreItems, initialOf, toneBg, type CofreItem } from '@/lib/content'
 
 export const revalidate = 300
 
@@ -19,7 +21,7 @@ interface Props {
   params: Promise<{ slug: string }>
 }
 
-const fmtDate = (iso: string) => new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'America/Sao_Paulo' }).format(new Date(iso))
+const isVideoFile = (url: string) => /\.(mp4|webm|mov|m4v)(\?|$)/i.test(url)
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const item = await getCofreItem((await params).slug)
@@ -72,7 +74,11 @@ export default async function CofreItemPage({ params }: Props) {
 
         <div className="grid gap-8 lg:gap-12 mt-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
           <article data-reveal className="min-w-0">
-            {isVideo ? (
+            {isVideo && item.video_url && (embedOf(item.video_url) || isVideoFile(item.video_url)) ? (
+              <div className="[&_.md-media]:m-0">
+                <MediaBlock src={item.video_url} alt="" />
+              </div>
+            ) : isVideo ? (
               <a
                 href={item.video_url ?? 'https://www.instagram.com/heliofilhou/'}
                 target="_blank"
@@ -84,6 +90,10 @@ export default async function CofreItemPage({ params }: Props) {
                 </span>
                 <span className="font-mono text-[11px] tracking-[0.12em] uppercase">{item.video_url ? 'Assistir o vídeo' : 'Assistir no Instagram'}</span>
               </a>
+            ) : item.cover_url ? (
+              <div className="relative aspect-[16/9] rounded-[22px] sm:rounded-3xl overflow-hidden bg-chip">
+                <MediaImg src={item.cover_url} alt="" fill priority sizes="(min-width: 1024px) 740px, 100vw" className="object-cover" />
+              </div>
             ) : (
               <span className={`w-14 h-14 rounded-full ${toneBg[item.tone]} flex items-center justify-center font-serif italic text-[28px]`}>{initialOf(item.title)}</span>
             )}

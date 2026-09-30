@@ -1,6 +1,7 @@
--- SINAL — tabelas novas no MESMO Supabase do portfólio (projeto qnjrobyvhaoxcqhinsov).
+-- SINAL: tabelas novas no MESMO Supabase do portfólio (projeto qnjrobyvhaoxcqhinsov).
 -- Nomes em snake_case, sem colidir com as tabelas do EF Core (Profiles, Projects, Skills, Experiences).
 -- Rodar uma vez no SQL Editor do projeto.
+-- A newsletter fica no Substack (heliofilhou.substack.com), não aqui.
 
 create table if not exists news_items (
   id               bigint generated always as identity primary key,
@@ -21,19 +22,9 @@ create table if not exists news_items (
 
 create index if not exists news_items_published_at_idx on news_items (published_at desc);
 
-create table if not exists subscribers (
-  id          bigint generated always as identity primary key,
-  email       text not null unique check (email ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$' and length(email) <= 254),
-  created_at  timestamptz not null default now()
-);
-
--- RLS: o site (chave anon) só lê notícias e só insere inscritos.
+-- RLS: o site (chave anon) só lê notícias.
 -- O coletor conecta direto no Postgres com o usuário do banco, que ignora RLS.
 alter table news_items enable row level security;
-alter table subscribers enable row level security;
 
 drop policy if exists "leitura publica" on news_items;
 create policy "leitura publica" on news_items for select to anon using (not hidden);
-
-drop policy if exists "inscricao publica" on subscribers;
-create policy "inscricao publica" on subscribers for insert to anon with check (true);

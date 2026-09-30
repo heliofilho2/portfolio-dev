@@ -1,6 +1,7 @@
-import { socials } from '@/lib/socials'
+import { getSiteSettings } from '@/lib/settings'
 
-export default function Footer() {
+export default async function Footer() {
+  const { socials } = await getSiteSettings()
   return (
     <footer className="border-t border-line">
       <div className="wrap pt-10 pb-8 flex justify-between items-end gap-5 flex-wrap">

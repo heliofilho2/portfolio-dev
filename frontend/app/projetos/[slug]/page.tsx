@@ -5,7 +5,8 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import PageReveal from '@/components/PageReveal'
 import Markdown from '@/components/Markdown'
-import { getProject, getProjects, getProjectUpdates, initialOf, statusBg, toneBg } from '@/lib/content'
+import MediaImg from '@/components/MediaImg'
+import { fmtDate, getProject, getProjects, getProjectUpdates, initialOf, statusBg, toneBg } from '@/lib/content'
 
 export const revalidate = 300
 
@@ -16,8 +17,6 @@ export async function generateStaticParams() {
 interface Props {
   params: Promise<{ slug: string }>
 }
-
-const fmtDate = (iso: string) => new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'America/Sao_Paulo' }).format(new Date(iso))
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const project = await getProject((await params).slug)
@@ -77,13 +76,19 @@ export default async function CaseStudyPage({ params }: Props) {
           )}
         </div>
 
-        <div
-          data-reveal
-          className={`aspect-[16/9] sm:aspect-[16/8] rounded-[22px] sm:rounded-[28px] ${toneBg[p.tone]} flex items-center justify-center font-serif italic text-[clamp(88px,15vw,140px)]`}
-          style={{ color: 'rgba(30,28,25,.8)' }}
-        >
-          {initialOf(p.name)}
-        </div>
+        {p.cover_url ? (
+          <div data-reveal className="relative aspect-[16/9] sm:aspect-[16/8] rounded-[22px] sm:rounded-[28px] overflow-hidden bg-chip">
+            <MediaImg src={p.cover_url} alt="" fill priority sizes="(min-width: 960px) 900px, 100vw" className="object-cover" />
+          </div>
+        ) : (
+          <div
+            data-reveal
+            className={`aspect-[16/9] sm:aspect-[16/8] rounded-[22px] sm:rounded-[28px] ${toneBg[p.tone]} flex items-center justify-center font-serif italic text-[clamp(88px,15vw,140px)]`}
+            style={{ color: 'rgba(30,28,25,.8)' }}
+          >
+            {initialOf(p.name)}
+          </div>
+        )}
 
         <div className="flex flex-col gap-10 mt-10 sm:mt-12">
           {p.problem && (

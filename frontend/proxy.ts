@@ -9,7 +9,8 @@ export function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
-  if (pathname.startsWith('/maintenance')) {
+  // Painel e APIs continuam acessíveis: dá pra preparar conteúdo com o site fechado.
+  if (pathname.startsWith('/maintenance') || pathname.startsWith('/admin') || pathname.startsWith('/api')) {
     return NextResponse.next()
   }
 

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { initialOf, statusBg, toneBg, type Project } from '@/lib/content'
+import { initialOf, statusBg, toneBg, type Project } from '@/lib/contentModel'
 
 // Linha de projeto (home e /projetos). No celular some a numeração e o status desce pra linha do meio.
 export default function ProjectRow({ project: p, n, size = 'md' }: { project: Project; n: number; size?: 'md' | 'lg' }) {
