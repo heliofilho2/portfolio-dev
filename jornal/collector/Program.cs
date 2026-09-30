@@ -1,6 +1,11 @@
 using Anthropic;
+using Anthropic.Exceptions;
 using Collector;
 using Npgsql;
+
+// Corpo da resposta da Anthropic quando a chamada falha, se disponível (mensagem genérica
+// de exceção do SDK não diz o motivo real do 400).
+static string Detail(Exception ex) => ex is AnthropicApiException api ? $"{ex.Message} — {api.ResponseBody}" : ex.Message;
 
 // Execução única (Railway Cron): coleta RSS → descarta o que já está no banco → classifica com Claude → grava → recalcula "em alta".
 // `dotnet run -- --dry-run` só lê os feeds e mostra o que seria processado (sem Claude e sem banco).
@@ -80,7 +85,7 @@ await Task.WhenAll(fresh.Select(async item =>
     catch (Exception ex) when (ex is not OperationCanceledException)
     {
         // Item que falhou não é gravado e volta a ser tentado na próxima execução
-        Console.Error.WriteLine($"[classificador] '{item.Title}' falhou: {ex.Message}");
+        Console.Error.WriteLine($"[classificador] '{item.Title}' falhou: {Detail(ex)}");
     }
     finally
     {
@@ -112,7 +117,7 @@ await Task.WhenAll(candidates.Select(async c =>
     catch (Exception ex) when (ex is not OperationCanceledException)
     {
         // Não grava nada: tenta de novo na próxima execução (pode ser falha transitória)
-        Console.Error.WriteLine($"[matéria] '{c.TitlePt}' falhou: {ex.Message}");
+        Console.Error.WriteLine($"[matéria] '{c.TitlePt}' falhou: {Detail(ex)}");
     }
     finally
     {
