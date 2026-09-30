@@ -37,6 +37,35 @@ public class NewsRepository(NpgsqlDataSource db)
         await cmd.ExecuteNonQueryAsync(ct);
     }
 
+    public record BodyCandidate(long Id, string Url, string Source, string TitlePt, string SummaryPt);
+
+    // Prioridade alta OU em alta, sem matéria completa ainda tentada. Cobre tanto o que acabou
+    // de ser classificado nesta execução quanto notícia antiga que só ficou "em alta" agora.
+    public async Task<List<BodyCandidate>> GetNeedsBodyAsync(TimeSpan window, CancellationToken ct)
+    {
+        await using var cmd = db.CreateCommand("""
+            select id, url, source, title_pt, summary_pt from news_items
+            where not hidden and body_pt is null and published_at >= @since
+              and (priority = 'alta' or trending)
+            """);
+        cmd.Parameters.AddWithValue("since", DateTimeOffset.UtcNow - window);
+        await using var reader = await cmd.ExecuteReaderAsync(ct);
+
+        var list = new List<BodyCandidate>();
+        while (await reader.ReadAsync(ct))
+            list.Add(new(reader.GetInt64(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetString(4)));
+        return list;
+    }
+
+    // body vazio = tentado e sem texto-fonte suficiente (não tenta de novo); texto = matéria publicada.
+    public async Task UpdateBodyAsync(long id, string body, CancellationToken ct)
+    {
+        await using var cmd = db.CreateCommand("update news_items set body_pt = @body where id = @id");
+        cmd.Parameters.AddWithValue("body", body);
+        cmd.Parameters.AddWithValue("id", id);
+        await cmd.ExecuteNonQueryAsync(ct);
+    }
+
     // Recalcula "em alta" na janela inteira, incluindo notícias de execuções anteriores
     public async Task<int> RecomputeTrendingAsync(TimeSpan window, CancellationToken ct)
     {

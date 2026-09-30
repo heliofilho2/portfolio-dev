@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import CategoryNav from '@/components/CategoryNav'
 import PageReveal from '@/components/PageReveal'
 import SubscribeBox from '@/components/SubscribeBox'
@@ -76,10 +77,13 @@ export default async function JornalPage({ searchParams }: Props) {
                 <>
                   <div className="font-mono text-xs tracking-[0.16em] uppercase text-red">{lead.kicker}</div>
                   <h1 className="font-serif text-[clamp(34px,4.8vw,60px)] leading-[.98] tracking-[-0.01em] mt-2 mb-3.5 text-balance">
-                    {lead.title_pt}
+                    {lead.body_pt ? <Link href={`/materia/${lead.id}`}>{lead.title_pt}</Link> : lead.title_pt}
                   </h1>
                   <div className="font-mono text-[11.5px] tracking-[0.12em] uppercase border-t border-b border-ink py-1.5 mb-4.5">
-                    Por robô coletor · revisado por Hélio Filho · {lead.source}
+                    Por robô coletor · revisado por Hélio Filho ·{' '}
+                    <a href={lead.url} target="_blank" rel="noopener noreferrer">
+                      {lead.source} ↗
+                    </a>
                   </div>
                   <figure className="mb-4.5">
                     <div
@@ -97,6 +101,11 @@ export default async function JornalPage({ searchParams }: Props) {
                   <div className="text-[15.5px] leading-[1.62] text-left sm:text-justify [hyphens:auto] sm:columns-2 sm:gap-7" style={{ columnRuleWidth: 1, columnRuleStyle: 'solid', columnRuleColor: '#E2DACA' }}>
                     <p className="drop-cap mb-3">{lead.summary_pt}</p>
                   </div>
+                  {lead.body_pt && (
+                    <Link href={`/materia/${lead.id}`} className="inline-block font-mono text-[11px] tracking-[0.12em] uppercase text-accent">
+                      Ler a matéria completa →
+                    </Link>
+                  )}
                 </>
               ) : (
                 <div className="py-20 text-center italic text-2xl">Nenhuma notícia com esse filtro nesta edição.</div>
@@ -114,8 +123,12 @@ export default async function JornalPage({ searchParams }: Props) {
                     <div key={t.title_pt} className="grid gap-2 py-3 border-b border-rule" style={{ gridTemplateColumns: '36px minmax(0,1fr)' }}>
                       <span className="num text-3xl leading-none">{i + 1}</span>
                       <span>
-                        <span className="block font-serif text-[17px] leading-[1.2]">{t.title_pt}</span>
-                        <span className="block font-mono text-[10.5px] tracking-[0.12em] uppercase mt-1">{t.source}</span>
+                        <span className="block font-serif text-[17px] leading-[1.2]">
+                          {t.body_pt ? <Link href={`/materia/${t.id}`}>{t.title_pt}</Link> : t.title_pt}
+                        </span>
+                        <a href={t.url} target="_blank" rel="noopener noreferrer" className="block font-mono text-[10.5px] tracking-[0.12em] uppercase mt-1">
+                          {t.source} ↗
+                        </a>
                       </span>
                     </div>
                   ))
@@ -159,10 +172,15 @@ export default async function JornalPage({ searchParams }: Props) {
                     <div className={`font-mono text-[11px] tracking-[0.14em] uppercase ${n.priority === 'alta' && n.trending ? 'text-red' : ''}`}>
                       {n.kicker}
                     </div>
-                    <h3 className="font-serif text-[21px] leading-[1.12] mt-1.5 mb-2 text-pretty">{n.title_pt}</h3>
+                    <h3 className="font-serif text-[21px] leading-[1.12] mt-1.5 mb-2 text-pretty">
+                      {n.body_pt ? <Link href={`/materia/${n.id}`}>{n.title_pt}</Link> : n.title_pt}
+                    </h3>
                     <p className="text-[14.5px] leading-[1.55] mb-2 sm:text-justify [hyphens:auto]">{n.summary_pt}</p>
                     <div className="text-xs italic">
-                      {n.source} · {n.timeLabel}
+                      <a href={n.url} target="_blank" rel="noopener noreferrer" className="not-italic">
+                        {n.source} ↗
+                      </a>{' '}
+                      · {n.timeLabel}
                     </div>
                   </article>
                 ))}

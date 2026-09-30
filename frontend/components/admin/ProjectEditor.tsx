@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { deleteProject, deleteUpdate, saveProject, saveUpdate } from '@/app/admin/actions'
+import { deleteProject, deleteUpdate, importReadme, saveProject, saveUpdate } from '@/app/admin/actions'
 import { fmtDate, projectStatuses, slugify, type Project, type ProjectUpdate } from '@/lib/contentModel'
 import EditorShell, { Toast, useDraft } from './EditorShell'
 import MarkdownEditor from './MarkdownEditor'
@@ -90,11 +90,24 @@ export default function ProjectEditor({ project, isNew, updates }: { project: Pr
   const { data, set, dirty, markSaved } = useDraft(project)
   const [original, setOriginal] = useState<string | null>(isNew ? null : project.slug)
   const [slugTouched, setSlugTouched] = useState(!isNew)
+  const [importing, setImporting] = useState(false)
+  const [importError, setImportError] = useState('')
   const published = data.published !== false
 
   const setName = (name: string) => {
     set('name', name)
     if (!slugTouched) set('slug', slugify(name))
+  }
+
+  async function doImportReadme() {
+    if (!data.repo_url) return
+    if (data.readme_md.trim() && !confirm('Já tem texto no README. Substituir pelo conteúdo do GitHub?')) return
+    setImporting(true)
+    setImportError('')
+    const r = await importReadme(data.repo_url)
+    setImporting(false)
+    if (r.ok) set('readme_md', r.markdown)
+    else setImportError(r.error)
   }
 
   return (
@@ -148,8 +161,21 @@ export default function ProjectEditor({ project, isNew, updates }: { project: Pr
           </Card>
 
           <div>
-            <div className="font-mono text-[10.5px] tracking-[0.12em] uppercase text-subtle mb-1.5">README</div>
-            <MarkdownEditor value={data.readme_md} onChange={(v) => set('readme_md', v)} placeholder="Explique o projeto: como funciona, como rodar, prints, próximos passos." minHeight={320} />
+            <div className="flex justify-between items-center flex-wrap gap-2 mb-1.5">
+              <div className="font-mono text-[10.5px] tracking-[0.12em] uppercase text-subtle">README</div>
+              {data.repo_url && (
+                <button type="button" className="text-[12.5px] font-medium text-accent cursor-pointer disabled:opacity-50" onClick={doImportReadme} disabled={importing}>
+                  {importing ? 'Importando…' : '↓ Importar do GitHub'}
+                </button>
+              )}
+            </div>
+            {importError && <p className="text-[12.5px] text-[#B4453A] mb-1.5">{importError}</p>}
+            <MarkdownEditor
+              value={data.readme_md}
+              onChange={(v) => set('readme_md', v)}
+              placeholder="Explique o projeto pra quem não é expert: a ideia, pré-requisitos, passo a passo de como usar, prints, próximos passos."
+              minHeight={320}
+            />
           </div>
 
           {original ? (
@@ -182,6 +208,14 @@ export default function ProjectEditor({ project, isNew, updates }: { project: Pr
             <Field label="GitHub">
               <TextInput value={data.repo_url ?? ''} onChange={(v) => set('repo_url', v || null)} placeholder="https://github.com/…" />
             </Field>
+            {data.repo_url && (
+              <div>
+                <button type="button" className={btn.ghost} onClick={doImportReadme} disabled={importing}>
+                  {importing ? 'Importando…' : '↓ Importar README do GitHub'}
+                </button>
+                {importError && <p className="text-[12.5px] text-[#B4453A] mt-1.5">{importError}</p>}
+              </div>
+            )}
             <SlugField
               prefix="/projetos/"
               value={data.slug}

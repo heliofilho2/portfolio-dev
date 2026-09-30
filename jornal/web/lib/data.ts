@@ -5,13 +5,17 @@ import { supabase, usingSampleData } from './supabase'
 const WINDOW_HOURS = 48
 
 export interface RawRow {
+  id: number
   title_pt: string
   summary_pt: string
   source: string
+  url: string
   published_at: string
   category: string
   priority: 'alta' | 'media' | 'baixa'
   trending: boolean
+  // null = sem matéria completa (ainda não tentado ou fonte bloqueou o acesso); string = publicada.
+  body_pt: string | null
 }
 
 export interface NewsItem extends RawRow {
@@ -25,7 +29,7 @@ async function fetchRows(): Promise<RawRow[]> {
   const since = new Date(Date.now() - WINDOW_HOURS * 3600_000).toISOString()
   const { data, error } = await supabase
     .from('news_items')
-    .select('title_pt, summary_pt, source, published_at, category, priority, trending')
+    .select('id, title_pt, summary_pt, source, url, published_at, category, priority, trending, body_pt')
     .eq('hidden', false)
     .gte('published_at', since)
     .order('published_at', { ascending: false })
@@ -36,6 +40,28 @@ async function fetchRows(): Promise<RawRow[]> {
     return []
   }
   return data as RawRow[]
+}
+
+// Matéria individual (app/materia/[id]/page.tsx). Sem matéria completa publicada, devolve null
+// mesmo que a notícia exista (a página trata isso como 404, não mostra um resumo disfarçado de matéria).
+export async function getArticle(id: number): Promise<NewsItem | null> {
+  if (!supabase) {
+    const row = usingSampleData ? sampleRows.find((r) => r.id === id && r.body_pt) : null
+    return row ? { ...row, kicker: kickerFor(row), timeLabel: timeLabel(row.published_at) } : null
+  }
+
+  const { data, error } = await supabase
+    .from('news_items')
+    .select('id, title_pt, summary_pt, source, url, published_at, category, priority, trending, body_pt')
+    .eq('id', id)
+    .eq('hidden', false)
+    .not('body_pt', 'is', null)
+    .neq('body_pt', '')
+    .maybeSingle()
+
+  if (error || !data) return null
+  const row = data as RawRow
+  return { ...row, kicker: kickerFor(row), timeLabel: timeLabel(row.published_at) }
 }
 
 const priorityRank: Record<RawRow['priority'], number> = { alta: 0, media: 1, baixa: 2 }

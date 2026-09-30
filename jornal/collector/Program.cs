@@ -7,7 +7,10 @@ using Npgsql;
 
 var dryRun = args.Contains("--dry-run");
 var lookback = TimeSpan.FromHours(double.Parse(Environment.GetEnvironmentVariable("LOOKBACK_HOURS") ?? "48"));
-var model = Environment.GetEnvironmentVariable("CLAUDE_MODEL") ?? "claude-opus-5";
+// Classificação é mecânica e de alto volume: modelo barato. A matéria completa (abaixo) é o que
+// o leitor de fato lê, então usa um modelo melhor, só pra prioridade alta/em alta.
+var model = Environment.GetEnvironmentVariable("CLAUDE_MODEL") ?? "claude-haiku-4-5-20251001";
+var writerModel = Environment.GetEnvironmentVariable("CLAUDE_WRITER_MODEL") ?? "claude-sonnet-5";
 using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(20));
 var ct = cts.Token;
 
@@ -88,5 +91,35 @@ await Task.WhenAll(fresh.Select(async item =>
 // 4. "Em alta" considera a janela inteira, não só esta execução
 var trending = await repo.RecomputeTrendingAsync(TimeSpan.FromHours(36), ct);
 
-Console.WriteLine($"[fim] {saved}/{fresh.Count} gravados, {trending} em alta. " +
-    $"Tokens: {classifier.InputTokens} entrada ({classifier.CacheReadTokens} do cache), {classifier.OutputTokens} saída. Modelo: {model}");
+// 5. Matéria completa: prioridade alta ou em alta, sempre a partir do texto real da fonte.
+// Extração falha é normal (paywall, bloqueio) — nesse caso fica só o resumo curto, sem forçar texto raso.
+var writer = new NewsWriter(new AnthropicClient(), writerModel);
+var extractor = new ArticleExtractor(http);
+var candidates = await repo.GetNeedsBodyAsync(lookback, ct);
+using var writeGate = new SemaphoreSlim(3);
+var written = 0;
+
+await Task.WhenAll(candidates.Select(async c =>
+{
+    await writeGate.WaitAsync(ct);
+    try
+    {
+        var sourceText = await extractor.ExtractAsync(c.Url, ct);
+        var body = sourceText is null ? null : await writer.WriteAsync(c.TitlePt, c.SummaryPt, c.Source, sourceText, ct);
+        await repo.UpdateBodyAsync(c.Id, body ?? "", ct);
+        if (body is not null) Interlocked.Increment(ref written);
+    }
+    catch (Exception ex) when (ex is not OperationCanceledException)
+    {
+        // Não grava nada: tenta de novo na próxima execução (pode ser falha transitória)
+        Console.Error.WriteLine($"[matéria] '{c.TitlePt}' falhou: {ex.Message}");
+    }
+    finally
+    {
+        writeGate.Release();
+    }
+}));
+
+Console.WriteLine($"[fim] {saved}/{fresh.Count} gravados, {trending} em alta, {written}/{candidates.Count} matérias completas. " +
+    $"Tokens classificador: {classifier.InputTokens} entrada ({classifier.CacheReadTokens} do cache), {classifier.OutputTokens} saída ({model}). " +
+    $"Tokens matéria: {writer.InputTokens} entrada ({writer.CacheReadTokens} do cache), {writer.OutputTokens} saída ({writerModel}).");

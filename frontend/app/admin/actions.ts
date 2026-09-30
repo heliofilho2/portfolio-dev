@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { endSession, isAdmin, startSession } from '@/lib/adminAuth'
 import * as store from '@/lib/adminStore'
+import { fetchReadme } from '@/lib/github'
 
 export type ActionResult = { ok: true; slug?: string } | { ok: false; error: string }
 
@@ -67,6 +68,14 @@ export async function saveProject(input: Input, original: string | null) {
 
 export async function deleteProject(slug: string) {
   return guarded(() => store.deleteProject(slug))
+}
+
+// Puxa o README real do repositório público, pra começar a escrever a partir dele em vez
+// de copiar e colar. Só leitura, não mexe no GitHub.
+export async function importReadme(repoUrl: string) {
+  if (!(await isAdmin())) return { ok: false as const, error: 'Sessão expirada. Entre de novo.' }
+  const result = await fetchReadme(repoUrl)
+  return 'error' in result ? { ok: false as const, error: result.error } : { ok: true as const, markdown: result.markdown }
 }
 
 export async function saveUpdate(input: Input) {

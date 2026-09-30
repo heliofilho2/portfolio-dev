@@ -17,8 +17,14 @@ create table if not exists news_items (
   priority_reason  text not null default '',
   trending         boolean not null default false,
   hidden           boolean not null default false, -- descartado pelo classificador (oferta, tutorial etc.)
+  -- Matéria completa (NewsWriter), só pra prioridade alta ou em alta: null = ainda não tentado,
+  -- '' = tentado e sem texto-fonte suficiente (fonte bloqueou o acesso, paywall etc.), texto = publicado.
+  body_pt          text,
   collected_at     timestamptz not null default now()
 );
+
+-- Idempotente pra quem já rodou este arquivo antes da coluna existir.
+alter table news_items add column if not exists body_pt text;
 
 create index if not exists news_items_published_at_idx on news_items (published_at desc);
 
