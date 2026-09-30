@@ -1,41 +1,44 @@
 import type { Metadata } from 'next'
-import { IBM_Plex_Mono, IBM_Plex_Sans, Source_Serif_4 } from 'next/font/google'
+import { Caveat, Geist, Geist_Mono, Instrument_Serif } from 'next/font/google'
 import './globals.css'
 
-const sourceSerif = Source_Serif_4({
+const instrumentSerif = Instrument_Serif({
   subsets: ['latin'],
-  variable: '--font-source-serif',
-  weight: ['400', '600', '700'],
-  display: 'swap',
+  variable: '--font-instrument-serif',
+  weight: '400',
+  style: ['normal', 'italic'],
 })
 
-const plexSans = IBM_Plex_Sans({
+const geist = Geist({
   subsets: ['latin'],
-  variable: '--font-plex-sans',
-  weight: ['400', '500', '600', '700'],
-  display: 'swap',
+  variable: '--font-geist',
+  weight: ['400', '500', '600'],
 })
 
-const plexMono = IBM_Plex_Mono({
+const geistMono = Geist_Mono({
   subsets: ['latin'],
-  variable: '--font-plex-mono',
+  variable: '--font-geist-mono',
   weight: ['400', '500'],
-  display: 'swap',
+})
+
+const caveat = Caveat({
+  subsets: ['latin'],
+  variable: '--font-caveat',
+  weight: ['500', '700'],
 })
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://heliofilho.dev'),
-  title: 'Helio Filho | Desenvolvedor .NET, SAP B1 e criador de conteúdo',
+  title: 'helio*filho*.dev',
   description:
-    'Desenvolvedor .NET especializado em SAP Business One e integrações. Produtos, projetos, newsletter e conteúdo sobre tecnologia e IA.',
-  keywords: ['desenvolvedor', '.NET', 'SAP B1', 'backend', 'portfólio', 'Planilio', 'IA'],
+    'Dev full-stack que cria conteúdo sobre tecnologia, IA e carreira. Projetos, materiais e um jornal tech: tudo mora aqui.',
   openGraph: {
-    title: 'Helio Filho',
-    description: 'Desenvolvedor .NET, SAP Business One e criador de conteúdo sobre tecnologia e IA.',
+    title: 'helio*filho*.dev',
+    description: 'Dev full-stack que cria conteúdo sobre tecnologia, IA e carreira.',
     url: 'https://heliofilho.dev',
     locale: 'pt_BR',
     type: 'website',
-    images: ['/avatar.jpg'],
+    images: ['/helio.jpg'],
   },
   icons: {
     icon: [
@@ -47,20 +50,10 @@ export const metadata: Metadata = {
   },
 }
 
-// Claro é o padrão; o escuro só entra se o visitante escolheu no toggle. Roda antes da pintura.
-const themeScript = `(function(){try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark')}}catch(e){}})();`
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="pt-BR" className="scroll-smooth" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
-      <body
-        className={`${sourceSerif.variable} ${plexSans.variable} ${plexMono.variable} font-sans bg-background-light dark:bg-background-dark text-ink transition-colors duration-300`}
-      >
-        {children}
-      </body>
+    <html lang="pt-BR" className={`${instrumentSerif.variable} ${geist.variable} ${geistMono.variable} ${caveat.variable}`}>
+      <body>{children}</body>
     </html>
   )
 }

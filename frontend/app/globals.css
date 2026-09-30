@@ -1,76 +1,230 @@
 @import "tailwindcss";
 
-@variant dark (&:where(.dark, .dark *));
-
 @theme {
-  /* Identidade compartilhada com o Jornal Tech/IA: papel, tinta, teal e rust */
-  --color-background-light: #F6F3EC;
-  --color-background-dark: #161512;
-  --color-surface-light: #FBF9F4;
-  --color-surface-dark: #1F1E1A;
-  --color-ink: #1B1B18;
-  --color-line: #E2DCCE;
-  --color-accent: #1F5F5B;
-  --color-accent-soft: #DCE8E5;
-  --color-rust: #B5482E;
+  --color-bg: #F6F3EC;
+  --color-surface: #FCFAF6;
+  --color-ink: #1E1C19;
+  --color-ink-2: #3E3A34;
+  --color-muted: #5E5950;
+  --color-subtle: #8A8378;
+  --color-line: #E4DDD0;
+  --color-chip: #EDE8DE;
+  --color-accent: #4F46C8;
+  --color-hand: #D0655A;
+  --color-lilac: #E4DEF7;
+  --color-mint: #DDEEE2;
+  --color-peach: #F7E1D3;
+  --color-butter: #F5EDC6;
+  --color-sky: #DCE8F3;
+  --color-rose: #F4D9DC;
+  --color-prio-alta: #E07A6E;
+  --color-prio-media: #D9B44A;
+  --color-prio-baixa: #B8B2A7;
+  --color-online: #7BB58E;
 
-  --font-serif: var(--font-source-serif), ui-serif, Georgia, serif;
-  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
-
-  --radius: 0.75rem;
+  --font-serif: var(--font-instrument-serif), Georgia, serif;
+  --font-sans: var(--font-geist), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-hand: var(--font-caveat), cursive;
 }
 
 @layer base {
-  html {
-    color-scheme: light;
-  }
-
-  html.dark {
-    color-scheme: dark;
-    --color-ink: #EDE8DC;
-    --color-line: #34322C;
-    --color-accent: #6FB3AC;
-    --color-accent-soft: #1D3432;
-    --color-rust: #D26B4F;
-  }
-
   body {
-    font-family: var(--font-sans);
-    @apply antialiased;
+    @apply bg-bg text-ink font-sans antialiased;
   }
 
   h1,
   h2,
   h3 {
     font-family: var(--font-serif);
+    font-weight: 400;
   }
 
-  .mono-text {
-    font-family: var(--font-mono);
+  a {
+    @apply text-accent;
+  }
+
+  a:hover {
+    @apply text-ink;
   }
 
   ::selection {
-    @apply bg-accent text-white;
+    @apply bg-lilac;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
   }
 }
 
 @layer components {
-  .card,
-  .metric-card {
-    @apply bg-surface-light dark:bg-surface-dark border border-line rounded-2xl transition-colors;
+  /* Container e escala tipográfica do site inteiro. Ajustar tamanho aqui muda todas as páginas. */
+  .wrap {
+    max-width: 1120px;
+    margin-inline: auto;
+    padding-inline: 16px;
+  }
+  @media (min-width: 640px) {
+    .wrap {
+      padding-inline: 24px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .wrap {
+      padding-inline: 32px;
+    }
   }
 
-  /* Usado pela página de manutenção */
-  .metric-card {
-    @apply p-4;
+  .h-display {
+    font-family: var(--font-serif);
+    font-size: clamp(50px, 8vw, 88px);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+  }
+  .h-page {
+    font-family: var(--font-serif);
+    font-size: clamp(38px, 5.5vw, 62px);
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+  }
+  .h-section {
+    font-family: var(--font-serif);
+    font-size: clamp(32px, 4vw, 42px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .h-sub {
+    font-family: var(--font-serif);
+    font-size: clamp(26px, 3.2vw, 32px);
+    line-height: 1.05;
+  }
+  .h-block {
+    font-family: var(--font-serif);
+    font-size: clamp(24px, 3vw, 28px);
+    line-height: 1.08;
   }
 
-  .card-link {
-    @apply hover:border-accent;
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 
-  .section-title {
-    @apply font-mono text-xs uppercase tracking-[0.2em] text-stone-500 dark:text-stone-400 mb-5;
+  .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-subtle);
+  }
+
+  /* Anotação à mão — no máximo uma por seção, conforme o design */
+  .hand-note {
+    font-family: var(--font-hand);
+    font-size: 24px;
+    color: var(--color-hand);
+    display: inline-block;
+  }
+  @media (max-width: 639px) {
+    .hand-note {
+      font-size: 20px;
+    }
+  }
+
+  /* Texto em markdown (páginas do cofre, README e diário dos projetos) */
+  .md {
+    color: var(--color-ink-2);
+    font-size: 16.5px;
+    line-height: 1.7;
+  }
+  .md > * + * {
+    margin-top: 14px;
+  }
+  .md h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(26px, 3.2vw, 32px);
+    line-height: 1.1;
+    color: var(--color-ink);
+    margin-top: 36px;
+  }
+  .md h3 {
+    font-family: var(--font-serif);
+    font-size: 23px;
+    line-height: 1.15;
+    color: var(--color-ink);
+    margin-top: 26px;
+  }
+  .md h2 + *,
+  .md h3 + * {
+    margin-top: 8px;
+  }
+  .md strong {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .md a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  .md ul {
+    list-style: disc;
+    padding-left: 22px;
+  }
+  .md ol {
+    list-style: decimal;
+    padding-left: 22px;
+  }
+  .md li + li {
+    margin-top: 6px;
+  }
+  .md li::marker {
+    color: var(--color-subtle);
+  }
+  .md code {
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+    background: var(--color-chip);
+    border-radius: 6px;
+    padding: 2px 6px;
+    overflow-wrap: anywhere;
+  }
+  .md blockquote {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 16px;
+    padding: 14px 18px;
+    font-size: 15px;
+  }
+  .md hr {
+    border: 0;
+    border-top: 1px solid var(--color-line);
+    margin-block: 28px;
+  }
+  .md > :first-child {
+    margin-top: 0;
+  }
+}
+
+/* Reveal-on-scroll: estado inicial; lib/useReveal.ts marca data-in quando o bloco entra na tela.
+   Só opacity/transform, que o navegador anima sem recalcular layout. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--rv-delay, 0ms);
+}
+[data-reveal][data-in] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }

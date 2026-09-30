@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F3EC;color:#1E1C19;font-family:'Geist',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+input{font:inherit}
+a{color:#4F46C8;text-decoration:none}
+a:hover{color:#1E1C19}
+::selection{background:#E4DEF7}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#F6F3EC">
+
+<header style="position:sticky;top:0;z-index:20;background:rgba(246,243,236,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid #E4DDD0">
+  <div style="max-width:1200px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+    <button onClick="{{ goHome }}" style="font-family:'Instrument Serif',serif;font-size:27px;letter-spacing:-.01em;line-height:1">helio<em style="color:#4F46C8">filho</em>.dev</button>
+    <nav style="display:flex;gap:4px;flex-wrap:wrap;margin-left:auto;align-items:center">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="5">
+        <button onClick="{{ item.go }}" style="padding:8px 14px;border-radius:999px;font-size:14px;font-weight:500;transition:background .25s,color .25s;background:{{ item.bg }};color:{{ item.color }}" style-hover="color:#1E1C19">{{ item.label }}</button>
+      </sc-for>
+      <a href="Jornal Tech v3.dc.html" style="padding:8px 14px;border-radius:999px;font-size:14px;font-weight:500;color:#5E5950;display:flex;gap:6px;align-items:center"><span style="width:7px;height:7px;border-radius:50%;background:#E07A6E"></span>Jornal ↗</a>
+    </nav>
+    <button onClick="{{ goNews }}" style="white-space:nowrap;padding:10px 18px;border-radius:999px;background:#1E1C19;color:#FCFAF6;font-size:14px;font-weight:500;transition:transform .25s" style-hover="transform:translateY(-1px)">Assinar newsletter</button>
+  </div>
+</header>
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+<main data-screen-label="Home">
+  <div style="max-width:1200px;margin:0 auto;padding:0 32px">
+    <div data-reveal="1" style="display:flex;justify-content:space-between;gap:8px 24px;flex-wrap:wrap;white-space:nowrap;padding:18px 0;border-bottom:1px solid #E4DDD0;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8A8378">
+      <span>Edição nº 128 · terça, 29 set 2026</span>
+      <span>Tecnologia, IA e código — em português</span>
+      <a href="Jornal Tech v3.dc.html" style="color:#4F46C8">Hoje no jornal: 14 notícias ↗</a>
+    </div>
+
+    <section data-screen-label="Hero" style="padding:72px 0 80px">
+      <div data-reveal="1" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px">
+        <div style="position:relative">
+          <div style="width:136px;height:136px;border-radius:50%;overflow:hidden;border:4px solid #FCFAF6;box-shadow:0 0 0 1px #E4DDD0,0 20px 40px -20px rgba(30,28,25,.35)"><img src="assets/helio.jpg" alt="Hélio Filho" style="width:100%;height:100%;object-fit:cover"></div>
+          <span style="position:absolute;right:-6px;bottom:8px;width:22px;height:22px;border-radius:50%;background:#7BB58E;border:3px solid #F6F3EC"></span>
+        </div>
+        <div style="font-family:'Caveat',cursive;font-size:30px;color:#D0655A;transform:rotate(-2deg)">oi! eu sou o</div>
+        <h1 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(60px,9vw,112px);line-height:.88;letter-spacing:-.03em;margin:0">Hélio <em style="color:#4F46C8">Filho</em></h1>
+        <p style="font-size:19px;color:#5E5950;max-width:560px;line-height:1.55;margin:6px 0 0;text-wrap:pretty">Dev full-stack que cria conteúdo sobre tecnologia, IA e carreira. Projetos, materiais e um jornal tech — tudo mora aqui.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px">
+          <sc-for list="{{ socials }}" as="s" hint-placeholder-count="5">
+            <a href="#" style="padding:8px 14px;border-radius:999px;font-size:13.5px;font-weight:500;color:#1E1C19;background:{{ s.tone }};white-space:nowrap;transition:transform .25s" style-hover="transform:translateY(-2px)">{{ s.name }} · {{ s.count }}</a>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;margin-top:14px">
+          <div style="display:flex;align-items:center;border:1px solid #1E1C19;border-radius:999px;overflow:hidden">
+            <span style="padding:11px 16px;font-family:'Geist Mono',monospace;font-size:13px">contato@heliofilho.dev</span>
+            <button onClick="{{ copyEmail }}" style="padding:11px 16px;font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;background:#1E1C19;color:#FCFAF6;white-space:nowrap">{{ copyLabel }}</button>
+          </div>
+          <button onClick="{{ goNews }}" style="padding:11px 18px;font-size:14px;font-weight:500;border-bottom:1px solid #1E1C19;white-space:nowrap">Assinar a carta de sexta →</button>
+        </div>
+      </div>
+    </section>
+
+    <section data-reveal="1" style="border-top:1px solid #E4DDD0;padding:56px 0">
+      <div style="display:flex;flex-wrap:wrap;gap:48px 40px">
+        <div style="flex:2 1 520px;min-width:0">
+          <div style="display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:28px;flex-wrap:wrap">
+            <div>
+              <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8A8378">01 · Instagram</div>
+              <h2 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:52px;letter-spacing:-.02em;margin:6px 0 0;line-height:1">Reels <em style="color:#4F46C8">recentes</em> <span style="display:inline-block;font-family:'Caveat',cursive;font-style:normal;font-size:24px;color:#D0655A;transform:rotate(-4deg);vertical-align:middle;margin-left:6px;white-space:nowrap">YouTube vem aí!</span></h2>
+            </div>
+            <a href="#" style="font-size:14px;font-weight:500;white-space:nowrap">Ver no Instagram ↗</a>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:16px">
+            <sc-for list="{{ reels }}" as="v" hint-placeholder-count="4">
+              <a href="#" style="display:block;color:#1E1C19;background:#FCFAF6;border:1px solid #1E1C19;border-radius:16px;overflow:hidden;box-shadow:3px 3px 0 #1E1C19;transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s" style-hover="transform:translate(-2px,-2px);box-shadow:5px 5px 0 #1E1C19">
+                <div style="aspect-ratio:9/14;background:{{ v.tone }};position:relative;display:flex;align-items:center;justify-content:center">
+                  <span style="position:absolute;top:10px;left:10px;font-family:'Geist Mono',monospace;font-size:10.5px;background:#FCFAF6;padding:3px 8px;border-radius:999px">Reel</span>
+                  <span style="width:44px;height:44px;border-radius:50%;background:#FCFAF6;display:flex;align-items:center;justify-content:center;font-size:14px;padding-left:3px">▶</span>
+                  <span style="position:absolute;bottom:10px;left:10px;font-family:'Geist Mono',monospace;font-size:10.5px;background:#1E1C19;color:#FCFAF6;padding:3px 8px;border-radius:999px;white-space:nowrap">▶ {{ v.views }}</span>
+                </div>
+                <div style="padding:12px 14px 14px;font-weight:600;font-size:14.5px;line-height:1.3;text-wrap:pretty">{{ v.title }}</div>
+              </a>
+            </sc-for>
+          </div>
+        </div>
+        <aside style="flex:1 1 300px;min-width:0;background:#FCFAF6;border:1px solid #E4DDD0;border-radius:22px;padding:24px 26px">
+          <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8A8378">Nesta edição</div>
+          <h3 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:34px;margin:6px 0 4px;line-height:1.05">Hoje no <em>jornal</em></h3>
+          <p style="color:#5E5950;font-size:14px;line-height:1.55;margin:0 0 20px">Curado por robô, revisado por mim. Atualiza às 7h e às 18h.</p>
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{ newsTop }}" as="n" hint-placeholder-count="4">
+              <a href="Jornal Tech v3.dc.html" style="display:flex;gap:12px;padding:14px 0;border-top:1px solid #E4DDD0;color:#1E1C19">
+                <span style="width:8px;height:8px;border-radius:50%;margin-top:7px;flex:none;background:{{ n.dot }}"></span>
+                <span style="display:flex;flex-direction:column;gap:6px">
+                  <span style="font-size:15px;line-height:1.35;font-weight:500">{{ n.title }}</span>
+                  <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8A8378">{{ n.meta }}</span>
+                </span>
+              </a>
+            </sc-for>
+          </div>
+          <a href="Jornal Tech v3.dc.html" style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding:16px 18px;border-radius:14px;background:#4F46C8;color:#FCFAF6;font-weight:500;font-size:15px">Abrir o jornal completo <span>→</span></a>
+        </aside>
+      </div>
+    </section>
+
+    <section data-reveal="1" style="border-top:1px solid #E4DDD0;padding:56px 0">
+      <div style="display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:28px;flex-wrap:wrap">
+        <div>
+          <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8A8378">02 · Projetos</div>
+          <h2 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:52px;letter-spacing:-.02em;margin:6px 0 0;line-height:1">O que eu <em style="color:#4F46C8">construo</em> <span style="display:inline-block;font-family:'Caveat',cursive;font-style:normal;font-size:24px;color:#D0655A;transform:rotate(-3deg);vertical-align:middle;margin-left:6px">(e às vezes largo)</span></h2>
+        </div>
+        <button onClick="{{ goProjects }}" style="font-size:14px;font-weight:500;color:#4F46C8">Todos os projetos →</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ projectsTop }}" as="p" hint-placeholder-count="4">
+          <button onClick="{{ p.open }}" style="display:grid;grid-template-columns:40px 56px minmax(0,1fr) auto;gap:20px;align-items:center;text-align:left;padding:16px 20px;background:#FCFAF6;border:1px solid #E4DDD0;border-radius:16px;transition:transform .3s,border-color .3s" style-hover="transform:translateX(4px);border-color:#1E1C19">
+            <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#8A8378">{{ p.n }}.</span>
+            <span style="width:56px;height:56px;border-radius:14px;background:{{ p.tone }};display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-style:italic;font-size:32px">{{ p.initial }}</span>
+            <span style="display:flex;flex-direction:column;gap:4px;min-width:0">
+              <span style="font-weight:600;font-size:17px">{{ p.name }}</span>
+              <span style="color:#5E5950;font-size:14.5px">{{ p.desc }}</span>
+              <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8A8378">{{ p.stack }}</span>
+            </span>
+            <span style="padding:6px 12px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap;background:{{ p.statusBg }}">{{ p.status }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </section>
+
+    <section data-reveal="1" style="border-top:1px solid #E4DDD0;padding:56px 0">
+      <div style="display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:28px;flex-wrap:wrap">
+        <div>
+          <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8A8378">03 · Cofre</div>
+          <h2 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:52px;letter-spacing:-.02em;margin:6px 0 0;line-height:1">Materiais <em style="color:#4F46C8">gratuitos</em> <span style="display:inline-block;font-family:'Caveat',cursive;font-style:normal;font-size:24px;color:#D0655A;transform:rotate(-3deg);vertical-align:middle;margin-left:6px">sem cadastro, juro</span></h2>
+          <p style="color:#5E5950;margin:10px 0 0">Tudo que eu mostro nos vídeos, organizado no Notion. Sem cadastro.</p>
+        </div>
+        <button onClick="{{ goCofre }}" style="font-size:14px;font-weight:500;color:#4F46C8">Abrir o cofre →</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:14px">
+        <sc-for list="{{ cofreTop }}" as="c" hint-placeholder-count="4">
+          <button onClick="{{ c.open }}" style="position:relative;display:flex;gap:18px;align-items:center;text-align:left;padding:20px 22px;background:#FCFAF6;border:1px solid #E4DDD0;border-radius:18px 4px 18px 18px;transition:transform .3s,box-shadow .3s" style-hover="transform:translateY(-3px);box-shadow:0 16px 32px -22px rgba(30,28,25,.4)"><span style="position:absolute;top:-1px;right:-1px;width:24px;height:24px;background:linear-gradient(225deg,#F6F3EC 0 50%,#E9E2D4 50%);border-bottom-left-radius:4px;box-shadow:-1px 1px 2px rgba(30,28,25,.08)"></span>
+            <span style="width:48px;height:48px;border-radius:50%;flex:none;background:{{ c.tone }};display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-style:italic;font-size:22px">{{ c.initial }}</span>
+            <span style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:0">
+              <span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="font-family:'Instrument Serif',serif;font-size:24px;line-height:1.1">{{ c.title }}</span><sc-if value="{{ c.isNew }}"><span style="font-family:'Geist Mono',monospace;font-size:9.5px;letter-spacing:.12em;padding:3px 7px;border-radius:999px;background:#E07A6E;color:#FCFAF6">NOVO</span></sc-if></span>
+              <span style="color:#5E5950;font-size:14px">{{ c.desc }}</span>
+            </span>
+            <span style="font-size:18px;color:#8A8378">→</span>
+          </button>
+        </sc-for>
+      </div>
+    </section>
+
+    <section data-reveal="1" style="padding:24px 0 56px">
+      <div style="background:#E4DEF7;border:1px solid #1E1C19;box-shadow:4px 4px 0 #1E1C19;border-radius:28px;padding:56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:40px;align-items:center">
+        <div>
+          <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#4F46C8">04 · Newsletter</div>
+          <h2 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,5vw,60px);letter-spacing:-.02em;margin:8px 0 0;line-height:1">Uma carta por semana. <em>Sem enrolação.</em></h2>
+          <p style="color:#3E3A34;font-size:16px;line-height:1.55;margin:16px 0 0;max-width:460px">O resumo do jornal, o bastidor dos vídeos e o material novo do cofre — toda sexta, 7h.</p>
+        </div>
+        <div>
+          <sc-if value="{{ notSubscribed }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:8px;background:#FCFAF6;border-radius:999px;padding:6px;flex-wrap:wrap">
+              <input value="{{ email }}" onChange="{{ onEmail }}" placeholder="seu@email.com" style="flex:1;min-width:160px;border:0;outline:0;background:transparent;padding:12px 16px;font-size:15px">
+              <button onClick="{{ subscribe }}" style="padding:12px 22px;border-radius:999px;background:#1E1C19;color:#FCFAF6;font-weight:500;font-size:15px">Assinar</button>
+            </div>
+            <div style="font-family:'Geist Mono',monospace;font-size:11px;color:#5E5950;margin-top:12px;padding-left:16px">2.140 leitores · sai quando quiser</div>
+          </sc-if>
+          <sc-if value="{{ subscribed }}">
+            <div style="background:#FCFAF6;border-radius:24px;padding:24px 28px"><div style="font-family:'Instrument Serif',serif;font-size:30px">Pronto, tá dentro. ✓</div><div style="color:#5E5950;margin-top:6px">A próxima carta chega sexta às 7h.</div></div>
+          </sc-if>
+        </div>
+      </div>
+    </section>
+
+    <section data-reveal="1" style="border-top:1px solid #E4DDD0;padding:56px 0">
+      <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8A8378">05 · Redes</div>
+      <h2 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:52px;letter-spacing:-.02em;margin:6px 0 28px;line-height:1">Me acompanhe <em style="color:#4F46C8">por aí</em></h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:14px">
+        <sc-for list="{{ socials }}" as="s" hint-placeholder-count="5">
+          <a href="#" style="display:flex;flex-direction:column;gap:28px;padding:20px;border-radius:20px;color:#1E1C19;background:{{ s.tone }};transition:transform .3s" style-hover="transform:translateY(-4px)">
+            <span style="display:flex;justify-content:space-between;font-weight:600">{{ s.name }}<span>↗</span></span>
+            <span><span style="display:block;font-family:'Instrument Serif',serif;font-size:36px;line-height:1">{{ s.count }}</span><span style="font-family:'Geist Mono',monospace;font-size:11px;color:#5E5950">{{ s.handle }}</span></span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <section id="midiakit" data-reveal="1" style="border-top:1px solid #E4DDD0;padding:56px 0 72px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:20px">
+      <div style="background:#F7E1D3;border:1px solid #1E1C19;box-shadow:4px 4px 0 #1E1C19;border-radius:28px;padding:36px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8A5A3E">06 · Parcerias</div>
+        <h3 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:40px;margin:0;line-height:1.05">Marcas que fazem sentido pra quem programa.</h3>
+        <p style="color:#5E4A3E;margin:0;line-height:1.55">Integrações em vídeo, newsletter e jornal. Audiência de devs e estudantes de tecnologia no Brasil.</p>
+        <a href="#" style="align-self:flex-start;margin-top:8px;padding:12px 20px;border-radius:999px;background:#1E1C19;color:#FCFAF6;font-weight:500">Baixar media kit ↓</a>
+      </div>
+      <div style="background:#FCFAF6;border:1px solid #E4DDD0;border-radius:28px;padding:36px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8A8378">07 · Contato</div>
+        <h3 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:40px;margin:0;line-height:1.05">Bora conversar?</h3>
+        <p style="color:#5E5950;margin:0;line-height:1.55">Projeto, palestra, parceria ou só uma dúvida de código. Respondo em até 2 dias úteis.</p>
+        <div style="display:flex;flex-direction:column;margin-top:8px">
+          <a href="mailto:contato@heliofilho.dev" style="display:flex;justify-content:space-between;padding:12px 0;border-top:1px solid #E4DDD0;color:#1E1C19">contato@heliofilho.dev <span>→</span></a>
+          <a href="#" style="display:flex;justify-content:space-between;padding:12px 0;border-top:1px solid #E4DDD0;color:#1E1C19">LinkedIn <span>↗</span></a>
+          <a href="#" style="display:flex;justify-content:space-between;padding:12px 0;border-top:1px solid #E4DDD0;border-bottom:1px solid #E4DDD0;color:#1E1C19">GitHub <span>↗</span></a>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+</sc-if>
+
+<sc-if value="{{ isSobre }}">
+<main data-screen-label="Sobre" style="max-width:1200px;margin:0 auto;padding:64px 32px 80px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:64px">
+  <div data-reveal="1" style="position:sticky;top:96px;align-self:start">
+    <div style="border-radius:32px;overflow:hidden;aspect-ratio:4/5;background:#DDEEE2"><img src="assets/helio.jpg" alt="Hélio Filho" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+    <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8A8378;margin-top:14px">No estúdio, gravando o vídeo nº 96</div>
+  </div>
+  <div data-reveal="1">
+    <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#4F46C8">Sobre</div>
+    <h1 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(48px,6vw,76px);line-height:.98;letter-spacing:-.025em;margin:10px 0 28px">De programador a <em style="color:#4F46C8">criador</em> — sem largar o código.</h1>
+    <div style="font-size:18px;line-height:1.7;color:#3E3A34;display:flex;flex-direction:column;gap:18px;max-width:620px">
+      <p style="margin:0">Passei anos escrevendo APIs em .NET e front-ends em React. Em algum momento comecei a gravar o que eu aprendia — e as pessoas começaram a assistir.</p>
+      <p style="margin:0">Hoje divido o tempo entre construir projetos pessoais e transformar esse processo em vídeo, newsletter e material aberto. A regra é simples: só ensino o que eu mesmo coloquei em produção.</p>
+    </div>
+    <h2 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:36px;margin:48px 0 16px">Agora</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+      <div style="background:#E4DEF7;border-radius:18px;padding:18px"><div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#4F46C8">Construindo</div><div style="font-weight:500;margin-top:8px">Jornal Tech automatizado</div></div>
+      <div style="background:#F5EDC6;border-radius:18px;padding:18px"><div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#7A6420">Gravando</div><div style="font-weight:500;margin-top:8px">Série de IA no dia a dia do dev</div></div>
+      <div style="background:#DDEEE2;border-radius:18px;padding:18px"><div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#3E6A4E">Estudando</div><div style="font-weight:500;margin-top:8px">Agentes e embeddings</div></div>
+    </div>
+    <h2 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:36px;margin:48px 0 8px">Trajetória</h2>
+    <div style="display:flex;flex-direction:column">
+      <sc-for list="{{ timeline }}" as="t" hint-placeholder-count="4">
+        <div style="display:grid;grid-template-columns:140px minmax(0,1fr);gap:20px;padding:18px 0;border-top:1px solid #E4DDD0">
+          <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#8A8378;padding-top:3px">{{ t.when }}</span>
+          <span><span style="display:block;font-weight:600;font-size:16.5px">{{ t.role }}</span><span style="display:block;color:#5E5950;font-size:15px;margin-top:4px">{{ t.desc }}</span></span>
+        </div>
+      </sc-for>
+    </div>
+    <h2 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:36px;margin:48px 0 16px">Stack do dia a dia</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <sc-for list="{{ stack }}" as="s" hint-placeholder-count="10">
+        <span style="padding:8px 14px;border-radius:999px;border:1px solid #E4DDD0;background:#FCFAF6;font-size:14px">{{ s }}</span>
+      </sc-for>
+    </div>
+  </div>
+</main>
+</sc-if>
+
+<sc-if value="{{ isProjects }}">
+<main data-screen-label="Projetos" style="max-width:1200px;margin:0 auto;padding:64px 32px 80px">
+  <div data-reveal="1" style="display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;padding-bottom:28px;border-bottom:1px solid #E4DDD0">
+    <div>
+      <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#4F46C8">Projetos pessoais</div>
+      <h1 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(48px,6vw,76px);line-height:.98;letter-spacing:-.025em;margin:10px 0 0">No ar, em obra <em style="color:#4F46C8">e na gaveta.</em></h1>
+    </div>
+    <div style="font-family:'Geist Mono',monospace;font-size:12px;color:#8A8378">{{ projectCount }}</div>
+  </div>
+  <div data-reveal="1" style="display:flex;gap:8px;flex-wrap:wrap;margin:24px 0">
+    <sc-for list="{{ projectFilters }}" as="f" hint-placeholder-count="4">
+      <button onClick="{{ f.pick }}" style="padding:8px 16px;border-radius:999px;font-size:13.5px;font-weight:500;transition:all .25s;background:{{ f.bg }};color:{{ f.color }}">{{ f.label }}</button>
+    </sc-for>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{ projectsFiltered }}" as="p" hint-placeholder-count="5">
+      <button onClick="{{ p.open }}" style="display:grid;grid-template-columns:40px 64px minmax(0,1fr) auto;gap:20px;align-items:center;text-align:left;padding:18px 22px;background:#FCFAF6;border:1px solid #E4DDD0;border-radius:18px;transition:transform .3s,border-color .3s" style-hover="transform:translateX(4px);border-color:#1E1C19">
+        <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#8A8378">{{ p.n }}.</span>
+        <span style="width:64px;height:64px;border-radius:16px;background:{{ p.tone }};display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-style:italic;font-size:36px">{{ p.initial }}</span>
+        <span style="display:flex;flex-direction:column;gap:4px;min-width:0">
+          <span style="font-weight:600;font-size:18px">{{ p.name }}</span>
+          <span style="color:#5E5950;font-size:15px">{{ p.desc }}</span>
+          <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8A8378">{{ p.type }} · {{ p.stack }} · {{ p.year }}</span>
+        </span>
+        <span style="padding:6px 12px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap;background:{{ p.statusBg }}">{{ p.status }}</span>
+      </button>
+    </sc-for>
+  </div>
+</main>
+</sc-if>
+
+<sc-if value="{{ isCase }}">
+<main data-screen-label="Case study" style="max-width:1000px;margin:0 auto;padding:48px 32px 80px">
+  <button onClick="{{ goProjects }}" style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8A8378">← Projetos</button>
+  <div data-reveal="1" style="margin-top:28px">
+    <span style="padding:6px 12px;border-radius:999px;font-size:12px;font-weight:500;background:{{ cp.statusBg }}">{{ cp.status }}</span>
+    <h1 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(52px,7vw,92px);line-height:.95;letter-spacing:-.03em;margin:18px 0 16px">{{ cp.name }}</h1>
+    <p style="font-size:21px;line-height:1.5;color:#5E5950;max-width:680px;margin:0">{{ cp.desc }}</p>
+  </div>
+  <div data-reveal="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0;margin:40px 0;border-top:1px solid #1E1C19;border-bottom:1px solid #E4DDD0">
+    <div style="padding:16px 16px 16px 0"><div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8A8378">Tipo</div><div style="margin-top:6px;font-weight:500">{{ cp.type }}</div></div>
+    <div style="padding:16px 16px 16px 0"><div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8A8378">Stack</div><div style="margin-top:6px;font-weight:500">{{ cp.stack }}</div></div>
+    <div style="padding:16px 16px 16px 0"><div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8A8378">Ano</div><div style="margin-top:6px;font-weight:500">{{ cp.year }}</div></div>
+    <div style="padding:16px 16px 16px 0"><div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8A8378">Links</div><div style="margin-top:6px;font-weight:500;display:flex;gap:14px"><a href="#">GitHub ↗</a><a href="#">Ao vivo ↗</a></div></div>
+  </div>
+  <div data-reveal="1" style="aspect-ratio:16/8;border-radius:28px;background:{{ cp.tone }};display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-style:italic;font-size:160px;color:rgba(30,28,25,.8)">{{ cp.initial }}</div>
+  <div style="display:flex;flex-direction:column;gap:48px;margin-top:56px">
+    <section data-reveal="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:24px">
+      <h2 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:34px;margin:0;line-height:1.05">O problema</h2>
+      <p style="grid-column:span 2;margin:0;font-size:18px;line-height:1.7;color:#3E3A34">{{ cp.problem }}</p>
+    </section>
+    <section data-reveal="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:24px">
+      <h2 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:34px;margin:0;line-height:1.05">A solução</h2>
+      <p style="grid-column:span 2;margin:0;font-size:18px;line-height:1.7;color:#3E3A34">{{ cp.solution }}</p>
+    </section>
+    <section data-reveal="1">
+      <h2 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:34px;margin:0 0 20px">Arquitetura</h2>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:28px;border-radius:24px;background:#FCFAF6;border:1px solid #E4DDD0">
+        <sc-for list="{{ cpArch }}" as="a" hint-placeholder-count="4">
+          <span style="display:flex;align-items:center;gap:10px"><span style="padding:12px 16px;border-radius:12px;border:1px solid #1E1C19;background:#F6F3EC;font-family:'Geist Mono',monospace;font-size:12.5px">{{ a.label }}</span><span style="color:#8A8378;display:{{ a.arrow }}">→</span></span>
+        </sc-for>
+      </div>
+    </section>
+    <section data-reveal="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:20px">
+      <div style="background:#DDEEE2;border-radius:24px;padding:28px">
+        <h3 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:28px;margin:0 0 14px">Decisões técnicas</h3>
+        <sc-for list="{{ cpDecisions }}" as="d" hint-placeholder-count="3"><div style="padding:10px 0;border-top:1px solid rgba(30,28,25,.12);line-height:1.5;font-size:15.5px">{{ d }}</div></sc-for>
+      </div>
+      <div style="background:#F7E1D3;border-radius:24px;padding:28px">
+        <h3 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:28px;margin:0 0 14px">Trade-offs</h3>
+        <sc-for list="{{ cpTradeoffs }}" as="d" hint-placeholder-count="3"><div style="padding:10px 0;border-top:1px solid rgba(30,28,25,.12);line-height:1.5;font-size:15.5px">{{ d }}</div></sc-for>
+      </div>
+    </section>
+  </div>
+</main>
+</sc-if>
+
+<sc-if value="{{ isCofre }}">
+<main data-screen-label="Cofre" style="max-width:1200px;margin:0 auto;padding:64px 32px 80px">
+  <div data-reveal="1" style="text-align:center;max-width:720px;margin:0 auto 40px">
+    <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#4F46C8">Cofre no Notion</div>
+    <h1 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(56px,8vw,104px);line-height:.92;letter-spacing:-.03em;margin:10px 0 18px">O <em style="color:#4F46C8">cofre</em></h1>
+    <p style="font-size:18px;color:#5E5950;line-height:1.55;margin:0">Tudo que eu uso e mostro nos vídeos: guias, templates, prompts e a página completa de cada vídeo. Sem e-mail, sem cadastro.</p>
+  </div>
+  <div data-reveal="1" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid #E4DDD0;border-bottom:1px solid #E4DDD0;margin-bottom:24px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <sc-for list="{{ cofreFilters }}" as="f" hint-placeholder-count="5">
+        <button onClick="{{ f.pick }}" style="padding:8px 16px;border-radius:999px;font-size:13.5px;font-weight:500;transition:all .25s;background:{{ f.bg }};color:{{ f.color }}">{{ f.label }}</button>
+      </sc-for>
+    </div>
+    <input value="{{ q }}" onChange="{{ onQ }}" placeholder="Buscar no cofre…" style="padding:10px 16px;border-radius:999px;border:1px solid #E4DDD0;background:#FCFAF6;outline:0;font-size:14px;min-width:240px">
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:16px">
+    <sc-for list="{{ cofreFiltered }}" as="c" hint-placeholder-count="6">
+      <button onClick="{{ c.open }}" style="position:relative;text-align:left;display:flex;flex-direction:column;gap:18px;padding:24px;background:#FCFAF6;border:1px solid #E4DDD0;border-radius:22px 4px 22px 22px;transition:transform .3s,box-shadow .3s" style-hover="transform:translateY(-4px);box-shadow:0 20px 36px -24px rgba(30,28,25,.4)">
+        <span style="position:absolute;top:-1px;right:-1px;width:28px;height:28px;background:linear-gradient(225deg,#F6F3EC 0 50%,#E9E2D4 50%);border-bottom-left-radius:4px;box-shadow:-1px 1px 2px rgba(30,28,25,.08)"></span>
+        <span style="display:flex;justify-content:space-between;align-items:center">
+          <span style="width:52px;height:52px;border-radius:50%;background:{{ c.tone }};display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-style:italic;font-size:24px">{{ c.initial }}</span>
+          <span style="display:flex;gap:6px;align-items:center"><sc-if value="{{ c.isNew }}"><span style="font-family:'Geist Mono',monospace;font-size:9.5px;letter-spacing:.12em;padding:3px 7px;border-radius:999px;background:#E07A6E;color:#FCFAF6">NOVO</span></sc-if><span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8A8378">{{ c.type }}</span></span>
+        </span>
+        <span style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-family:'Instrument Serif',serif;font-size:28px;line-height:1.08">{{ c.title }}</span>
+          <span style="color:#5E5950;font-size:14.5px;line-height:1.5">{{ c.desc }}</span>
+        </span>
+        <span style="font-size:13.5px;font-weight:500;color:#4F46C8">{{ c.cta }}</span>
+      </button>
+    </sc-for>
+  </div>
+  <sc-if value="{{ cofreEmpty }}"><div style="text-align:center;padding:48px;color:#8A8378">Nada por aqui com esse filtro.</div></sc-if>
+</main>
+</sc-if>
+
+<sc-if value="{{ isVideo }}">
+<main data-screen-label="Página do vídeo" style="max-width:1200px;margin:0 auto;padding:40px 32px 80px">
+  <div style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8A8378;display:flex;gap:10px"><button onClick="{{ goCofre }}" style="color:#8A8378">Cofre</button><span>/</span><span>Vídeos</span><span>/</span><span style="color:#1E1C19">Jornal automático</span></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:48px;margin-top:28px">
+    <div data-reveal="1" style="grid-column:span 2;min-width:0">
+      <div style="aspect-ratio:16/9;border-radius:24px;background:#E4DEF7;display:flex;align-items:center;justify-content:center;position:relative">
+        <span style="width:84px;height:84px;border-radius:50%;background:#FCFAF6;display:flex;align-items:center;justify-content:center;font-size:24px;padding-left:5px;box-shadow:0 16px 32px -16px rgba(30,28,25,.4)">▶</span>
+        <span style="position:absolute;bottom:16px;right:16px;font-family:'Geist Mono',monospace;font-size:12px;background:#1E1C19;color:#FCFAF6;padding:5px 10px;border-radius:999px">14:22</span>
+      </div>
+      <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#4F46C8;margin-top:28px">Vídeo nº 96 · 22 set 2026</div>
+      <h1 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,5vw,60px);line-height:1;letter-spacing:-.02em;margin:10px 0 18px">Montei um jornal de IA que se escreve sozinho</h1>
+      <p style="font-size:18px;line-height:1.7;color:#3E3A34;margin:0 0 36px;max-width:680px">Neste vídeo eu mostro o pipeline inteiro: 10 fontes de RSS, um coletor em .NET rodando como cron, a regra de prioridade e como o site detecta quando uma notícia está “em alta”. Tudo que aparece na tela está nos materiais ao lado.</p>
+      <h2 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:32px;margin:0 0 8px">Capítulos</h2>
+      <sc-for list="{{ chapters }}" as="c" hint-placeholder-count="5">
+        <div style="display:grid;grid-template-columns:72px minmax(0,1fr);gap:16px;padding:14px 0;border-top:1px solid #E4DDD0"><span style="font-family:'Geist Mono',monospace;font-size:13px;color:#4F46C8">{{ c.t }}</span><span style="font-size:16px">{{ c.label }}</span></div>
+      </sc-for>
+    </div>
+    <aside data-reveal="1" style="display:flex;flex-direction:column;gap:16px;align-self:start;position:sticky;top:96px">
+      <div style="background:#FCFAF6;border:1px solid #E4DDD0;border-radius:24px;padding:24px">
+        <h3 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:28px;margin:0 0 12px">Materiais do vídeo</h3>
+        <sc-for list="{{ videoMaterials }}" as="m" hint-placeholder-count="4">
+          <a href="#" style="display:flex;gap:14px;align-items:center;padding:12px 0;border-top:1px solid #E4DDD0;color:#1E1C19">
+            <span style="flex:none;width:36px;height:36px;border-radius:10px;background:{{ m.tone }};display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:11px;flex:none">{{ m.tag }}</span>
+            <span style="flex:1;display:flex;flex-direction:column"><span style="font-weight:500;font-size:15px">{{ m.label }}</span><span style="font-size:12.5px;color:#8A8378">{{ m.sub }}</span></span>
+            <span style="color:#8A8378">↗</span>
+          </a>
+        </sc-for>
+      </div>
+      <div style="background:#DDEEE2;border-radius:24px;padding:22px;font-size:14.5px;line-height:1.5;color:#2E4A38"><strong style="font-weight:600">Salvo no cofre.</strong> Esta página fica disponível pra sempre em Cofre → Vídeos.</div>
+      <div style="background:#F5EDC6;border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:12px">
+        <span style="font-family:'Instrument Serif',serif;font-size:24px;line-height:1.1">Quer o próximo material antes de todo mundo?</span>
+        <button onClick="{{ goNews }}" style="align-self:flex-start;padding:10px 18px;border-radius:999px;background:#1E1C19;color:#FCFAF6;font-weight:500;font-size:14px">Assinar newsletter</button>
+      </div>
+    </aside>
+  </div>
+</main>
+</sc-if>
+
+<sc-if value="{{ isNewsletter }}">
+<main data-screen-label="Newsletter" style="max-width:880px;margin:0 auto;padding:80px 32px">
+  <div data-reveal="1" style="text-align:center">
+    <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#4F46C8">Newsletter · toda sexta, 7h</div>
+    <h1 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(52px,8vw,100px);line-height:.92;letter-spacing:-.03em;margin:14px 0 20px">A carta do <em style="color:#4F46C8">Hélio</em></h1>
+    <p style="font-size:19px;line-height:1.55;color:#5E5950;max-width:560px;margin:0 auto 36px">O melhor da semana no jornal, o bastidor dos vídeos e o material novo do cofre. Cinco minutos de leitura.</p>
+    <sc-if value="{{ notSubscribed }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;gap:8px;background:#FCFAF6;border:1px solid #E4DDD0;border-radius:999px;padding:6px;max-width:520px;margin:0 auto;box-shadow:0 20px 40px -28px rgba(30,28,25,.4)">
+        <input value="{{ email }}" onChange="{{ onEmail }}" placeholder="seu@email.com" style="flex:1;min-width:0;border:0;outline:0;background:transparent;padding:14px 18px;font-size:16px">
+        <button onClick="{{ subscribe }}" style="padding:14px 26px;border-radius:999px;background:#1E1C19;color:#FCFAF6;font-weight:500;font-size:16px">Assinar grátis</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{ subscribed }}">
+      <div style="display:inline-block;background:#DDEEE2;border-radius:24px;padding:22px 32px"><span style="font-family:'Instrument Serif',serif;font-size:30px">Pronto, tá dentro. ✓</span></div>
+    </sc-if>
+    <div style="font-family:'Geist Mono',monospace;font-size:11.5px;color:#8A8378;margin-top:14px">2.140 leitores · sem spam · sai com 1 clique</div>
+  </div>
+  <div data-reveal="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:64px 0">
+    <div style="background:#E4DEF7;border-radius:20px;padding:22px"><div style="font-family:'Instrument Serif',serif;font-size:26px">Resumo do jornal</div><div style="color:#4A4466;font-size:14.5px;margin-top:6px;line-height:1.5">As 5 notícias que importaram, com contexto.</div></div>
+    <div style="background:#F7E1D3;border-radius:20px;padding:22px"><div style="font-family:'Instrument Serif',serif;font-size:26px">Bastidor</div><div style="color:#5E4A3E;font-size:14.5px;margin-top:6px;line-height:1.5">O que deu errado no vídeo da semana.</div></div>
+    <div style="background:#DDEEE2;border-radius:20px;padding:22px"><div style="font-family:'Instrument Serif',serif;font-size:26px">Do cofre</div><div style="color:#3E5A48;font-size:14.5px;margin-top:6px;line-height:1.5">Um material novo, direto no Notion.</div></div>
+  </div>
+  <div data-reveal="1">
+    <h2 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:36px;margin:0 0 8px">Edições anteriores</h2>
+    <sc-for list="{{ editions }}" as="e" hint-placeholder-count="4">
+      <a href="#" style="display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:16px;align-items:center;padding:16px 0;border-top:1px solid #E4DDD0;color:#1E1C19">
+        <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#8A8378">nº {{ e.n }}</span>
+        <span style="font-size:17px;font-weight:500">{{ e.title }}</span>
+        <span style="font-family:'Geist Mono',monospace;font-size:11.5px;color:#8A8378">{{ e.date }}</span>
+      </a>
+    </sc-for>
+  </div>
+</main>
+</sc-if>
+
+<footer style="border-top:1px solid #E4DDD0">
+  <div style="max-width:1200px;margin:0 auto;padding:48px 32px 40px;display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap">
+    <div style="font-family:'Instrument Serif',serif;font-size:clamp(48px,8vw,112px);line-height:.85;letter-spacing:-.03em">helio<em style="color:#4F46C8">filho</em>.dev</div>
+    <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;font-family:'Geist Mono',monospace;font-size:11.5px;color:#8A8378">
+      <div style="display:flex;gap:16px"><a href="#">YouTube</a><a href="#">Instagram</a><a href="#">TikTok</a><a href="#">GitHub</a></div>
+      <span>© 2026 · feito com Next.js</span>
+    </div>
+  </div>
+</footer>
+
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Animação&quot;}}">
+class Component extends DCLogic {
+  state = { page: 'home', variant: null, projectId: 'jornal', pFilter: 'Tudo', cFilter: 'Tudo', q: '', email: '', subscribed: false, copied: false };
+
+  componentDidMount() { this.reveal(); }
+  componentDidUpdate(pp, ps) {
+    const v = s => s.variant ?? this.props.homeVariant;
+    if (ps.page !== this.state.page || ps.projectId !== this.state.projectId) window.scrollTo({ top: 0 });
+    if (ps.page !== this.state.page || ps.projectId !== this.state.projectId || v(ps) !== v(this.state) || pp.homeVariant !== this.props.homeVariant) requestAnimationFrame(() => this.reveal());
+  }
+  componentWillUnmount() { this.io && this.io.disconnect(); }
+  reveal() {
+    if (this.props.motion === false) return;
+    if (!this.fb) this.fb = setTimeout(() => document.querySelectorAll('[data-rv]').forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; }), 1500);
+    const els = [...document.querySelectorAll('[data-reveal]:not([data-rv])')];
+    if (!this.io) this.io = new IntersectionObserver(entries => {
+      let i = 0;
+      entries.forEach(e => { if (e.isIntersecting) { const el = e.target; el.style.transitionDelay = (i++ * 80) + 'ms'; el.style.opacity = '1'; el.style.transform = 'none'; this.io.unobserve(el); } });
+    }, { threshold: 0.08 });
+    els.forEach(el => {
+      el.setAttribute('data-rv', '1');
+      el.style.opacity = '0'; el.style.transform = 'translateY(18px)';
+      el.style.transition = 'opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1)';
+      this.io.observe(el);
+    });
+  }
+  go = page => () => this.setState({ page });
+  openProject = id => this.setState({ page: 'case', projectId: id });
+
+  renderVals() {
+    const s = this.state;
+    const variant = s.variant ?? this.props.homeVariant ?? 'A';
+    const T = { lilac: '#E4DEF7', mint: '#DDEEE2', peach: '#F7E1D3', butter: '#F5EDC6', sky: '#DCE8F3', rose: '#F4D9DC' };
+    const statusBg = { 'No ar': T.mint, 'Em construção': T.butter, 'Ideia': T.sky };
+    const chip = (active) => ({ bg: active ? '#1E1C19' : '#EDE8DE', color: active ? '#FCFAF6' : '#5E5950' });
+
+    const nav = [['home', 'Início'], ['sobre', 'Sobre'], ['projects', 'Projetos'], ['cofre', 'Cofre'], ['newsletter', 'Newsletter']];
+    const cur = s.page === 'case' ? 'projects' : s.page === 'video' ? 'cofre' : s.page;
+    const navItems = nav.map(([k, label]) => ({ label, go: this.go(k), bg: cur === k ? '#EDE8DE' : 'transparent', color: cur === k ? '#1E1C19' : '#5E5950' }));
+
+    const projects = [
+      { id: 'jornal', name: 'Jornal Tech', initial: 'J', tone: T.lilac, type: 'Produto', year: '2026', status: 'Em construção', stack: '.NET 8 · Next.js · Supabase', desc: 'Pipeline que coleta, ranqueia e publica notícias de IA todo dia.',
+        problem: 'Acompanhar IA virou trabalho em tempo integral: dezenas de fontes, muito ruído e pouca curadoria em português. Eu gastava a manhã lendo e ainda perdia o que importava.',
+        solution: 'Um coletor em .NET roda 2x por dia, lê 10 fontes via RSS, classifica cada item por prioridade e marca como “em alta” quando a mesma notícia aparece em 2+ fontes no mesmo dia. O Next.js só consome a lista pronta.',
+        arch: ['RSS · 10 fontes', 'Coletor .NET (cron)', 'Ranking + Em alta', 'Supabase Postgres', 'jornal.heliofilho.dev'],
+        decisions: ['Banco Supabase separado do portfólio — isolamento real de credenciais.', 'Worker simples em vez de Clean Architecture completa: não é domínio complexo.', 'Detecção de “em alta” por sobreposição de palavras no título (MVP).'],
+        tradeoffs: ['Heurística de título erra em manchetes muito diferentes — embeddings depois.', 'RSS muda sem aviso; exige monitorar fontes quebradas.', 'Atualização 2x/dia, não em tempo real.'] },
+      { id: 'api', name: 'Portfolio API', initial: 'P', tone: T.mint, type: 'Open source', year: '2025', status: 'No ar', stack: '.NET 8 · Clean Architecture · Postgres', desc: 'Backend deste site: perfil, projetos, skills e case studies.',
+        problem: 'Queria editar o conteúdo do portfólio sem redeploy do front e praticar arquitetura de verdade.',
+        solution: 'API em 4 camadas (Domain, Application, Infrastructure, API) com Repository Pattern, soft delete e endpoints de escrita protegidos por chave.',
+        arch: ['Next.js', 'API .NET 8', 'Repositories', 'Supabase Postgres'],
+        decisions: ['Clean Architecture para isolar domínio de infraestrutura.', 'Soft delete em todas as entidades.', 'Docker multi-stage para deploy.'],
+        tradeoffs: ['Mais camadas do que o tamanho exige.', 'Sem testes automatizados ainda.'] },
+      { id: 'manychat', name: 'ManyChat Bridge', initial: 'M', tone: T.peach, type: 'Automação', year: '2025', status: 'No ar', stack: 'C# · Webhooks · Instagram', desc: 'Responde DMs e comentários com o material certo do cofre.',
+        problem: 'Cada vídeo gerava centenas de comentários pedindo o link do material.',
+        solution: 'Webhook recebe a palavra-chave, busca o item no cofre e responde por DM com o link da página do vídeo.',
+        arch: ['Instagram', 'ManyChat', 'Webhook C#', 'Cofre Notion'],
+        decisions: ['Palavra-chave por vídeo, mapeada no banco.', 'Fallback para a home do cofre.'],
+        tradeoffs: ['Dependente de limites da API do Instagram.'] },
+      { id: 'cofre', name: 'Cofre', initial: 'C', tone: T.butter, type: 'Produto', year: '2025', status: 'No ar', stack: 'Notion · Next.js', desc: 'Biblioteca aberta com guias, templates e páginas de vídeo.',
+        problem: 'Materiais espalhados em links soltos, drives e bio do Instagram.',
+        solution: 'Um workspace público no Notion espelhado no site, com uma página por vídeo.',
+        arch: ['Notion', 'API Notion', 'Next.js (ISR)'],
+        decisions: ['Notion como CMS: edito do celular.', 'Cache com revalidação por hora.'],
+        tradeoffs: ['Layout limitado aos blocos do Notion.'] },
+      { id: 'quiz', name: 'Jogo diário', initial: 'Q', tone: T.sky, type: 'Produto', year: '2026', status: 'Ideia', stack: 'Next.js · Supabase Auth', desc: 'Um quiz tech por dia, com ranking entre leitores.',
+        problem: 'Dar um motivo pra voltar ao jornal todo dia.',
+        solution: 'Uma pergunta por dia gerada a partir das notícias, com login por magic link e ranking semanal.',
+        arch: ['Jornal Tech', 'Gerador de perguntas', 'Supabase Auth', 'Ranking'],
+        decisions: ['Magic link só quando existir ranking.'], tradeoffs: ['Ainda precisa validar interesse.'] },
+    ].map((p, i) => ({ ...p, n: String(i + 1).padStart(2, '0'), statusBg: statusBg[p.status], open: () => this.openProject(p.id) }));
+
+    const pf = ['Tudo', 'Produto', 'Automação', 'Open source'];
+    const projectsFiltered = s.pFilter === 'Tudo' ? projects : projects.filter(p => p.type === s.pFilter);
+    const cp = projects.find(p => p.id === s.projectId) || projects[0];
+
+    const openVideo = this.go('video');
+    const videos = [
+      { title: 'Montei um jornal de IA que se escreve sozinho', dur: '14:22', views: '48k views', date: '22 set', tone: T.lilac },
+      { title: 'Clean Architecture em .NET sem enrolação', dur: '18:05', views: '31k views', date: '15 set', tone: T.mint },
+      { title: 'Automatizei minhas DMs do Instagram com C#', dur: '11:40', views: '27k views', date: '08 set', tone: T.peach },
+      { title: 'Next.js 16: o que mudou de verdade', dur: '09:58', views: '19k views', date: '01 set', tone: T.sky },
+    ].map((v, i) => ({ ...v, n: String(i + 1).padStart(2, '0'), open: openVideo }));
+
+    const dot = { alta: '#E07A6E', media: '#D9B44A', baixa: '#B8B2A7' };
+    const news = [
+      { title: 'Novo modelo open-weight passa os fechados em benchmark de código', meta: 'Em alta · 4 fontes · IA', prio: 'alta' },
+      { title: 'Regulação europeia de IA entra na fase de fiscalização', meta: '3 fontes · Regulação', prio: 'alta' },
+      { title: 'Runtime JavaScript lança versão com TypeScript nativo', meta: '2 fontes · Dev', prio: 'media' },
+      { title: 'Startup brasileira de agentes capta rodada série A', meta: 'Tecnoblog · BR', prio: 'media' },
+    ].map(n => ({ ...n, dot: dot[n.prio] }));
+
+    const cofre = [
+      { title: 'Prompt pack: Claude Code no dia a dia', desc: 'Os 20 prompts que eu mais uso programando.', type: 'Guias', tone: T.lilac, initial: 'P', isNew: true },
+      { title: 'Página do vídeo: jornal automático', desc: 'Código, fontes RSS e checklist do vídeo nº 96.', type: 'Vídeos', tone: T.rose, initial: 'V', isNew: true, video: true },
+      { title: 'Template: roteiro de vídeo tech', desc: 'Gancho, estrutura e CTA — o mesmo que eu uso.', type: 'Templates', tone: T.butter, initial: 'R' },
+      { title: 'Checklist de deploy .NET', desc: 'Env vars, CORS, logs e chaves antes de subir.', type: 'Checklists', tone: T.mint, initial: 'D' },
+      { title: 'Clean Architecture em 1 página', desc: 'As 4 camadas e o que vai em cada uma.', type: 'Guias', tone: T.sky, initial: 'A' },
+      { title: 'Página do vídeo: Clean Architecture', desc: 'Repositório, diagrama e perguntas frequentes.', type: 'Vídeos', tone: T.peach, initial: 'V', video: true },
+    ].map(c => ({ ...c, cta: c.video ? 'Ver página do vídeo →' : 'Abrir no Notion ↗', open: c.video ? openVideo : () => {} }));
+    const cf = ['Tudo', 'Guias', 'Templates', 'Vídeos', 'Checklists'];
+    const ql = s.q.trim().toLowerCase();
+    const cofreFiltered = cofre.filter(c => (s.cFilter === 'Tudo' || c.type === s.cFilter) && (!ql || (c.title + c.desc).toLowerCase().includes(ql)));
+
+    return {
+      navItems,
+      isHome: s.page === 'home',
+      reels: [
+        { title: 'O robô que lê 10 sites de IA por mim', views: '84k', tone: T.lilac },
+        { title: '3 prompts que eu uso todo dia no código', views: '52k', tone: T.butter },
+        { title: 'Automatizei minhas DMs com C#', views: '41k', tone: T.peach },
+        { title: 'Clean Architecture em 60 segundos', views: '33k', tone: T.mint },
+        { title: 'Meu setup pra gravar e programar', views: '27k', tone: T.sky },
+      ],
+      isSobre: s.page === 'sobre', isProjects: s.page === 'projects', isCase: s.page === 'case', isCofre: s.page === 'cofre', isVideo: s.page === 'video', isNewsletter: s.page === 'newsletter',
+      goHome: this.go('home'), goProjects: this.go('projects'), goCofre: this.go('cofre'), goNews: this.go('newsletter'), goVideo: openVideo,
+      variantBtns: [['A', 'A · Editorial'], ['B', 'B · Hub']].map(([k, label]) => ({ label, pick: () => this.setState({ variant: k }), bg: variant === k ? '#FCFAF6' : 'transparent', color: variant === k ? '#1E1C19' : '#B8B2A7' })),
+      videos, newsTop: news, newsTop3: news.slice(0, 3),
+      projectsTop: projects.slice(0, 4), projectsTop3: projects.slice(0, 3),
+      projectFilters: pf.map(f => ({ label: f, pick: () => this.setState({ pFilter: f }), ...chip(s.pFilter === f) })),
+      projectsFiltered, projectCount: projectsFiltered.length + ' projetos',
+      cp, cpArch: cp.arch.map((label, i) => ({ label, arrow: i < cp.arch.length - 1 ? 'inline' : 'none' })), cpDecisions: cp.decisions, cpTradeoffs: cp.tradeoffs,
+      cofreTop: cofre.slice(0, 4), cofreFiltered, cofreEmpty: cofreFiltered.length === 0,
+      cofreFilters: cf.map(f => ({ label: f, pick: () => this.setState({ cFilter: f }), ...chip(s.cFilter === f) })),
+      q: s.q, onQ: e => this.setState({ q: e.target.value }),
+      socials: [
+        { name: 'Instagram', count: '38k', handle: '@heliofilho.dev', tone: T.peach },
+        { name: 'TikTok', count: '21k', handle: '@heliofilho', tone: T.lilac },
+        { name: 'LinkedIn', count: '6,8k', handle: 'in/heliofilho', tone: T.sky },
+        { name: 'GitHub', count: '420', handle: 'heliofilho2', tone: T.mint },
+        { name: 'YouTube', count: 'em breve', handle: '@heliofilho', tone: T.rose },
+      ],
+      timeline: [
+        { when: '2024 — hoje', role: 'Criador de conteúdo tech', desc: 'Vídeos, newsletter e projetos abertos sobre IA e desenvolvimento.' },
+        { when: '2021 — 2024', role: 'Dev full-stack', desc: 'APIs em .NET, front-ends em React/Next.js, bancos Postgres.' },
+        { when: '2019 — 2021', role: 'Dev júnior', desc: 'Primeiros sistemas em produção e muito bug de madrugada.' },
+        { when: '2018', role: 'Primeira linha de código', desc: 'Um “hello world” que virou carreira.' },
+      ],
+      stack: ['C#', '.NET 8', 'TypeScript', 'Next.js', 'React', 'PostgreSQL', 'Supabase', 'Docker', 'Notion API', 'Claude Code'],
+      chapters: [{ t: '00:00', label: 'O problema: ler 30 sites por dia' }, { t: '01:42', label: 'Escolhendo as 10 fontes' }, { t: '04:10', label: 'O coletor em .NET' }, { t: '08:35', label: 'Prioridade e “em alta”' }, { t: '12:20', label: 'Publicando no subdomínio' }],
+      videoMaterials: [
+        { tag: 'GH', label: 'Repositório do coletor', sub: 'GitHub · C#', tone: T.mint },
+        { tag: 'RSS', label: 'Lista das 10 fontes', sub: 'Notion · atualizada', tone: T.butter },
+        { tag: 'AI', label: 'Prompt de resumo', sub: 'Copiar e colar', tone: T.lilac },
+        { tag: '✓', label: 'Checklist de deploy', sub: 'Notion', tone: T.peach },
+      ],
+      editions: [
+        { n: '42', title: 'O modelo aberto que assustou os fechados', date: '26 set' },
+        { n: '41', title: 'Por que meu primeiro deploy caiu (de novo)', date: '19 set' },
+        { n: '40', title: 'Agentes: hype, uso real e o meio-termo', date: '12 set' },
+        { n: '39', title: 'O template de roteiro que dobrou minha retenção', date: '05 set' },
+      ],
+      email: s.email, onEmail: e => this.setState({ email: e.target.value }),
+      subscribe: () => this.setState({ subscribed: true }), subscribed: s.subscribed, notSubscribed: !s.subscribed,
+      copyEmail: () => { try { navigator.clipboard.writeText('contato@heliofilho.dev').catch(() => {}); } catch (e) {} this.setState({ copied: true }); clearTimeout(this.ct); this.ct = setTimeout(() => this.setState({ copied: false }), 1600); },
+      copyLabel: s.copied ? 'Copiado ✓' : 'Copiar',
+    };
+  }
+}
+</script>
+</body>
+</html>

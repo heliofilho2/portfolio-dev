@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#EEE9DE;color:#2A2722;font-family:'Libre Caslon Text',Georgia,serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+input{font:inherit}
+a{color:#2A2722;text-decoration:underline;text-underline-offset:3px}
+a:hover{color:#C4584C}
+</style>
+</helmet>
+<div data-screen-label="Jornal Tech — Capa" style="min-height:100vh;padding:28px 16px 48px;background:#EEE9DE">
+<div style="max-width:1280px;margin:0 auto;background-color:#FBF8F1;background-image:radial-gradient(rgba(26,24,20,.025) 1px,transparent 1px);background-size:5px 5px;border-radius:20px;box-shadow:0 30px 60px -34px rgba(26,24,20,.3),0 1px 3px rgba(26,24,20,.08);padding:28px 44px 40px">
+
+  <div style="display:flex;justify-content:space-between;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding-bottom:10px;gap:12px;flex-wrap:wrap">
+    <a href="Heliofilho.dev v3.dc.html" style="text-decoration:none;white-space:nowrap">← heliofilho.dev</a>
+    <span>jornal.heliofilho.dev</span>
+  </div>
+
+  <header data-reveal="1" style="display:flex;flex-wrap:wrap;justify-content:center;gap:16px 24px;align-items:center;border-top:1px solid #2A2722;padding-top:14px">
+    <div style="order:1;flex:0 1 170px;border:1px solid #DDD4C2;border-radius:12px;background:#FBF8F1;padding:10px 12px;text-align:center;font-size:12px;line-height:1.4"><div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid #2A2722;padding-bottom:6px;margin-bottom:6px">Edição das 7h</div>Atualizado duas vezes ao dia, com dez fontes lidas.</div>
+    <div style="order:0;flex:1 1 100%;text-align:center">
+      <div style="font-family:'Instrument Serif',serif;font-size:clamp(52px,10vw,128px);line-height:.92;letter-spacing:-.03em;white-space:nowrap">O Jornal <em style="color:#4F46C8">Tech</em></div>
+      <div style="font-style:italic;font-size:15px;margin-top:14px">“Tudo que importa em tecnologia, e nada do que não importa.”</div>
+    </div>
+    <div style="order:2;flex:0 1 170px;border:1px solid #DDD4C2;border-radius:12px;background:#FBF8F1;padding:10px 12px;text-align:center;font-size:12px;line-height:1.4"><div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid #2A2722;padding-bottom:6px;margin-bottom:6px">Preço</div><span style="font-family:'Instrument Serif',serif;font-weight:400;font-size:30px">R$ 0,00</span><br>para sempre</div>
+  </header>
+
+  <div style="margin-top:16px;border-top:1.5px solid #2A2722;border-bottom:1px solid #2A2722;padding:3px 0 0">
+    <div style="border-top:1px solid #2A2722;padding:7px 0;display:flex;justify-content:space-between;gap:4px 24px;flex-wrap:wrap;white-space:nowrap;font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase">
+      <span>Ano I · Nº 212</span><span>Terça-feira, 29 de setembro de 2026</span><span>14 notícias · 4 em alta</span>
+    </div>
+  </div>
+
+  <nav style="display:flex;justify-content:center;flex-wrap:wrap;border-bottom:1px solid #2A2722;padding:8px 0">
+    <sc-for list="{{ cats }}" as="c" hint-placeholder-count="6">
+      <button onClick="{{ c.pick }}" style="white-space:nowrap;padding:4px 16px;border-right:1px solid #2A2722;font-family:'Geist Mono',monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;transition:color .2s;color:{{ c.color }};text-decoration:{{ c.deco }};text-underline-offset:5px" style-hover="color:#C4584C">{{ c.label }}</button>
+    </sc-for>
+    <button onClick="{{ toggleTrend }}" style="white-space:nowrap;padding:4px 16px;font-family:'Geist Mono',monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#C4584C;text-decoration:{{ trendDeco }};text-underline-offset:5px">● Só em alta</button>
+  </nav>
+
+  <main style="display:flex;flex-wrap:wrap;gap:32px 28px;margin-top:24px">
+    <article data-reveal="1" style="flex:2 1 560px;min-width:0">
+      <sc-if value="{{ hasLead }}" hint-placeholder-val="{{ true }}">
+        <div style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#C4584C">{{ lead.kicker }}</div>
+        <h1 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,5.4vw,70px);line-height:.98;letter-spacing:-.01em;margin:8px 0 14px;text-wrap:balance">{{ lead.title }}</h1>
+        <p style="font-style:italic;font-size:20px;line-height:1.45;margin:0 0 14px;text-wrap:pretty">{{ lead.deck }}</p>
+        <div style="font-family:'Geist Mono',monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;border-top:1px solid #2A2722;border-bottom:1px solid #2A2722;padding:6px 0;margin-bottom:18px">Por robô coletor · revisado por Hélio Filho · {{ lead.sources }}</div>
+        <figure style="margin:0 0 18px">
+          <div style="aspect-ratio:16/8;background-color:#E4DEF7;background-image:radial-gradient(rgba(79,70,200,.28) 1.2px,transparent 1.4px);background-size:7px 7px;border-radius:14px;display:flex;align-items:center;justify-content:center">
+            <span style="background:#FBF8F1;border-radius:999px;padding:6px 12px;white-space:nowrap;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase">Foto da matéria</span>
+          </div>
+          <figcaption style="font-size:12.5px;font-style:italic;padding-top:6px;border-bottom:1px solid #E2DACA;padding-bottom:8px">Ilustração: imagem gerada a partir da notícia principal do dia.</figcaption>
+        </figure>
+        <div style="column-count:2;column-gap:28px;column-rule:1px solid #E2DACA;font-size:15.5px;line-height:1.62;text-align:justify;hyphens:auto">
+          <p style="margin:0 0 12px"><span style="float:left;font-family:'Instrument Serif',serif;font-weight:400;font-size:66px;line-height:.82;padding:6px 8px 0 0">{{ lead.cap }}</span>{{ lead.body1 }}</p>
+          <p style="margin:0 0 12px">{{ lead.body2 }}</p>
+          <p style="margin:0">{{ lead.body3 }}</p>
+        </div>
+      </sc-if>
+      <sc-if value="{{ empty }}"><div style="padding:80px 0;text-align:center;font-style:italic;font-size:24px">Nenhuma notícia com esse filtro nesta edição.</div></sc-if>
+    </article>
+
+    <aside style="flex:1 1 280px;padding-left:28px;border-left:1px solid #E2DACA;min-width:0;display:flex;flex-direction:column;gap:22px">
+      <div data-reveal="1">
+        <div style="font-family:'Geist Mono',monospace;font-size:13px;letter-spacing:.16em;text-transform:uppercase;border-top:1.5px solid #2A2722;border-bottom:1px solid #2A2722;padding:6px 0;display:flex;justify-content:space-between"><span>Em alta</span><span style="color:#C4584C">●</span></div>
+        <sc-for list="{{ trending }}" as="t" hint-placeholder-count="4">
+          <div style="display:grid;grid-template-columns:36px minmax(0,1fr);gap:8px;padding:12px 0;border-bottom:1px solid #E2DACA">
+            <span style="font-family:'Instrument Serif',serif;font-weight:400;font-size:30px;line-height:1">{{ t.n }}</span>
+            <span><span style="display:block;font-family:'Instrument Serif',serif;font-weight:400;font-size:17px;line-height:1.2">{{ t.title }}</span><span style="display:block;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;margin-top:5px">{{ t.nSrc }} fontes</span></span>
+          </div>
+        </sc-for>
+      </div>
+      <div data-reveal="1">
+        <div style="font-family:'Geist Mono',monospace;font-size:13px;letter-spacing:.16em;text-transform:uppercase;border-top:1.5px solid #2A2722;border-bottom:1px solid #2A2722;padding:6px 0">Cotação das fontes</div>
+        <sc-for list="{{ ticker }}" as="k" hint-placeholder-count="6">
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dotted #9A917E;font-size:13.5px"><span>{{ k.name }}</span><span style="font-family:'Geist Mono',monospace;letter-spacing:.06em;color:{{ k.color }}">{{ k.arrow }} {{ k.n }}</span></div>
+        </sc-for>
+        <div style="font-size:11.5px;font-style:italic;margin-top:6px">Notícias publicadas por fonte hoje, comparadas a ontem.</div>
+      </div>
+      <div data-reveal="1" style="border:1px solid #DDD4C2;border-radius:16px;background:#F5EDC6;padding:12px">
+        <div style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;text-align:center;padding-bottom:8px">A charge</div>
+        <div style="aspect-ratio:1;border:1.5px dashed rgba(122,100,32,.4);border-radius:10px;background:transparent;color:#7A6420;display:flex;align-items:center;justify-content:center;text-align:center;font-style:italic;font-size:15px;padding:16px">espaço para a charge do dia</div>
+        <div style="font-size:12.5px;font-style:italic;text-align:center;padding-top:8px">— por Hélio</div>
+      </div>
+    </aside>
+  </main>
+
+  <div style="border-top:1.5px solid #2A2722;margin-top:32px;padding-top:3px"><div style="border-top:1px solid #2A2722"></div></div>
+  <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));margin-top:20px">
+    <sc-for list="{{ rest }}" as="n" hint-placeholder-count="6">
+      <article data-reveal="1" style="padding:4px 20px 20px;border-left:1px solid #E2DACA;margin-bottom:12px">
+        <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:{{ n.kColor }}">{{ n.kicker }}</div>
+        <h3 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:22px;line-height:1.12;margin:6px 0 8px;text-wrap:pretty">{{ n.title }}</h3>
+        <p style="font-size:14.5px;line-height:1.55;margin:0 0 8px;text-align:justify;hyphens:auto">{{ n.deck }}</p>
+        <div style="font-size:12px;font-style:italic">{{ n.sources }} · {{ n.time }}</div>
+      </article>
+    </sc-for>
+  </section>
+
+  <section data-reveal="1" style="margin-top:28px">
+    <div style="text-align:center;border-top:1.5px solid #2A2722;border-bottom:1px solid #2A2722;padding:8px 0;font-family:'Instrument Serif',serif;font-weight:400;font-size:26px;letter-spacing:.02em;font-style:italic">Classificados</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px;margin-top:14px">
+      <div style="border:1px solid #DDD4C2;border-radius:14px;background:#FBF8F1;padding:16px;font-size:13.5px;line-height:1.5"><div style="font-family:'Geist Mono',monospace;font-size:14px;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid #2A2722;padding-bottom:6px;margin-bottom:8px">Assina-se</div><strong>A carta de sexta.</strong> Resumo do jornal, bastidores e cofre, às 7h.
+        <sc-if value="{{ notSubscribed }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;gap:6px;margin-top:10px"><input value="{{ email }}" onChange="{{ onEmail }}" placeholder="seu@email.com" style="flex:1;min-width:0;border:0;border-bottom:1px solid #2A2722;background:transparent;outline:0;padding:6px 2px;font-size:14px"><button onClick="{{ subscribe }}" style="padding:6px 12px;background:#2A2722;color:#FBF8F1;border-radius:999px;font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase">Assinar</button></div>
+        </sc-if>
+        <sc-if value="{{ subscribed }}"><div style="margin-top:10px;font-style:italic">Assinatura confirmada. Até sexta.</div></sc-if>
+      </div>
+      <div style="border:1px solid #DDD4C2;border-radius:14px;background:#FBF8F1;padding:16px;font-size:13.5px;line-height:1.5"><div style="font-family:'Geist Mono',monospace;font-size:14px;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid #2A2722;padding-bottom:6px;margin-bottom:8px">Procura-se</div>Leitores com boa memória para o <strong>jogo diário</strong>: uma pergunta por dia sobre esta edição. Ranking semanal. <em>Em breve.</em></div>
+      <div style="border:1px solid #DDD4C2;border-radius:14px;background:#FBF8F1;padding:16px;font-size:13.5px;line-height:1.5"><div style="font-family:'Geist Mono',monospace;font-size:14px;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid #2A2722;padding-bottom:6px;margin-bottom:8px">Doa-se</div>Guias, templates e prompts de todos os vídeos. Nada à venda — <a href="Heliofilho.dev v3.dc.html">abra o cofre</a>.</div>
+      <div style="border:1px solid #DDD4C2;border-radius:14px;background:#FBF8F1;padding:16px;font-size:13.5px;line-height:1.5"><div style="font-family:'Geist Mono',monospace;font-size:14px;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid #2A2722;padding-bottom:6px;margin-bottom:8px">Anuncie</div>Espaço para marcas que fazem sentido para quem programa. <a href="#">Media kit</a>.</div>
+    </div>
+  </section>
+
+  <footer style="margin-top:28px;border-top:1px solid #2A2722;padding-top:10px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;font-style:italic">
+    <span>O Jornal Tech é coletado automaticamente de 10 fontes e revisado à mão.</span>
+    <span>Um projeto de <a href="Heliofilho.dev v3.dc.html">heliofilho.dev</a></span>
+  </footer>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Animação&quot;}}">
+class Component extends DCLogic {
+  state = { cat: 'Tudo', trend: false, email: '', subscribed: false };
+  componentDidMount() { this.reveal(); }
+  componentDidUpdate() { requestAnimationFrame(() => this.reveal()); }
+  componentWillUnmount() { this.io && this.io.disconnect(); }
+  reveal() {
+    if (this.props.motion === false) return;
+    if (!this.fb) this.fb = setTimeout(() => document.querySelectorAll('[data-rv]').forEach(el => { el.style.opacity = '1'; el.style.translate = '0 0'; }), 1500);
+    if (!this.io) this.io = new IntersectionObserver(es => { let i = 0; es.forEach(e => { if (e.isIntersecting) { e.target.style.transitionDelay = (i++ * 70) + 'ms'; e.target.style.opacity = '1'; e.target.style.translate = '0 0'; this.io.unobserve(e.target); } }); }, { threshold: 0.05 });
+    document.querySelectorAll('[data-reveal]:not([data-rv])').forEach(el => { el.setAttribute('data-rv', '1'); el.style.opacity = '0'; el.style.translate = '0 14px'; el.style.transition = 'opacity .9s ease, translate .9s cubic-bezier(.2,.7,.2,1)'; this.io.observe(el); });
+  }
+  renderVals() {
+    const s = this.state;
+    const rank = { alta: 0, media: 1, baixa: 2 };
+    const raw = [
+      { cat: 'IA', prio: 'alta', title: 'Modelo aberto supera os fechados em programação', deck: 'Pesos liberados sob licença permissiva e desempenho próximo dos líderes em tarefas de código. Quem roda modelo local ganha uma opção séria.', src: ['The Verge', 'Ars Technica', 'Simon Willison', 'Tecnoblog'], time: '06h40',
+        body1: 'oi a notícia mais repetida da manhã: quatro das dez fontes monitoradas publicaram sobre o lançamento antes das 7h. O modelo chega com pesos abertos e uma licença que permite uso comercial, algo raro entre os concorrentes do mesmo porte.',
+        body2: 'Nos testes de programação divulgados pelo fabricante, o desempenho fica a poucos pontos dos modelos fechados mais usados. Pesquisadores independentes ainda não reproduziram os números, e a ressalva aparece em todas as coberturas sérias.',
+        body3: 'Para quem desenvolve, o efeito prático é imediato: dá para rodar localmente, sem enviar código para terceiros. O próximo teste é ver como ele se comporta fora dos benchmarks.' },
+      { cat: 'Tech', prio: 'alta', title: 'Regulação europeia de IA começa a ser fiscalizada', deck: 'Empresas precisam documentar dados de treino de modelos de uso geral. Multas passam a valer no próximo trimestre.', src: ['MIT Tech Review', 'The Verge', 'Ars Technica'], time: '05h55' },
+      { cat: 'Dev', prio: 'media', title: 'Runtime JavaScript roda TypeScript sem build', deck: 'Arquivos .ts executam direto em desenvolvimento. Benchmarks mostram inicialização mais rápida.', src: ['GitHub Blog', 'Simon Willison'], time: '07h10' },
+      { cat: 'IA', prio: 'media', title: 'Assistente de código ganha modo agente no terminal', deck: 'Executa testes, lê logs e propõe correções em sequência, sem sair da linha de comando.', src: ['GitHub Blog', 'The Verge'], time: '07h45' },
+      { cat: 'BR', prio: 'media', title: 'Startup brasileira de agentes capta série A', deck: 'Foco em automação de atendimento para o varejo; parte do time veio de bancos digitais.', src: ['Tecnoblog'], time: '08h02' },
+      { cat: 'Pesquisa', prio: 'media', title: 'Método reduz alucinação em sistemas RAG', deck: 'Verificação cruzada entre trechos recuperados antes de gerar a resposta. Código aberto.', src: ['arXiv cs.AI'], time: '04h30' },
+      { cat: 'Dev', prio: 'baixa', title: 'Framework publica guia de migração para React 19', deck: 'Server components e novos hooks documentados com exemplos.', src: ['GitHub Blog'], time: '03h15' },
+      { cat: 'Tech', prio: 'baixa', title: 'Opinião: o fim do “prompt engineer” como cargo', deck: 'Ensaio argumenta que a habilidade virou parte do trabalho de qualquer dev.', src: ['MIT Tech Review'], time: '02h20' },
+    ].map(n => ({ ...n, trending: n.src.length >= 2, nSrc: n.src.length, sources: n.src.join(', '),
+      kicker: n.src.length >= 2 ? (n.prio === 'alta' ? 'Urgente · ' : 'Em alta · ') + n.cat : n.cat, kColor: n.prio === 'alta' ? '#C4584C' : '#2A2722' }));
+    const list = raw.filter(n => (s.cat === 'Tudo' || n.cat === s.cat) && (!s.trend || n.trending)).sort((a, b) => rank[a.prio] - rank[b.prio] || b.nSrc - a.nSrc);
+    const leadSrc = list[0] || raw[0];
+    const lead = { ...leadSrc, cap: (leadSrc.body1 ? 'F' : leadSrc.deck[0]), body1: leadSrc.body1 || leadSrc.deck.slice(1), body2: leadSrc.body2 || 'Mais detalhes na edição completa, com links para todas as fontes que publicaram sobre o assunto.', body3: leadSrc.body3 || '' };
+    const tick = [['The Verge', 3, 1], ['GitHub Blog', 3, 2], ['Ars Technica', 2, 3], ['Simon Willison', 2, 1], ['MIT Tech Review', 2, 2], ['Tecnoblog', 2, 3], ['arXiv cs.AI', 1, 4]];
+    return {
+      cats: ['Tudo', 'IA', 'Dev', 'Tech', 'BR', 'Pesquisa'].map(c => ({ label: c, pick: () => this.setState({ cat: c }), color: s.cat === c ? '#C4584C' : '#2A2722', deco: s.cat === c ? 'underline' : 'none' })),
+      toggleTrend: () => this.setState({ trend: !s.trend }), trendDeco: s.trend ? 'underline' : 'none',
+      hasLead: list.length > 0, empty: list.length === 0, lead, rest: list.slice(1),
+      trending: raw.filter(n => n.trending).sort((a, b) => b.nSrc - a.nSrc).slice(0, 4).map((t, i) => ({ ...t, n: i + 1 })),
+      ticker: tick.map(([name, n, y]) => ({ name, n, arrow: n > y ? '▲' : n < y ? '▼' : '■', color: n > y ? '#2F6B3F' : n < y ? '#C4584C' : '#2A2722' })),
+      email: s.email, onEmail: e => this.setState({ email: e.target.value }),
+      subscribe: () => this.setState({ subscribed: true }), subscribed: s.subscribed, notSubscribed: !s.subscribed,
+    };
+  }
+}
+</script>
+</body>
+</html>

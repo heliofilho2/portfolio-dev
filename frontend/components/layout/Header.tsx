@@ -1,32 +1,53 @@
 import Link from 'next/link'
-import ThemeToggle from './ThemeToggle'
 
-const links = [
-  { href: '/#produtos', label: 'Produtos' },
-  { href: '/#conteudo', label: 'Conteúdo' },
-  { href: '/#projetos', label: 'Projetos' },
-  { href: '/#sobre', label: 'Sobre' },
+const navItems = [
+  { href: '/', label: 'Início' },
+  { href: '/sobre', label: 'Sobre' },
+  { href: '/projetos', label: 'Projetos' },
+  { href: '/cofre', label: 'Cofre' },
+  { href: '/newsletter', label: 'Newsletter' },
 ]
 
-export default function Header() {
+// Desktop: logo · nav · CTA numa linha, como no protótipo.
+// Celular: logo + CTA em cima, nav embaixo numa faixa que rola na horizontal.
+export default function Header({ active }: { active?: string }) {
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
-        <Link href="/" className="font-bold tracking-tight shrink-0">
-          helio<span className="text-accent">filho</span>
+    <header className="sticky top-0 z-20 bg-bg/86 backdrop-blur-md border-b border-line">
+      <div className="wrap py-2.5 lg:py-3 flex items-center gap-x-5 gap-y-1.5 flex-wrap lg:flex-nowrap">
+        <Link href="/" className="font-serif text-[23px] lg:text-[25px] leading-none tracking-[-0.01em] text-ink hover:text-ink">
+          helio<em className="text-accent">filho</em>.dev
         </Link>
-        <nav className="flex items-center gap-1 overflow-x-auto text-sm">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="px-2.5 py-1.5 rounded-lg text-stone-500 dark:text-stone-400 hover:text-ink whitespace-nowrap transition-colors"
+        <nav className="order-last lg:order-none w-full lg:w-auto lg:ml-auto -mx-1 lg:mx-0 overflow-x-auto no-scrollbar">
+          <div className="flex gap-0.5 items-center w-max">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`px-3 py-1.5 rounded-full text-[13.5px] font-medium whitespace-nowrap transition-colors hover:text-ink ${
+                  active === item.href ? 'bg-chip text-ink' : 'text-muted'
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+            <a
+              href="https://jornal.heliofilho.dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1.5 rounded-full text-[13.5px] font-medium text-muted whitespace-nowrap flex gap-1.5 items-center hover:text-ink"
             >
-              {link.label}
-            </Link>
-          ))}
-          <ThemeToggle />
+              <span className="w-1.5 h-1.5 rounded-full bg-prio-alta" />
+              Jornal ↗
+            </a>
+          </div>
         </nav>
+        <Link
+          href="/newsletter"
+          className="ml-auto lg:ml-0 whitespace-nowrap px-3.5 lg:px-4 py-2 rounded-full bg-ink text-surface hover:text-surface text-[13px] lg:text-[13.5px] font-medium transition-transform hover:-translate-y-px"
+        >
+          <span className="hidden sm:inline">Assinar newsletter</span>
+          <span className="sm:hidden">Assinar</span>
+        </Link>
       </div>
     </header>
   )

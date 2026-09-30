@@ -1,33 +1,34 @@
 import type { Metadata } from 'next'
-import { IBM_Plex_Mono, IBM_Plex_Sans, Source_Serif_4 } from 'next/font/google'
+import { Geist_Mono, Instrument_Serif, Libre_Caslon_Text } from 'next/font/google'
 import './globals.css'
 
-const sourceSerif = Source_Serif_4({
+const instrumentSerif = Instrument_Serif({
   subsets: ['latin'],
-  variable: '--font-source-serif',
-  weight: ['400', '600', '700'],
+  variable: '--font-instrument-serif',
+  weight: '400',
+  style: ['normal', 'italic'],
 })
 
-const plexSans = IBM_Plex_Sans({
+const libreCaslon = Libre_Caslon_Text({
   subsets: ['latin'],
-  variable: '--font-plex-sans',
-  weight: ['400', '500', '600'],
+  variable: '--font-libre-caslon',
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
 })
 
-const plexMono = IBM_Plex_Mono({
+const geistMono = Geist_Mono({
   subsets: ['latin'],
-  variable: '--font-plex-mono',
+  variable: '--font-geist-mono',
   weight: ['400', '500'],
 })
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://jornal.heliofilho.dev'),
-  title: 'SINAL — Jornal de Tecnologia e IA',
-  description:
-    'IA, tecnologia e engenharia de software, sem sensacionalismo. Uma seleção diária com fonte sempre citada, por @heliofilhou.',
+  title: 'O Jornal Tech',
+  description: 'Tudo que importa em tecnologia, e nada do que não importa.',
   openGraph: {
-    title: 'SINAL — Jornal de Tecnologia e IA',
-    description: 'Uma seleção diária de IA e tecnologia, sem sensacionalismo.',
+    title: 'O Jornal Tech',
+    description: 'Tudo que importa em tecnologia, e nada do que não importa.',
     url: 'https://jornal.heliofilho.dev',
     locale: 'pt_BR',
     type: 'website',
@@ -36,7 +37,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="pt-BR" className={`${sourceSerif.variable} ${plexSans.variable} ${plexMono.variable}`}>
+    <html lang="pt-BR" className={`${instrumentSerif.variable} ${libreCaslon.variable} ${geistMono.variable}`}>
       <body>{children}</body>
     </html>
   )

@@ -9,9 +9,9 @@ export interface SubscribeState {
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
 
-// Mesma tabela `subscribers` usada pelo site pessoal (mesmo Supabase): uma lista só.
+// Mesma tabela `subscribers` usada pelo Jornal (mesmo Supabase): uma lista só.
 export async function subscribe(_prev: SubscribeState, formData: FormData): Promise<SubscribeState> {
-  if (formData.get('website')) return { status: 'ok', message: 'Assinatura confirmada. Até sexta.' }
+  if (formData.get('website')) return { status: 'ok', message: 'Pronto, tá dentro. ✓' }
 
   const email = String(formData.get('email') ?? '').trim().toLowerCase()
   if (!EMAIL_RE.test(email) || email.length > 254) {
@@ -22,7 +22,7 @@ export async function subscribe(_prev: SubscribeState, formData: FormData): Prom
   const { error } = await supabase.from('subscribers').insert({ email })
   if (error && error.code !== '23505') {
     console.error('[subscribe]', error.message)
-    return { status: 'error', message: 'Não foi possível agora. Tenta de novo.' }
+    return { status: 'error', message: 'Não foi possível agora. Tenta de novo em instantes.' }
   }
-  return { status: 'ok', message: 'Assinatura confirmada. Até sexta.' }
+  return { status: 'ok', message: 'Pronto, tá dentro. ✓' }
 }

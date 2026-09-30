@@ -1,46 +1,93 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #F6F3EC;
-  --color-paper-2: #F1EFE6;
-  --color-card: #FFFFFF;
-  --color-ink: #1B1B18;
-  --color-ink-2: #33322D;
-  --color-muted: #55534C;
-  --color-faint: #8B8878;
-  --color-rule: #D9D4C7;
-  --color-card-line: #E7E2D3;
-  --color-teal: #1F5F5B;
-  --color-teal-dark: #163F3D;
-  --color-rust: #B5482E;
+  --color-outer: #EEE9DE;
+  --color-paper: #FBF8F1;
+  --color-ink: #2A2722;
+  --color-rule: #E2DACA;
+  --color-box: #DDD4C2;
+  --color-red: #C4584C;
+  --color-green: #2F6B3F;
+  --color-accent: #4F46C8;
+  --color-charge: #F5EDC6;
+  --color-charge-ink: #7A6420;
+  --color-photo: #E4DEF7;
 
-  --font-serif: var(--font-source-serif), Georgia, serif;
-  --font-sans: var(--font-plex-sans), system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --font-serif: var(--font-instrument-serif), Georgia, serif;
+  --font-body: var(--font-libre-caslon), Georgia, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 @layer base {
   body {
-    @apply bg-paper text-ink font-sans antialiased;
+    @apply bg-outer text-ink antialiased;
+    font-family: var(--font-body);
   }
 
   h1,
   h2,
-  h3 {
+  h3,
+  .num {
     font-family: var(--font-serif);
+    font-weight: 400;
   }
 
   a {
-    @apply text-teal hover:text-teal-dark;
+    @apply text-ink underline;
+    text-underline-offset: 3px;
   }
 
-  ::selection {
-    @apply bg-teal text-paper;
+  a:hover {
+    @apply text-red;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
   }
 }
 
 @layer components {
-  .label {
-    @apply font-mono text-xs uppercase tracking-[0.06em] text-faint;
+  .paper {
+    background-color: var(--color-paper);
+    background-image: radial-gradient(rgba(26, 24, 20, 0.025) 1px, transparent 1px);
+    background-size: 5px 5px;
+    box-shadow: 0 30px 60px -34px rgba(26, 24, 20, 0.3), 0 1px 3px rgba(26, 24, 20, 0.08);
+  }
+
+  .drop-cap::first-letter {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 66px;
+    line-height: 0.82;
+    float: left;
+    padding: 6px 8px 0 0;
+  }
+}
+
+/* Reveal-on-scroll: lib/useReveal.ts marca data-in quando o bloco entra na tela. */
+[data-reveal] {
+  opacity: 0;
+  translate: 0 12px;
+  transition: opacity 0.6s ease, translate 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--rv-delay, 0ms);
+}
+[data-reveal][data-in] {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    translate: 0 0;
+    transition: none;
   }
 }
