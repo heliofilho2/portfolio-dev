@@ -58,10 +58,12 @@ public class NewsRepository(NpgsqlDataSource db)
     }
 
     // body vazio = tentado e sem texto-fonte suficiente (não tenta de novo); texto = matéria publicada.
-    public async Task UpdateBodyAsync(long id, string body, CancellationToken ct)
+    // imageUrl null é normal (og:image não existe em toda página) e não sobrescreve com vazio.
+    public async Task UpdateBodyAsync(long id, string body, string? imageUrl, CancellationToken ct)
     {
-        await using var cmd = db.CreateCommand("update news_items set body_pt = @body where id = @id");
+        await using var cmd = db.CreateCommand("update news_items set body_pt = @body, image_url = coalesce(@image, image_url) where id = @id");
         cmd.Parameters.AddWithValue("body", body);
+        cmd.Parameters.AddWithValue("image", (object?)imageUrl ?? DBNull.Value);
         cmd.Parameters.AddWithValue("id", id);
         await cmd.ExecuteNonQueryAsync(ct);
     }

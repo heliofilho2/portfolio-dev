@@ -16,13 +16,17 @@ public class ArticleExtractor(HttpClient http)
     private static readonly string[] IgnoredTags = ["script", "style", "noscript", "nav", "header", "footer", "aside", "form", "iframe", "svg"];
     private static readonly string[] ParagraphTags = ["p", "li", "blockquote"];
 
-    public async Task<string?> ExtractAsync(string url, CancellationToken ct)
+    public record Result(string? Text, string? ImageUrl);
+
+    public async Task<Result> ExtractAsync(string url, CancellationToken ct)
     {
         try
         {
             var html = await http.GetStringAsync(url, ct);
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
+
+            var imageUrl = ImageOf(doc, url);
 
             foreach (var tag in IgnoredTags)
                 foreach (var node in doc.DocumentNode.SelectNodes($"//{tag}") ?? Enumerable.Empty<HtmlNode>())
@@ -40,13 +44,27 @@ public class ArticleExtractor(HttpClient http)
             var text = string.Join("\n\n", paragraphs);
             if (text.Length > MaxChars) text = text[..MaxChars];
 
-            return text.Length >= MinChars ? text : null;
+            return new Result(text.Length >= MinChars ? text : null, imageUrl);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             Console.Error.WriteLine($"[extrator] falha em {url}: {ex.Message}");
-            return null;
+            return new Result(null, null);
         }
+    }
+
+    // og:image primeiro (padrão de artigo de notícia), twitter:image como segunda tentativa.
+    // Relativa vira absoluta a partir da própria URL da matéria.
+    private static string? ImageOf(HtmlDocument doc, string pageUrl)
+    {
+        var raw =
+            doc.DocumentNode.SelectSingleNode("//meta[@property='og:image']")?.GetAttributeValue("content", null)
+            ?? doc.DocumentNode.SelectSingleNode("//meta[@name='twitter:image']")?.GetAttributeValue("content", null);
+        if (string.IsNullOrWhiteSpace(raw)) return null;
+
+        return Uri.TryCreate(new Uri(pageUrl), raw, out var abs) && (abs.Scheme == "http" || abs.Scheme == "https")
+            ? abs.ToString()
+            : null;
     }
 
     private static List<string> ParagraphsOf(HtmlNode scope) =>

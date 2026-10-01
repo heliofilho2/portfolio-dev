@@ -126,9 +126,9 @@ await Task.WhenAll(candidates.Select(async c =>
     await writeGate.WaitAsync(ct);
     try
     {
-        var sourceText = await extractor.ExtractAsync(c.Url, ct);
-        var body = sourceText is null ? null : await writer.WriteAsync(c.TitlePt, c.SummaryPt, c.Source, sourceText, ct);
-        await repo.UpdateBodyAsync(c.Id, body ?? "", ct);
+        var extracted = await extractor.ExtractAsync(c.Url, ct);
+        var body = extracted.Text is null ? null : await writer.WriteAsync(c.TitlePt, c.SummaryPt, c.Source, extracted.Text, ct);
+        await repo.UpdateBodyAsync(c.Id, body ?? "", extracted.ImageUrl, ct);
         if (body is not null) Interlocked.Increment(ref written);
     }
     catch (Exception ex) when (ex is not OperationCanceledException)
