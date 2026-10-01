@@ -191,6 +191,19 @@
     padding: 2px 6px;
     overflow-wrap: anywhere;
   }
+  .md pre {
+    background: var(--color-chip);
+    border-radius: 14px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  .md pre code {
+    background: transparent;
+    padding: 0;
+    overflow-wrap: normal;
+    white-space: pre;
+  }
   .md blockquote {
     background: var(--color-surface);
     border: 1px solid var(--color-line);
