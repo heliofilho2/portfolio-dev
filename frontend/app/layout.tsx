@@ -40,14 +40,8 @@ export const metadata: Metadata = {
     type: 'website',
     images: ['/helio.jpg'],
   },
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
-      { url: '/icon.ico', sizes: '64x64', type: 'image/x-icon' },
-    ],
-    shortcut: '/favicon.ico',
-    apple: '/icon.ico',
-  },
+  // Sem ícone custom por enquanto (o antigo era o mascote). O navegador usa o ícone genérico
+  // até ter um novo arquivo pra colocar aqui.
 }
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {

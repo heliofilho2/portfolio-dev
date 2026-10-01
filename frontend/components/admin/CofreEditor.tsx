@@ -125,11 +125,9 @@ export default function CofreEditor({ item, isNew, topics }: { item: CofreItem; 
               <TonePicker value={data.tone} onChange={(v) => set('tone', v)} />
             </Field>
           </Card>
-          {!isVideo && (
-            <Card title="Imagem de capa" hint="Opcional. Aparece no topo da página.">
-              <MediaField value={data.cover_url ?? ''} onChange={(v) => set('cover_url', v || null)} />
-            </Card>
-          )}
+          <Card title={isVideo ? 'Thumbnail do vídeo' : 'Imagem de capa'} hint={isVideo ? 'Print do Reel. Aparece no card da grade do cofre.' : 'Opcional. Aparece no topo da página.'}>
+            <MediaField value={data.cover_url ?? ''} onChange={(v) => set('cover_url', v || null)} />
+          </Card>
         </div>
       </div>
     </EditorShell>
