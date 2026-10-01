@@ -11,6 +11,10 @@ import type { CofreItem, Post, Project, ProjectUpdate } from './contentModel'
 const byDateDesc = <T extends { published_at: string }>(a: T, b: T) => b.published_at.localeCompare(a.published_at)
 const isPublished = (x: { published?: boolean }) => x.published !== false
 
+// "No ar" primeiro, sempre - dentro de cada status, respeita a ordem manual (sort).
+const statusWeight: Record<Project['status'], number> = { 'No ar': 0, 'Em construção': 1, Ideia: 2 }
+const byLiveFirst = (a: Project, b: Project) => statusWeight[a.status] - statusWeight[b.status] || a.sort - b.sort
+
 async function query<T>(label: string, run: () => PromiseLike<{ data: unknown; error: { message: string } | null }>): Promise<T[]> {
   const { data, error } = await run()
   if (error) {
@@ -31,9 +35,10 @@ export async function getCofreItem(slug: string): Promise<CofreItem | null> {
 }
 
 export async function getProjects(): Promise<Project[]> {
-  if (devStoreOn) return (await devRead()).projects.filter(isPublished).sort((a, b) => a.sort - b.sort)
+  if (devStoreOn) return (await devRead()).projects.filter(isPublished).sort(byLiveFirst)
   if (!supabase) return []
-  return query('projetos', () => supabase!.from('site_projects').select('*').eq('published', true).order('sort'))
+  const rows = await query<Project>('projetos', () => supabase!.from('site_projects').select('*').eq('published', true).order('sort'))
+  return rows.sort(byLiveFirst)
 }
 
 export async function getProject(slug: string): Promise<Project | null> {

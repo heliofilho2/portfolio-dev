@@ -13,6 +13,7 @@ export default function ProjectRow({ project: p, n, size = 'md' }: { project: Pr
       <span className={`${icon} rounded-2xl ${toneBg[p.tone]} flex items-center justify-center font-serif italic`}>{initialOf(p.name)}</span>
       <span className="flex flex-col gap-0.5 min-w-0">
         <span className="flex items-center gap-2 flex-wrap">
+          {p.status === 'No ar' && <span className="w-1.5 h-1.5 rounded-full bg-online shrink-0" title="No ar" />}
           <span className={`font-semibold ${size === 'lg' ? 'text-[17px]' : 'text-base'}`}>{p.name}</span>
           <span className={`sm:hidden px-2 py-0.5 rounded-full text-[11px] font-medium ${statusBg[p.status]}`}>{p.status}</span>
         </span>
