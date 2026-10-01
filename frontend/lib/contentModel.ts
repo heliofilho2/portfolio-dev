@@ -67,6 +67,17 @@ export interface ProjectUpdate {
   published_at: string
 }
 
+// Extras do dia do Jornal Tech (outro projeto, mesmo Supabase) - ver jornal/supabase/schema.sql.
+// Uma linha por dia; "hoje" é a linha com date = hoje no fuso de São Paulo.
+export interface JornalExtra {
+  date: string // yyyy-mm-dd
+  charge_url: string | null
+  charge_caption: string | null
+  trivia_question: string | null
+  trivia_correct: string | null
+  trivia_wrong: string[]
+}
+
 export interface Post {
   slug: string
   title: string

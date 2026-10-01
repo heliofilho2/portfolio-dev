@@ -70,6 +70,12 @@ export async function deleteProject(slug: string) {
   return guarded(() => store.deleteProject(slug))
 }
 
+export async function saveJornalExtra(input: Input) {
+  return guarded(async () => {
+    await store.saveJornalExtra(store.normalizeJornalExtra(input))
+  })
+}
+
 // Puxa o README real do repositório público, pra começar a escrever a partir dele em vez
 // de copiar e colar. Só leitura, não mexe no GitHub.
 export async function importReadme(repoUrl: string) {

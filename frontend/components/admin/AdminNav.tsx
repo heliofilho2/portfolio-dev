@@ -9,6 +9,7 @@ const items = [
   { href: '/admin/posts', label: 'Blog', icon: '✎' },
   { href: '/admin/cofre', label: 'Cofre', icon: '◇' },
   { href: '/admin/projetos', label: 'Projetos', icon: '▤' },
+  { href: '/admin/jornal', label: 'Jornal', icon: '●' },
   { href: '/admin/site', label: 'Site', icon: '☰' },
   { href: '/admin/midia', label: 'Mídia', icon: '▣' },
 ]

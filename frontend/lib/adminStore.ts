@@ -8,6 +8,7 @@ import {
   slugify,
   tones,
   type CofreItem,
+  type JornalExtra,
   type Post,
   type Project,
   type ProjectUpdate,
@@ -108,6 +109,19 @@ export function normalizeProject(i: Record<string, unknown>): Project {
     readme_md: str(i.readme_md, 200000),
     sort: Number.isFinite(Number(i.sort)) ? Math.round(Number(i.sort)) : 0,
     published: Boolean(i.published),
+  }
+}
+
+const isoDate = (v: unknown) => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : new Date().toISOString().slice(0, 10))
+
+export function normalizeJornalExtra(i: Record<string, unknown>): JornalExtra {
+  return {
+    date: isoDate(i.date),
+    charge_url: optStr(i.charge_url),
+    charge_caption: optStr(i.charge_caption, 300),
+    trivia_question: optStr(i.trivia_question, 300),
+    trivia_correct: optStr(i.trivia_correct, 200),
+    trivia_wrong: strList(i.trivia_wrong).slice(0, 3),
   }
 }
 
@@ -250,6 +264,24 @@ export async function deleteUpdate(id: number) {
   }
   if (!supabaseAdmin) throw new AdminError('Supabase não configurado.')
   const { error } = await supabaseAdmin.from('project_updates').delete().eq('id', id)
+  if (error) throw new AdminError(error.message)
+}
+
+// ---------- extras do Jornal (uma linha por dia, tabela jornal_extras) ----------
+
+const blankJornalExtra = (date: string): JornalExtra => ({ date, charge_url: null, charge_caption: null, trivia_question: null, trivia_correct: null, trivia_wrong: [] })
+
+export async function loadJornalExtra(date: string): Promise<JornalExtra> {
+  if (adminMode === 'local') return blankJornalExtra(date) // sem suporte a modo local pra essa tabela (é só do Jornal)
+  if (!supabaseAdmin) return blankJornalExtra(date)
+  const { data, error } = await supabaseAdmin.from('jornal_extras').select('*').eq('date', date).maybeSingle()
+  if (error) throw new AdminError(`Supabase: ${error.message}. Rodou o jornal/supabase/schema.sql mais recente?`)
+  return (data as JornalExtra) ?? blankJornalExtra(date)
+}
+
+export async function saveJornalExtra(e: JornalExtra) {
+  if (adminMode !== 'supabase' || !supabaseAdmin) throw new AdminError('Essa tela só funciona com o Supabase configurado (é a mesma base do Jornal).')
+  const { error } = await supabaseAdmin.from('jornal_extras').upsert(e)
   if (error) throw new AdminError(error.message)
 }
 
