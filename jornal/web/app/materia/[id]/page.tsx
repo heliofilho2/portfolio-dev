@@ -58,6 +58,14 @@ export default async function ArticlePage({ params }: Props) {
               <span className="block sm:inline sm:ml-2 normal-case tracking-normal text-subtle">{dateLabel(article.published_at)}</span>
             </div>
 
+            {article.image_url && (
+              <figure className="mb-5">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={article.image_url} alt="" className="w-full aspect-[16/9] rounded-2xl object-cover" />
+                <figcaption className="text-[12.5px] italic pt-1.5">Foto: {article.source}</figcaption>
+              </figure>
+            )}
+
             {/* Sem drop-cap aqui: aquele efeito depende do layout em colunas da manchete da
                 home (globals.css usa float, que quebra largura dentro de flex-col estreito). */}
             <div className="text-[16px] leading-[1.7] flex flex-col gap-4">

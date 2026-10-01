@@ -16,6 +16,9 @@ export interface RawRow {
   trending: boolean
   // null = sem matéria completa (ainda não tentado ou fonte bloqueou o acesso); string = publicada.
   body_pt: string | null
+  // og:image da fonte original. Só tentada junto com body_pt (prioridade alta/em alta) - pode ser
+  // null mesmo com matéria completa, se a página de origem não tiver og:image nem twitter:image.
+  image_url: string | null
 }
 
 export interface NewsItem extends RawRow {
@@ -29,7 +32,7 @@ async function fetchRows(): Promise<RawRow[]> {
   const since = new Date(Date.now() - WINDOW_HOURS * 3600_000).toISOString()
   const { data, error } = await supabase
     .from('news_items')
-    .select('id, title_pt, summary_pt, source, url, published_at, category, priority, trending, body_pt')
+    .select('id, title_pt, summary_pt, source, url, published_at, category, priority, trending, body_pt, image_url')
     .eq('hidden', false)
     .gte('published_at', since)
     .order('published_at', { ascending: false })
@@ -52,7 +55,7 @@ export async function getArticle(id: number): Promise<NewsItem | null> {
 
   const { data, error } = await supabase
     .from('news_items')
-    .select('id, title_pt, summary_pt, source, url, published_at, category, priority, trending, body_pt')
+    .select('id, title_pt, summary_pt, source, url, published_at, category, priority, trending, body_pt, image_url')
     .eq('id', id)
     .eq('hidden', false)
     .not('body_pt', 'is', null)
@@ -104,6 +107,30 @@ function buildTicker(rows: RawRow[]): TickerRow[] {
     arrow: today > yesterday ? '▲' : today < yesterday ? '▼' : '■',
     colorClass: today > yesterday ? 'text-[#2F6B3F]' : today < yesterday ? 'text-[#C4584C]' : 'text-ink',
   }))
+}
+
+export interface TodayExtra {
+  charge_url: string | null
+  charge_caption: string | null
+  trivia_question: string | null
+  trivia_correct: string | null
+  trivia_wrong: string[]
+}
+
+function todayInSaoPaulo(): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date())
+}
+
+// Charge e pergunta do dia, cadastradas no /admin de heliofilho.dev (mesmo Supabase). Sem linha
+// pro dia de hoje (ninguém cadastrou ainda), devolve null - cada bloco trata isso como "em breve".
+export async function getTodayExtra(): Promise<TodayExtra | null> {
+  if (!supabase) return null
+  const { data, error } = await supabase.from('jornal_extras').select('*').eq('date', todayInSaoPaulo()).maybeSingle()
+  if (error) {
+    console.error('[jornal] falha ao ler extras do dia:', error.message)
+    return null
+  }
+  return data as TodayExtra | null
 }
 
 export interface Edition {

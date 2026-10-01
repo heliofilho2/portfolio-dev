@@ -2,7 +2,8 @@ import Link from 'next/link'
 import CategoryNav from '@/components/CategoryNav'
 import PageReveal from '@/components/PageReveal'
 import SubscribeBox from '@/components/SubscribeBox'
-import { getEdition } from '@/lib/data'
+import TriviaBox from '@/components/TriviaBox'
+import { getEdition, getTodayExtra } from '@/lib/data'
 import { usingSampleData } from '@/lib/supabase'
 
 export const revalidate = 600
@@ -19,7 +20,7 @@ const dateLabel = () =>
 export default async function JornalPage({ searchParams }: Props) {
   const { cat, trend } = await searchParams
   const onlyTrending = trend === '1'
-  const edition = await getEdition(cat ?? null, onlyTrending)
+  const [edition, extra] = await Promise.all([getEdition(cat ?? null, onlyTrending), getTodayExtra()])
   const { lead, rest, trending, ticker, categories, total, trendingCount } = edition
 
   return (
@@ -86,16 +87,21 @@ export default async function JornalPage({ searchParams }: Props) {
                     </a>
                   </div>
                   <figure className="mb-4.5">
-                    <div
-                      className="aspect-[16/8] rounded-2xl flex items-center justify-center"
-                      style={{ backgroundColor: '#E4DEF7', backgroundImage: 'radial-gradient(rgba(79,70,200,.28) 1.2px,transparent 1.4px)', backgroundSize: '7px 7px' }}
-                    >
-                      <span className="bg-paper rounded-full px-3 py-1.5 whitespace-nowrap font-mono text-[11px] tracking-[0.14em] uppercase">
-                        Foto da matéria
-                      </span>
-                    </div>
+                    {lead.image_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={lead.image_url} alt="" className="w-full aspect-[16/8] rounded-2xl object-cover" />
+                    ) : (
+                      <div
+                        className="aspect-[16/8] rounded-2xl flex items-center justify-center"
+                        style={{ backgroundColor: '#E4DEF7', backgroundImage: 'radial-gradient(rgba(79,70,200,.28) 1.2px,transparent 1.4px)', backgroundSize: '7px 7px' }}
+                      >
+                        <span className="bg-paper rounded-full px-3 py-1.5 whitespace-nowrap font-mono text-[11px] tracking-[0.14em] uppercase">
+                          Sem foto
+                        </span>
+                      </div>
+                    )}
                     <figcaption className="text-[12.5px] italic pt-1.5 border-b border-rule pb-2">
-                      Ilustração: imagem gerada a partir da notícia principal do dia.
+                      {lead.image_url ? `Foto: ${lead.source}` : 'Esta matéria ainda não tem foto da fonte original.'}
                     </figcaption>
                   </figure>
                   <div className="text-[15.5px] leading-[1.62] text-left sm:text-justify [hyphens:auto] sm:columns-2 sm:gap-7" style={{ columnRuleWidth: 1, columnRuleStyle: 'solid', columnRuleColor: '#E2DACA' }}>
@@ -150,13 +156,18 @@ export default async function JornalPage({ searchParams }: Props) {
               </div>
               <div data-reveal className="border border-box rounded-2xl bg-charge p-3">
                 <div className="font-mono text-xs tracking-[0.16em] uppercase text-center pb-2">A charge</div>
-                <div
-                  className="aspect-square rounded-[10px] flex items-center justify-center text-center italic text-[15px] p-4"
-                  style={{ border: '1.5px dashed rgba(122,100,32,.4)', color: 'var(--color-charge-ink)' }}
-                >
-                  espaço para a charge do dia
-                </div>
-                <div className="text-[12.5px] italic text-center pt-2">por Hélio</div>
+                {extra?.charge_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={extra.charge_url} alt="Charge do dia" className="w-full aspect-square rounded-[10px] object-cover" />
+                ) : (
+                  <div
+                    className="aspect-square rounded-[10px] flex items-center justify-center text-center italic text-[15px] p-4"
+                    style={{ border: '1.5px dashed rgba(122,100,32,.4)', color: 'var(--color-charge-ink)' }}
+                  >
+                    sem charge hoje
+                  </div>
+                )}
+                <div className="text-[12.5px] italic text-center pt-2">{extra?.charge_caption || 'por Hélio'}</div>
               </div>
             </aside>
           </main>
@@ -200,7 +211,13 @@ export default async function JornalPage({ searchParams }: Props) {
               </div>
               <div className="border border-box rounded-2xl bg-paper p-4 text-[13.5px] leading-[1.5]">
                 <div className="font-mono text-sm tracking-[0.14em] uppercase border-b border-ink pb-1.5 mb-2">Procura-se</div>
-                Leitores com boa memória para o <strong>jogo diário</strong>: uma pergunta por dia sobre esta edição. Ranking semanal. <em>Em breve.</em>
+                {extra?.trivia_question && extra.trivia_correct ? (
+                  <TriviaBox question={extra.trivia_question} correct={extra.trivia_correct} wrong={extra.trivia_wrong} />
+                ) : (
+                  <>
+                    Leitores com boa memória para o <strong>jogo diário</strong>: uma pergunta por dia sobre esta edição. <em>Em breve.</em>
+                  </>
+                )}
               </div>
               <div className="border border-box rounded-2xl bg-paper p-4 text-[13.5px] leading-[1.5]">
                 <div className="font-mono text-sm tracking-[0.14em] uppercase border-b border-ink pb-1.5 mb-2">Doa-se</div>
