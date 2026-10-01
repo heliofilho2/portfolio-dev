@@ -62,8 +62,13 @@ export default async function CofreItemPage({ params }: Props) {
   if (!item) notFound()
 
   const isVideo = item.category === 'Vídeos'
-  const siblings = all.filter((c) => c.slug !== item.slug && (item.topic ? c.topic === item.topic : c.category === item.category)).slice(0, 6)
+  // Recomendação por relevância: mesmo tema primeiro, depois mesma categoria, só por último o resto do cofre.
+  // Cada nível só entra se o anterior não encheu a lista, evita repetir item e evita "relacionado" fraco quando tem opção melhor.
+  const topicMatches = item.topic ? all.filter((c) => c.slug !== item.slug && c.topic === item.topic) : []
+  const categoryMatches = all.filter((c) => c.slug !== item.slug && c.category === item.category && !topicMatches.includes(c))
+  const siblings = [...topicMatches, ...categoryMatches].slice(0, 6)
   const more = siblings.length > 0 ? siblings : all.filter((c) => c.slug !== item.slug).slice(0, 4)
+  const moreLabel = topicMatches.length > 0 ? `Mais em ${item.topic}` : siblings.length > 0 ? `Mais em ${item.category}` : 'Talvez isso também te interesse'
 
   return (
     <>
@@ -154,7 +159,7 @@ export default async function CofreItemPage({ params }: Props) {
 
             {!isVideo && more.length > 0 && (
               <div className="bg-surface border border-line rounded-3xl p-5">
-                <h3 className="h-block mb-2.5">{siblings.length > 0 ? `Mais em ${item.topic ?? item.category}` : 'Mais no cofre'}</h3>
+                <h3 className="h-block mb-2.5">{moreLabel}</h3>
                 {more.map((c) => (
                   <Link key={c.slug} href={`/cofre/${c.slug}`} className="flex gap-3 items-center py-2.5 border-t border-line text-ink hover:text-accent">
                     <span className={`w-8 h-8 rounded-full shrink-0 ${toneBg[c.tone]} flex items-center justify-center font-serif italic text-[15px]`}>{initialOf(c.title)}</span>
