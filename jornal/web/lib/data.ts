@@ -2,7 +2,11 @@ import { sampleRows } from './sample'
 import { sources } from './taxonomy'
 import { supabase, usingSampleData } from './supabase'
 
-const WINDOW_HOURS = 48
+const WINDOW_HOURS = 24
+// Teto de itens na edição do dia. Sem isso a janela de 24h sozinha ainda rende dezenas de
+// matérias superficiais (resumo de 2 frases, sem corpo) - uma edição de jornal de verdade
+// escolhe o que entra, não despeja tudo que chegou.
+const MAX_EDITION_ITEMS = 20
 
 export interface RawRow {
   id: number
@@ -180,7 +184,7 @@ export async function getEdition(category: string | null, onlyTrending: boolean)
     return b.published_at.localeCompare(a.published_at)
   })
 
-  const items: NewsItem[] = sorted.map((r) => ({ ...r, kicker: kickerFor(r), timeLabel: timeLabel(r.published_at) }))
+  const items: NewsItem[] = sorted.slice(0, MAX_EDITION_ITEMS).map((r) => ({ ...r, kicker: kickerFor(r), timeLabel: timeLabel(r.published_at) }))
   const trendingAll = [...rows]
     .filter((r) => r.trending)
     .sort((a, b) => priorityRank[a.priority] - priorityRank[b.priority] || b.published_at.localeCompare(a.published_at))
@@ -193,7 +197,7 @@ export async function getEdition(category: string | null, onlyTrending: boolean)
     rest: items.slice(1),
     trending: trendingAll,
     ticker: buildTicker(rows),
-    total: rows.length,
+    total: items.length,
     trendingCount: rows.filter((r) => r.trending).length,
   }
 }
