@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import PageReveal from '@/components/PageReveal'
-import { getArticle } from '@/lib/data'
+import ShareRow from '@/components/ShareRow'
+import { getArticle, getRelatedArticles } from '@/lib/data'
 
 export const revalidate = 600
 
@@ -32,6 +33,8 @@ export default async function ArticlePage({ params }: Props) {
   if (!article) notFound()
 
   const paragraphs = (article.body_pt ?? '').split(/\n\s*\n/).filter((p) => p.trim())
+  const related = await getRelatedArticles(article.id, article.category)
+  const articleUrl = `https://jornal.heliofilho.dev/materia/${article.id}`
 
   return (
     <>
@@ -81,7 +84,27 @@ export default async function ArticlePage({ params }: Props) {
                 Ler a matéria original em {article.source} ↗
               </a>
             </div>
+
+            <div className="mt-5 border-t border-rule pt-4">
+              <ShareRow title={article.title_pt} url={articleUrl} />
+            </div>
           </article>
+
+          {related.length > 0 && (
+            <section data-reveal className="mt-8 border-t border-ink pt-4">
+              <div className="font-mono text-[13px] tracking-[0.16em] uppercase border-b border-ink pb-1.5 mb-3">
+                Também em {related[0].category}
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {related.map((r) => (
+                  <Link key={r.id} href={`/materia/${r.id}`} className="block py-2 border-t border-rule">
+                    <span className="block font-serif text-[18px] leading-[1.2]">{r.title_pt}</span>
+                    <span className="block font-mono text-[10.5px] tracking-[0.1em] uppercase mt-1.5 text-subtle">{r.source}</span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
 
           <footer className="mt-7 border-t border-ink pt-2.5 text-xs italic">
             <Link href="/">← Voltar para a edição de hoje</Link>

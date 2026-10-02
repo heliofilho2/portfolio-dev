@@ -28,7 +28,10 @@ export function useReveal(deps: unknown[] = []) {
           setTimeout(() => el.style.removeProperty('--rv-delay'), delay + 650)
         }
       },
-      { threshold: 0.08, rootMargin: '0px 0px -5% 0px' }
+      // threshold em fração do próprio elemento quebra pra blocos mais altos que a tela (ex.: a lista
+      // de notícias do dia nunca cobre 8% de si mesma na viewport) - 0 dispara no primeiro pixel
+      // visível, o que funciona pra qualquer altura. Mesmo bug corrigido em frontend/lib/useReveal.ts.
+      { threshold: 0, rootMargin: '0px 0px -5% 0px' }
     )
 
     els.forEach((el) => {

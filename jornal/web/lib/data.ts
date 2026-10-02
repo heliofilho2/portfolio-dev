@@ -67,6 +67,26 @@ export async function getArticle(id: number): Promise<NewsItem | null> {
   return { ...row, kicker: kickerFor(row), timeLabel: timeLabel(row.published_at) }
 }
 
+// Matérias relacionadas, pro "talvez isso te interesse" no rodapé da matéria individual. Mesma
+// categoria, matéria completa publicada, mais recente primeiro - sem isso, cada matéria lida é
+// um beco sem saída que só sobra o link externo (ver app/materia/[id]/page.tsx).
+export async function getRelatedArticles(id: number, category: string): Promise<NewsItem[]> {
+  if (!supabase) return []
+  const { data, error } = await supabase
+    .from('news_items')
+    .select('id, title_pt, summary_pt, source, url, published_at, category, priority, trending, body_pt, image_url')
+    .eq('category', category)
+    .neq('id', id)
+    .eq('hidden', false)
+    .not('body_pt', 'is', null)
+    .neq('body_pt', '')
+    .order('published_at', { ascending: false })
+    .limit(4)
+
+  if (error || !data) return []
+  return (data as RawRow[]).map((row) => ({ ...row, kicker: kickerFor(row), timeLabel: timeLabel(row.published_at) }))
+}
+
 const priorityRank: Record<RawRow['priority'], number> = { alta: 0, media: 1, baixa: 2 }
 
 function kickerFor(row: RawRow): string {
