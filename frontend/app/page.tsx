@@ -38,6 +38,8 @@ export default async function Home() {
   const { socials, reels, contact_email: contactEmail } = site
   const instagram = socials.find((s) => s.name.toLowerCase() === 'instagram')?.url ?? 'https://www.instagram.com/heliofilhou/'
   const contactLinks = socials.filter((s) => ['linkedin', 'github'].includes(s.name.toLowerCase()))
+  // Livros/Produtos ficam perdidos dentro do filtro de categoria do cofre - atalho direto na home.
+  const recomendados = cofre.filter((c) => c.category === 'Livros' || c.category === 'Produtos')
   // Numeração das seções (01 · Instagram...): o blog só entra quando tem post.
   const sections = ['Instagram', 'Projetos', 'Cofre', ...(posts.length ? ['Blog'] : []), 'Newsletter', 'Redes', 'Parcerias', 'Contato']
   const label = (name: string) => `${String(sections.indexOf(name) + 1).padStart(2, '0')} · ${name}`
@@ -91,7 +93,7 @@ export default async function Home() {
             <div className="flex gap-x-3 gap-y-2 flex-wrap justify-center items-center mt-2.5">
               <CopyEmailButton email={contactEmail} />
               <Link href="/newsletter" className="px-3 py-2 text-sm font-medium text-ink hover:text-accent border-b border-ink whitespace-nowrap">
-                Assinar a carta de sexta →
+                Receber a carta de sexta →
               </Link>
             </div>
           </div>
@@ -205,6 +207,22 @@ export default async function Home() {
               <CofreCard key={c.slug} item={c} variant="row" />
             ))}
           </div>
+
+          {recomendados.length > 0 && (
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 mt-3">
+              {recomendados.map((c) => (
+                <Link
+                  key={c.slug}
+                  href={`/cofre/${c.slug}`}
+                  className="flex items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3.5 text-ink hover:border-ink"
+                >
+                  <span className="font-mono text-[11px] tracking-[0.12em] uppercase text-accent shrink-0">{c.category}</span>
+                  <span className="flex-1 min-w-0 font-medium text-[14.5px] truncate">{c.title}</span>
+                  <span className="text-subtle shrink-0">→</span>
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
 
         {/* Blog: só aparece quando tem post */}

@@ -46,8 +46,8 @@ export default function Header({ active }: { active?: string }) {
           href="/newsletter"
           className="ml-auto lg:ml-0 whitespace-nowrap px-3.5 lg:px-4 py-2 rounded-full bg-ink text-surface hover:text-surface text-[13px] lg:text-[13.5px] font-medium transition-transform hover:-translate-y-px"
         >
-          <span className="hidden sm:inline">Assinar newsletter</span>
-          <span className="sm:hidden">Assinar</span>
+          <span className="hidden sm:inline">Newsletter grátis</span>
+          <span className="sm:hidden">Newsletter</span>
         </Link>
       </div>
     </header>

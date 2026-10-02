@@ -20,7 +20,7 @@ export default function NewsletterForm({ variant = 'pill' }: NewsletterFormProps
     >
       <iframe
         src="https://heliofilhou.substack.com/embed"
-        title="Assinar a newsletter"
+        title="Receber a newsletter"
         style={{ border: 'none', background: 'white', width: '100%', height: 320 }}
         scrolling="no"
       />

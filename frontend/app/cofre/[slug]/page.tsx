@@ -79,54 +79,11 @@ export default async function CofreItemPage({ params }: Props) {
 
         <div className="grid gap-8 lg:gap-12 mt-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
           <article data-reveal className="min-w-0">
-            {isVideo && item.video_url && (embedOf(item.video_url) || isVideoFile(item.video_url)) ? (
-              <div className="[&_.md-media]:m-0">
-                <MediaBlock src={item.video_url} alt="" />
-              </div>
-            ) : isVideo ? (
-              <a
-                href={item.video_url ?? 'https://www.instagram.com/heliofilhou/'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`aspect-video rounded-[22px] sm:rounded-3xl ${toneBg[item.tone]} flex flex-col gap-3 items-center justify-center text-ink hover:text-ink group`}
-              >
-                <span className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-surface flex items-center justify-center text-xl sm:text-2xl pl-1 shadow-[0_16px_32px_-16px_rgba(30,28,25,.4)] transition-transform duration-300 group-hover:scale-105">
-                  ▶
-                </span>
-                <span className="font-mono text-[11px] tracking-[0.12em] uppercase">{item.video_url ? 'Assistir o vídeo' : 'Assistir no Instagram'}</span>
-              </a>
-            ) : item.cover_url ? (
-              <div className="relative aspect-[16/9] rounded-[22px] sm:rounded-3xl overflow-hidden bg-chip">
-                <MediaImg src={item.cover_url} alt="" fill priority sizes="(min-width: 1024px) 740px, 100vw" className="object-cover" />
-              </div>
-            ) : (
-              <span className={`w-14 h-14 rounded-full ${toneBg[item.tone]} flex items-center justify-center font-serif italic text-[28px]`}>{initialOf(item.title)}</span>
-            )}
-
-            <div className={`label text-accent ${isVideo ? 'mt-6' : 'mt-5'}`}>
-              {isVideo ? `Vídeo · ${fmtDate(item.published_at)}` : (item.topic ?? item.category)}
-            </div>
-            <h1 className="font-serif text-[clamp(36px,5vw,56px)] leading-none tracking-[-0.02em] mt-2 mb-3.5">{item.title}</h1>
-            <p className="text-[17px] leading-[1.6] text-muted mb-7 max-w-[640px]">{item.summary}</p>
-
-            {item.chapters.length > 0 && (
-              <div className="mb-8">
-                <h2 className="h-sub mb-2">Capítulos</h2>
-                {item.chapters.map((c) => (
-                  <div key={c.t} className="grid grid-cols-[64px_minmax(0,1fr)] gap-3 py-3 border-t border-line">
-                    <span className="font-mono text-[13px] text-accent">{c.t}</span>
-                    <span className="text-[15px]">{c.label}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <Markdown>{item.body_md}</Markdown>
-          </article>
-
-          <aside data-reveal className="flex flex-col gap-3.5 self-start lg:sticky lg:top-24">
+            {/* Quem clica no link do vídeo já quer o material, não rever o vídeo - a lista vem
+                primeiro, antes de qualquer coisa, pra não exigir rolar passando o vídeo de novo
+                no celular (onde a coluna lateral de baixo empilha só depois de tudo isso). */}
             {isVideo && item.materials.length > 0 && (
-              <div className="bg-surface border border-line rounded-3xl p-5">
+              <div className="bg-surface border border-line rounded-3xl p-5 mb-6">
                 <h3 className="h-block mb-2.5">Materiais do vídeo</h3>
                 {item.materials.map((m) => {
                   const inner = (
@@ -151,6 +108,57 @@ export default async function CofreItemPage({ params }: Props) {
               </div>
             )}
 
+            {isVideo && (
+              <div className="label text-subtle mb-2">Rever o vídeo</div>
+            )}
+            <div className={isVideo ? 'max-w-[300px]' : ''}>
+              {isVideo && item.video_url && (embedOf(item.video_url) || isVideoFile(item.video_url)) ? (
+                <div className="[&_.md-media]:m-0">
+                  <MediaBlock src={item.video_url} alt="" />
+                </div>
+              ) : isVideo ? (
+                <a
+                  href={item.video_url ?? 'https://www.instagram.com/heliofilhou/'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`aspect-video rounded-[22px] sm:rounded-3xl ${toneBg[item.tone]} flex flex-col gap-3 items-center justify-center text-ink hover:text-ink group`}
+                >
+                  <span className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-surface flex items-center justify-center text-xl sm:text-2xl pl-1 shadow-[0_16px_32px_-16px_rgba(30,28,25,.4)] transition-transform duration-300 group-hover:scale-105">
+                    ▶
+                  </span>
+                  <span className="font-mono text-[11px] tracking-[0.12em] uppercase">{item.video_url ? 'Assistir o vídeo' : 'Assistir no Instagram'}</span>
+                </a>
+              ) : item.cover_url ? (
+                <div className="relative aspect-[16/9] rounded-[22px] sm:rounded-3xl overflow-hidden bg-chip">
+                  <MediaImg src={item.cover_url} alt="" fill priority sizes="(min-width: 1024px) 740px, 100vw" className="object-cover" />
+                </div>
+              ) : (
+                <span className={`w-14 h-14 rounded-full ${toneBg[item.tone]} flex items-center justify-center font-serif italic text-[28px]`}>{initialOf(item.title)}</span>
+              )}
+            </div>
+
+            <div className={`label text-accent ${isVideo ? 'mt-6' : 'mt-5'}`}>
+              {isVideo ? `Vídeo · ${fmtDate(item.published_at)}` : (item.topic ?? item.category)}
+            </div>
+            <h1 className="font-serif text-[clamp(36px,5vw,56px)] leading-none tracking-[-0.02em] mt-2 mb-3.5">{item.title}</h1>
+            <p className="text-[17px] leading-[1.6] text-muted mb-7 max-w-[640px]">{item.summary}</p>
+
+            {item.chapters.length > 0 && (
+              <div className="mb-8">
+                <h2 className="h-sub mb-2">Capítulos</h2>
+                {item.chapters.map((c) => (
+                  <div key={c.t} className="grid grid-cols-[64px_minmax(0,1fr)] gap-3 py-3 border-t border-line">
+                    <span className="font-mono text-[13px] text-accent">{c.t}</span>
+                    <span className="text-[15px]">{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <Markdown>{item.body_md}</Markdown>
+          </article>
+
+          <aside data-reveal className="flex flex-col gap-3.5 self-start lg:sticky lg:top-24">
             {isVideo && (
               <div className="bg-mint rounded-3xl p-5 text-[14.5px] leading-[1.5]" style={{ color: '#2E4A38' }}>
                 <strong className="font-semibold">Salvo no cofre.</strong> Esta página fica disponível pra sempre em Cofre, na aba Vídeos.
