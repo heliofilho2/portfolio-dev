@@ -108,34 +108,15 @@ export default async function CofreItemPage({ params }: Props) {
               </div>
             )}
 
-            {isVideo && (
-              <div className="label text-subtle mb-2">Rever o vídeo</div>
-            )}
-            <div className={isVideo ? 'max-w-[300px]' : ''}>
-              {isVideo && item.video_url && (embedOf(item.video_url) || isVideoFile(item.video_url)) ? (
-                <div className="[&_.md-media]:m-0">
-                  <MediaBlock src={item.video_url} alt="" />
-                </div>
-              ) : isVideo ? (
-                <a
-                  href={item.video_url ?? 'https://www.instagram.com/heliofilhou/'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`aspect-video rounded-[22px] sm:rounded-3xl ${toneBg[item.tone]} flex flex-col gap-3 items-center justify-center text-ink hover:text-ink group`}
-                >
-                  <span className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-surface flex items-center justify-center text-xl sm:text-2xl pl-1 shadow-[0_16px_32px_-16px_rgba(30,28,25,.4)] transition-transform duration-300 group-hover:scale-105">
-                    ▶
-                  </span>
-                  <span className="font-mono text-[11px] tracking-[0.12em] uppercase">{item.video_url ? 'Assistir o vídeo' : 'Assistir no Instagram'}</span>
-                </a>
-              ) : item.cover_url ? (
+            {!isVideo && (
+              item.cover_url ? (
                 <div className="relative aspect-[16/9] rounded-[22px] sm:rounded-3xl overflow-hidden bg-chip">
                   <MediaImg src={item.cover_url} alt="" fill priority sizes="(min-width: 1024px) 740px, 100vw" className="object-cover" />
                 </div>
               ) : (
                 <span className={`w-14 h-14 rounded-full ${toneBg[item.tone]} flex items-center justify-center font-serif italic text-[28px]`}>{initialOf(item.title)}</span>
-              )}
-            </div>
+              )
+            )}
 
             <div className={`label text-accent ${isVideo ? 'mt-6' : 'mt-5'}`}>
               {isVideo ? `Vídeo · ${fmtDate(item.published_at)}` : (item.topic ?? item.category)}
@@ -179,6 +160,29 @@ export default async function CofreItemPage({ params }: Props) {
             )}
 
             <NewsletterBox />
+
+            {isVideo && (
+              <div>
+                <div className="label text-subtle mb-2">Rever o vídeo</div>
+                {item.video_url && (embedOf(item.video_url) || isVideoFile(item.video_url)) ? (
+                  <div className="[&_.md-media]:m-0">
+                    <MediaBlock src={item.video_url} alt="" />
+                  </div>
+                ) : (
+                  <a
+                    href={item.video_url ?? 'https://www.instagram.com/heliofilhou/'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`aspect-video rounded-[22px] sm:rounded-3xl ${toneBg[item.tone]} flex flex-col gap-3 items-center justify-center text-ink hover:text-ink group`}
+                  >
+                    <span className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-surface flex items-center justify-center text-xl sm:text-2xl pl-1 shadow-[0_16px_32px_-16px_rgba(30,28,25,.4)] transition-transform duration-300 group-hover:scale-105">
+                      ▶
+                    </span>
+                    <span className="font-mono text-[11px] tracking-[0.12em] uppercase">{item.video_url ? 'Assistir o vídeo' : 'Assistir no Instagram'}</span>
+                  </a>
+                )}
+              </div>
+            )}
           </aside>
         </div>
       </main>
