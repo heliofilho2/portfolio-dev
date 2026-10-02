@@ -28,7 +28,10 @@ export function useReveal(deps: unknown[] = []) {
           setTimeout(() => el.style.removeProperty('--rv-delay'), delay + 650)
         }
       },
-      { threshold: 0.08, rootMargin: '0px 0px -5% 0px' }
+      // threshold em fração do próprio elemento quebra para blocos mais altos que a tela (ex.: um
+      // README longo nunca cobre 8% de si mesmo na viewport) - 0 dispara no primeiro pixel visível,
+      // o que funciona pra qualquer altura.
+      { threshold: 0, rootMargin: '0px 0px -5% 0px' }
     )
 
     els.forEach((el) => {
