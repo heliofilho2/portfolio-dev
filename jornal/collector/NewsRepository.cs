@@ -105,6 +105,10 @@ public class NewsRepository(NpgsqlDataSource db)
             Username = Uri.UnescapeDataString(userInfo[0]),
             Password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : null,
             SslMode = SslMode.Require,
+            // Supabase não usa Kerberos; sem isso o Npgsql tenta negociar GSS encryption por padrão
+            // e falha tentando carregar libgssapi_krb5.so.2 (não presente na imagem do container) -
+            // cai pro SSL normal de qualquer jeito, mas gasta tempo de conexão nisso toda execução.
+            GssEncryptionMode = GssEncryptionMode.Disable,
         }.ConnectionString;
     }
 }
