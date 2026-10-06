@@ -39,7 +39,7 @@ export default async function Home() {
   const instagram = socials.find((s) => s.name.toLowerCase() === 'instagram')?.url ?? 'https://www.instagram.com/heliofilhou/'
   const contactLinks = socials.filter((s) => ['linkedin', 'github'].includes(s.name.toLowerCase()))
   // Livros/Produtos ficam perdidos dentro do filtro de categoria do cofre - atalho direto na home.
-  const recomendados = cofre.filter((c) => c.category === 'Livros' || c.category === 'Produtos')
+  const recomendados = cofre.filter((c) => c.category === 'Livros' || c.category === 'Produtos').slice(0, 4)
   // Numeração das seções (01 · Instagram...): o blog só entra quando tem post.
   const sections = ['Instagram', 'Projetos', 'Cofre', ...(posts.length ? ['Blog'] : []), 'Newsletter', 'Redes', 'Parcerias', 'Contato']
   const label = (name: string) => `${String(sections.indexOf(name) + 1).padStart(2, '0')} · ${name}`

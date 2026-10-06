@@ -45,7 +45,7 @@ export default function SettingsEditor({ settings }: { settings: SiteSettings })
             />
           </Card>
 
-          <Card title="Reels da home" hint="Capa, título e link do Reel. Até 4 aparecem na home.">
+          <Card title="Reels da home" hint="Capa, título e link do Reel. Só os 4 primeiros aparecem na home.">
             <ObjectListField
               value={data.reels.map((r) => ({ ...r }))}
               onChange={(v) => set('reels', v as SiteSettings['reels'])}
@@ -58,6 +58,7 @@ export default function SettingsEditor({ settings }: { settings: SiteSettings })
               ]}
               renderMedia={media}
               addLabel="Adicionar reel"
+              max={4}
             />
           </Card>
         </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type DragEvent, type ReactNode } from 'react'
 import { tones, toneBg, type Tone } from '@/lib/contentModel'
 
 // Peças básicas do /admin, no mesmo visual do site.
@@ -97,12 +97,64 @@ function moveItem<T>(list: T[], from: number, to: number) {
   return next
 }
 
+// Arrastar pra reordenar, em vez de só clicar em setinha item por item - usado por
+// StringListField e ObjectListField. dropIndex é só feedback visual (linha de destino);
+// quem decide a ordem final é sempre moveItem, no drop.
+function useDragReorder<T>(value: T[], onChange: (v: T[]) => void) {
+  const [dragIndex, setDragIndex] = useState<number | null>(null)
+  const [overIndex, setOverIndex] = useState<number | null>(null)
+  return {
+    dropTarget: overIndex,
+    handlers: (i: number) => ({
+      draggable: true,
+      onDragStart: () => setDragIndex(i),
+      onDragOver: (e: DragEvent) => {
+        e.preventDefault()
+        if (overIndex !== i) setOverIndex(i)
+      },
+      onDragEnd: () => {
+        setDragIndex(null)
+        setOverIndex(null)
+      },
+      onDrop: (e: DragEvent) => {
+        e.preventDefault()
+        if (dragIndex !== null && dragIndex !== i) onChange(moveItem(value, dragIndex, i))
+        setDragIndex(null)
+        setOverIndex(null)
+      },
+    }),
+  }
+}
+
+function DragHandle() {
+  return (
+    <span className="cursor-grab active:cursor-grabbing text-subtle select-none px-0.5" title="Arrastar pra reordenar">
+      ⠿
+    </span>
+  )
+}
+
 // Lista de textos (decisões, stack, arquitetura...). Enter adiciona o próximo.
-export function StringListField({ value, onChange, placeholder, addLabel = 'Adicionar' }: { value: string[]; onChange: (v: string[]) => void; placeholder?: string; addLabel?: string }) {
+export function StringListField({
+  value,
+  onChange,
+  placeholder,
+  addLabel = 'Adicionar',
+  max,
+}: {
+  value: string[]
+  onChange: (v: string[]) => void
+  placeholder?: string
+  addLabel?: string
+  max?: number
+}) {
+  const { dropTarget, handlers } = useDragReorder(value, onChange)
+  const atMax = max !== undefined && value.length >= max
   return (
     <div className="flex flex-col gap-2">
       {value.map((item, i) => (
-        <div key={i} className="flex gap-1.5 items-center">
+        <div key={i} className={`flex gap-1.5 items-center rounded-lg ${dropTarget === i ? 'outline outline-2 outline-accent' : ''}`} {...handlers(i)}>
+          <DragHandle />
           <input
             value={item}
             placeholder={placeholder}
@@ -125,9 +177,13 @@ export function StringListField({ value, onChange, placeholder, addLabel = 'Adic
           </button>
         </div>
       ))}
-      <button type="button" className={`${btn.ghost} self-start`} onClick={() => onChange([...value, ''])}>
-        + {addLabel}
-      </button>
+      {atMax ? (
+        <span className="text-[12.5px] text-subtle">Máximo de {max} itens.</span>
+      ) : (
+        <button type="button" className={`${btn.ghost} self-start`} onClick={() => onChange([...value, ''])}>
+          + {addLabel}
+        </button>
+      )}
     </div>
   )
 }
@@ -147,21 +203,31 @@ export function ObjectListField<K extends string>({
   fields,
   addLabel = 'Adicionar',
   renderMedia,
+  max,
 }: {
   value: Record<K, string>[]
   onChange: (v: Record<K, string>[]) => void
   fields: ObjectFieldSpec<K>[]
   addLabel?: string
   renderMedia?: (value: string, onChange: (v: string) => void) => ReactNode
+  max?: number
 }) {
   const blank = Object.fromEntries(fields.map((f) => [f.key, f.kind === 'tone' ? 'lilac' : ''])) as Record<K, string>
   const set = (i: number, k: K, v: string) => onChange(value.map((row, j) => (j === i ? { ...row, [k]: v } : row)))
+  const { dropTarget, handlers } = useDragReorder(value, onChange)
+  const atMax = max !== undefined && value.length >= max
   return (
     <div className="flex flex-col gap-2.5">
       {value.map((row, i) => (
-        <div key={i} className="rounded-2xl border border-line bg-bg p-3 flex flex-col gap-2.5">
+        <div
+          key={i}
+          className={`rounded-2xl border border-line bg-bg p-3 flex flex-col gap-2.5 ${dropTarget === i ? 'outline outline-2 outline-accent' : ''}`}
+          {...handlers(i)}
+        >
           <div className="flex justify-between items-center">
-            <span className="font-mono text-[11px] text-subtle">#{i + 1}</span>
+            <span className="flex items-center gap-1.5 font-mono text-[11px] text-subtle">
+              <DragHandle />#{i + 1}
+            </span>
             <span className="flex gap-1.5">
               <button type="button" className={btn.small} onClick={() => onChange(moveItem(value, i, i - 1))} disabled={i === 0} title="Subir">
                 ↑
@@ -191,9 +257,13 @@ export function ObjectListField<K extends string>({
           </div>
         </div>
       ))}
-      <button type="button" className={`${btn.ghost} self-start`} onClick={() => onChange([...value, { ...blank }])}>
-        + {addLabel}
-      </button>
+      {atMax ? (
+        <span className="text-[12.5px] text-subtle">Máximo de {max} itens - é só o que aparece na home.</span>
+      ) : (
+        <button type="button" className={`${btn.ghost} self-start`} onClick={() => onChange([...value, { ...blank }])}>
+          + {addLabel}
+        </button>
+      )}
     </div>
   )
 }
