@@ -62,12 +62,17 @@ export default async function CofreItemPage({ params }: Props) {
   if (!item) notFound()
 
   const isVideo = item.category === 'Vídeos'
+  const isCommercial = (c: CofreItem) => c.category === 'Livros' || c.category === 'Produtos'
   // Recomendação por relevância: mesmo tema primeiro, depois mesma categoria, só por último o resto do cofre.
   // Cada nível só entra se o anterior não encheu a lista, evita repetir item e evita "relacionado" fraco quando tem opção melhor.
   const topicMatches = item.topic ? all.filter((c) => c.slug !== item.slug && c.topic === item.topic) : []
   const categoryMatches = all.filter((c) => c.slug !== item.slug && c.category === item.category && !topicMatches.includes(c))
   const siblings = [...topicMatches, ...categoryMatches].slice(0, 6)
-  const more = siblings.length > 0 ? siblings : all.filter((c) => c.slug !== item.slug).slice(0, 4)
+  // Livro/produto só entra como preenchimento genérico (sem tema/categoria em comum) se a própria
+  // página já for de Livros/Produtos - senão vira propaganda de afiliado em cima de conteúdo que
+  // não tem nada a ver, só porque foi publicado mais recente.
+  const fallbackPool = isCommercial(item) ? all : all.filter((c) => !isCommercial(c))
+  const more = siblings.length > 0 ? siblings : fallbackPool.filter((c) => c.slug !== item.slug).slice(0, 4)
   const moreLabel = topicMatches.length > 0 ? `Mais em ${item.topic}` : siblings.length > 0 ? `Mais em ${item.category}` : 'Talvez isso também te interesse'
 
   return (

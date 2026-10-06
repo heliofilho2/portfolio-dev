@@ -203,9 +203,12 @@ export default async function Home() {
             cta="Abrir o cofre →"
           />
           <div className="grid gap-3 grid-cols-1 md:grid-cols-2">
-            {cofre.slice(0, 4).map((c) => (
-              <CofreCard key={c.slug} item={c} variant="row" />
-            ))}
+            {cofre
+              .filter((c) => c.category !== 'Livros' && c.category !== 'Produtos')
+              .slice(0, 4)
+              .map((c) => (
+                <CofreCard key={c.slug} item={c} variant="row" />
+              ))}
           </div>
 
           {recomendados.length > 0 && (
