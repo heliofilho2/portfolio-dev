@@ -6,13 +6,13 @@ import NewsletterForm from '@/components/NewsletterForm'
 
 export const metadata: Metadata = {
   title: 'Newsletter | helio*filho*.dev',
-  description: 'A carta do Hélio: o melhor da semana no jornal, o bastidor dos vídeos e o material novo do cofre.',
+  description: 'A carta do Hélio: o bastidor dos vídeos, o material novo do cofre e os projetos em andamento.',
 }
 
 const parts = [
-  { title: 'Resumo do jornal', text: 'As notícias que importaram, com contexto.', bg: 'bg-lilac', color: '#4A4466' },
   { title: 'Bastidor', text: 'O que deu errado no vídeo da semana.', bg: 'bg-peach', color: '#5E4A3E' },
   { title: 'Do cofre', text: 'O achado novo da semana.', bg: 'bg-mint', color: '#3E5A48' },
+  { title: 'Projetos', text: 'O que mudou no que eu construo.', bg: 'bg-lilac', color: '#4A4466' },
 ]
 
 // TODO: "edições anteriores" precisa de um histórico real assim que a newsletter começar a sair.
@@ -28,7 +28,7 @@ export default function NewsletterPage() {
             A carta do <em className="text-accent">Hélio</em>
           </h1>
           <p className="text-base sm:text-[17px] leading-[1.55] text-muted max-w-[520px] mx-auto mb-7">
-            O melhor da semana no jornal, o bastidor dos vídeos e o material novo do cofre. Cinco minutos de leitura.
+            O bastidor dos vídeos, o material novo do cofre e os projetos em andamento. Cinco minutos de leitura.
           </p>
           <div className="max-w-[480px] mx-auto">
             <NewsletterForm variant="block" ctaLabel="Assinar grátis" />

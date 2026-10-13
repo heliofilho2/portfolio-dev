@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://heliofilho.dev'),
   title: 'helio*filho*.dev',
   description:
-    'Dev full-stack que cria conteúdo sobre tecnologia, IA e carreira. Projetos, materiais e um jornal tech: tudo mora aqui.',
+    'Dev full-stack que cria conteúdo sobre tecnologia, IA e carreira. Projetos e materiais: tudo mora aqui.',
   openGraph: {
     title: 'helio*filho*.dev',
     description: 'Dev full-stack que cria conteúdo sobre tecnologia, IA e carreira.',

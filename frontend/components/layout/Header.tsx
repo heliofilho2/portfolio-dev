@@ -31,15 +31,6 @@ export default function Header({ active }: { active?: string }) {
                 {item.label}
               </Link>
             ))}
-            <a
-              href="https://jornal.heliofilho.dev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-3 py-1.5 rounded-full text-[13.5px] font-medium text-muted whitespace-nowrap flex gap-1.5 items-center hover:text-ink"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-prio-alta" />
-              Jornal ↗
-            </a>
           </div>
         </nav>
         <Link
