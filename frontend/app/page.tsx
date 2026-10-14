@@ -8,8 +8,10 @@ import ProjectRow from '@/components/ProjectRow'
 import CofreCard from '@/components/CofreCard'
 import MediaImg from '@/components/MediaImg'
 import { fmtDate, getCofreItems, getPosts, getProjects } from '@/lib/content'
+import { compactCount, getOslinkeData } from '@/lib/oslinke'
 import { getSiteSettings } from '@/lib/settings'
 import { toneClass } from '@/lib/socials'
+import { tones } from '@/lib/contentModel'
 
 export const revalidate = 300
 
@@ -33,9 +35,35 @@ function SectionHead({ label, title, note, href, cta }: { label: string; title: 
 }
 
 export default async function Home() {
-  const [projects, cofre, posts, site] = await Promise.all([getProjects(), getCofreItems(), getPosts(), getSiteSettings()])
-  const { socials, reels, contact_email: contactEmail } = site
-  const instagram = socials.find((s) => s.name.toLowerCase() === 'instagram')?.url ?? 'https://www.instagram.com/heliofilhou/'
+  const [projects, cofre, posts, site, oslinke] = await Promise.all([
+    getProjects(),
+    getCofreItems(),
+    getPosts(),
+    getSiteSettings(),
+    getOslinkeData(),
+  ])
+  const { socials: socialsBase, reels: manualReels, contact_email: contactEmail } = site
+  const instagram = socialsBase.find((s) => s.name.toLowerCase() === 'instagram')?.url ?? 'https://www.instagram.com/heliofilhou/'
+
+  // Reels: puxa os reais do Oslinke (conectado no Instagram de verdade) quando disponível,
+  // senão cai pra lista editada à mão no /admin. Nunca mistura as duas pra não duplicar.
+  const reels =
+    oslinke.reels.length > 0
+      ? oslinke.reels.map((r, i) => ({
+          title: (r.caption ?? '').split('\n')[0].slice(0, 90) || 'Reel',
+          url: r.permalink ?? instagram,
+          views: r.views !== null ? compactCount(r.views) : '',
+          image_url: r.thumbnailUrl ?? '',
+          tone: tones[i % tones.length],
+        }))
+      : manualReels
+
+  // Seguidores do Instagram vêm do Oslinke quando disponível; os outros contadores (TikTok etc.)
+  // continuam vindo do que foi digitado no admin, já que só o Instagram está conectado por lá.
+  const socials =
+    oslinke.followers !== null
+      ? socialsBase.map((s) => (s.name.toLowerCase() === 'instagram' ? { ...s, count: compactCount(oslinke.followers!) } : s))
+      : socialsBase
   const contactLinks = socials.filter((s) => ['linkedin', 'github'].includes(s.name.toLowerCase()))
   // Livros/Produtos ficam perdidos dentro do filtro de categoria do cofre - atalho direto na home.
   const recomendados = cofre.filter((c) => c.category === 'Livros' || c.category === 'Produtos').slice(0, 4)
