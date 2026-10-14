@@ -22,13 +22,13 @@ export interface OslinkeData {
 
 const EMPTY: OslinkeData = { followers: null, reels: [] }
 
-export async function getOslinkeData(): Promise<OslinkeData> {
+async function fetchReels(query: string): Promise<OslinkeData> {
   const url = process.env.OSLINKE_API_URL
   const secret = process.env.OSLINKE_API_SECRET
   if (!url || !secret) return EMPTY
 
   try {
-    const res = await fetch(`${url}/api/public/reels`, {
+    const res = await fetch(`${url}/api/public/reels${query}`, {
       headers: { Authorization: `Bearer ${secret}` },
       next: { revalidate: 1800 }, // 30min: segue o mesmo espírito do cache de 10min do resto do site, sem bater toda hora numa API externa
     })
@@ -38,6 +38,16 @@ export async function getOslinkeData(): Promise<OslinkeData> {
     console.error('[oslinke] falha ao buscar reels/seguidores:', e)
     return EMPTY
   }
+}
+
+/** Os 4 mais recentes - pro teaser da home, mostra o que acabou de sair. */
+export async function getOslinkeData(): Promise<OslinkeData> {
+  return fetchReels('')
+}
+
+/** Os mais virais dos últimos N dias - pro media kit, mostra o número que impressiona. */
+export async function getTopReels(days = 14, limit = 4): Promise<OslinkeData> {
+  return fetchReels(`?sort=top&days=${days}&limit=${limit}`)
 }
 
 /** "84000" -> "84k", "1234000" -> "1,2M". Mesmo formato que já era digitado à mão no admin. */

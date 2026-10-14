@@ -4,7 +4,7 @@ import Footer from '@/components/layout/Footer'
 import PageReveal from '@/components/PageReveal'
 import MediaImg from '@/components/MediaImg'
 import { getProjects } from '@/lib/content'
-import { compactCount, getOslinkeData } from '@/lib/oslinke'
+import { compactCount, getOslinkeData, getTopReels } from '@/lib/oslinke'
 import { getSiteSettings } from '@/lib/settings'
 import { toneClass } from '@/lib/socials'
 
@@ -26,13 +26,21 @@ function StatCard({ label, value, sub, tone }: { label: string; value: string; s
 }
 
 export default async function MediaKitPage() {
-  const [site, oslinke, projects] = await Promise.all([getSiteSettings(), getOslinkeData(), getProjects()])
+  const [site, oslinke, topReels, projects] = await Promise.all([
+    getSiteSettings(),
+    getOslinkeData(),
+    getTopReels(14, 4),
+    getProjects(),
+  ])
   const { socials, contact_email: contactEmail, avatar_url: avatarUrl, bio } = site
 
   const instagram = socials.find((s) => s.name.toLowerCase() === 'instagram')
   const tiktok = socials.find((s) => s.name.toLowerCase() === 'tiktok')
   const instagramCount = oslinke.followers !== null ? compactCount(oslinke.followers) : instagram?.count
-  const liveReels = oslinke.reels.filter((r) => r.views !== null)
+  // Os mais virais dos últimos 14 dias puxam o número que impressiona; se a janela vier vazia
+  // (pouco tempo de dado sincronizado ainda), cai pros mais recentes em vez de sumir com a seção.
+  const liveReels = (topReels.reels.length > 0 ? topReels.reels : oslinke.reels).filter((r) => r.views !== null)
+  const bestViews = liveReels.length > 0 ? Math.max(...liveReels.map((r) => r.views ?? 0)) : null
   const noAr = projects.filter((p) => p.status === 'No ar').slice(0, 4)
 
   return (
@@ -62,8 +70,15 @@ export default async function MediaKitPage() {
 
         {liveReels.length > 0 && (
           <section data-reveal className="mb-10">
-            <h2 className="h-section mb-4">Reels recentes</h2>
-            <p className="text-muted text-[14.5px] mb-4">Alcance real, puxado direto do Instagram - atualiza sozinho.</p>
+            <h2 className="h-section mb-1">Mais virais dos últimos 14 dias</h2>
+            <p className="text-muted text-[14.5px] mb-4">
+              {bestViews !== null && (
+                <>
+                  O melhor Reel do período bateu <strong className="text-ink">{compactCount(bestViews)} visualizações</strong>.{' '}
+                </>
+              )}
+              Alcance real, puxado direto do Instagram - atualiza sozinho.
+            </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {liveReels.map((r) => (
                 <a
@@ -106,9 +121,14 @@ export default async function MediaKitPage() {
           <h2 className="h-block" style={{ color: '#8A5A3E' }}>
             Como funciona uma parceria
           </h2>
-          <p className="text-[#5E4A3E] text-[15px] leading-[1.6] mt-2 max-w-[560px]">
-            Integrações em vídeo (Reels) e newsletter, sempre deixando claro pra audiência o que é conteúdo pago. Conta o que
-            você quer comunicar e eu volto com um formato que faça sentido - sem modelo fechado, sem tabela de preço fixa.
+          <ul className="text-[#5E4A3E] text-[14.5px] leading-[1.5] mt-3 flex flex-col gap-1.5 list-disc pl-5">
+            <li>Reel dedicado ou menção integrada a um vídeo já planejado</li>
+            <li>Bloco na newsletter de sexta</li>
+            <li>Formato combinado entre os dois</li>
+          </ul>
+          <p className="text-[#5E4A3E] text-[15px] leading-[1.6] mt-3 max-w-[560px]">
+            Sempre deixando claro pra audiência o que é conteúdo pago. Conta o que você quer comunicar e eu volto com um
+            formato que faça sentido - sem modelo fechado, sem tabela de preço fixa.
           </p>
           <a
             href={`mailto:${contactEmail}?subject=Parceria`}
