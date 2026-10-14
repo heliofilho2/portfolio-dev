@@ -313,9 +313,9 @@ export default async function Home() {
             </div>
             <h3 className="h-block">Marcas que fazem sentido pra quem programa.</h3>
             <p className="text-[#5E4A3E] text-[15px] leading-[1.55]">Integrações em vídeo e newsletter. Audiência de devs e estudantes de tecnologia no Brasil.</p>
-            <a href={`mailto:${contactEmail}?subject=Media%20kit`} className="self-start mt-1 px-4.5 py-2.5 rounded-full bg-ink text-surface hover:text-surface text-[14.5px] font-medium">
-              Pedir o media kit →
-            </a>
+            <Link href="/media-kit" className="self-start mt-1 px-4.5 py-2.5 rounded-full bg-ink text-surface hover:text-surface text-[14.5px] font-medium">
+              Ver o media kit →
+            </Link>
           </div>
           <div className="bg-surface border border-line rounded-[24px] p-6 sm:p-8 flex flex-col gap-3.5">
             <div className="label">{label('Contato')}</div>
