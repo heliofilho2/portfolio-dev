@@ -29,7 +29,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${item.title} | Cofre do Hélio`,
     description: item.summary,
-    openGraph: { title: item.title, description: item.summary, url: `https://heliofilho.dev/cofre/${item.slug}`, images: ['/helio.jpg'] },
+    openGraph: {
+      title: item.title,
+      description: item.summary,
+      url: `https://heliofilho.dev/cofre/${item.slug}`,
+      ...(item.cover_url ? { images: [item.cover_url] } : {}),
+    },
   }
 }
 
