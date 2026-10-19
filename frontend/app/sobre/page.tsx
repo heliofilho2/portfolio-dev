@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: 'Dev full-stack que cria conteúdo sobre tecnologia, IA e carreira.',
 }
 
-export const revalidate = 300
+export const revalidate = 86400
 
 // Cores dos cartões do "Agora", na ordem.
 const nowColors = [

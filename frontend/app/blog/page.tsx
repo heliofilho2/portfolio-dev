@@ -6,7 +6,7 @@ import PageReveal from '@/components/PageReveal'
 import MediaImg from '@/components/MediaImg'
 import { fmtDate, getPosts, type Post } from '@/lib/content'
 
-export const revalidate = 300
+export const revalidate = 86400
 
 export const metadata: Metadata = {
   title: 'Blog | helio*filho*.dev',

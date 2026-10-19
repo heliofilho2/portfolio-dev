@@ -10,7 +10,7 @@ import MediaBlock, { embedOf } from '@/components/MediaBlock'
 import MediaImg from '@/components/MediaImg'
 import { fmtDate, getCofreItem, getCofreItems, initialOf, toneBg, type CofreItem } from '@/lib/content'
 
-export const revalidate = 300
+export const revalidate = 86400
 
 // Pré-gera as páginas existentes; item novo é gerado no primeiro acesso.
 export async function generateStaticParams() {

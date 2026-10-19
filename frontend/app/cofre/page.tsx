@@ -5,7 +5,7 @@ import PageReveal from '@/components/PageReveal'
 import CofreGrid from './CofreGrid'
 import { getCofreItems } from '@/lib/content'
 
-export const revalidate = 300
+export const revalidate = 86400
 
 export const metadata: Metadata = {
   title: 'Cofre | helio*filho*.dev',

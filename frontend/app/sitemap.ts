@@ -3,7 +3,7 @@ import { getCofreItems, getPosts, getProjects } from '@/lib/content'
 
 const baseUrl = 'https://heliofilho.dev'
 
-export const revalidate = 3600
+export const revalidate = 86400
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [projects, cofre, posts] = await Promise.all([getProjects(), getCofreItems(), getPosts()])

@@ -8,7 +8,7 @@ import Markdown from '@/components/Markdown'
 import MediaImg from '@/components/MediaImg'
 import { fmtDate, getProject, getProjects, getProjectUpdates, initialOf, statusBg, toneBg } from '@/lib/content'
 
-export const revalidate = 300
+export const revalidate = 86400
 
 export async function generateStaticParams() {
   return (await getProjects()).map((p) => ({ slug: p.slug }))

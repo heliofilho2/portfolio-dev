@@ -5,7 +5,7 @@ import PageReveal from '@/components/PageReveal'
 import ProjectsList from './ProjectsList'
 import { getProjects } from '@/lib/content'
 
-export const revalidate = 300
+export const revalidate = 86400
 
 export const metadata: Metadata = {
   title: 'Projetos | helio*filho*.dev',

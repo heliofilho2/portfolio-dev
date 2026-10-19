@@ -9,7 +9,7 @@ import MediaImg from '@/components/MediaImg'
 import NewsletterForm from '@/components/NewsletterForm'
 import { fmtDate, getPost, getPosts } from '@/lib/content'
 
-export const revalidate = 300
+export const revalidate = 86400
 
 interface Props {
   params: Promise<{ slug: string }>

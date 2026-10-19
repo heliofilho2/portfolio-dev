@@ -13,7 +13,7 @@ import { getSiteSettings } from '@/lib/settings'
 import { toneClass } from '@/lib/socials'
 import { tones } from '@/lib/contentModel'
 
-export const revalidate = 300
+export const revalidate = 1800
 
 function SectionHead({ label, title, note, href, cta }: { label: string; title: React.ReactNode; note?: string; href?: string; cta?: string }) {
   return (
