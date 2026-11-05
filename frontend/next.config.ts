@@ -11,6 +11,13 @@ const nextConfig: NextConfig = {
     // Fotos enviadas pelo /admin ficam no Supabase Storage (bucket público "media").
     remotePatterns: [{ protocol: "https", hostname: "*.supabase.co", pathname: "/storage/v1/object/public/**" }],
   },
+  // Os primeiros e-mails para marcas foram com "midia-kit" (em português); o endereço certo é /media-kit.
+  async redirects() {
+    return [
+      { source: "/midia-kit", destination: "/media-kit", permanent: true },
+      { source: "/mediakit", destination: "/media-kit", permanent: true },
+    ];
+  },
   async rewrites() {
     if (!MAINTENANCE_MODE) return [];
     return {

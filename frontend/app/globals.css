@@ -257,3 +257,20 @@
     transition: none;
   }
 }
+
+/* Impressão (botão "Salvar em PDF" do /media-kit): tudo visível, com as cores de fundo,
+   mesmo os blocos que ainda não passaram pelo reveal-on-scroll. */
+@media print {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  @page {
+    margin: 12mm;
+  }
+}
